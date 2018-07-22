@@ -1,1 +1,56 @@
-<p> Hello World! </p>
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      socket = io.connect();
+
+      function submit_data() {
+        socket.emit(
+          document.getElementById('event_name').value, 
+          JSON.parse(document.getElementById('event_data').value)
+        );
+        
+        console.log('Data Sent');
+      }
+
+      var onevent = socket.onevent;
+			socket.onevent = function (packet) {
+    		var args = packet.data || [];
+    		onevent.call (this, packet);
+    		packet.data = ["*"].concat(args);
+    		onevent.call(this, packet);
+			};
+
+			socket.on('*', function(event, data) {
+				document.getElementById('r_event_name').innerHTML = event;
+				if (data)
+					document.getElementById('r_event_data').innerHTML = JSON.stringify(data);
+			}); 
+
+    </script>
+  </head>
+
+  <body>
+    
+    <h1> Panoptyk Websocket Test Interface </h1>
+
+    <p> Use this interface to test client/server websocket communication. </p>
+
+    <!-- Client Input  -->
+    <div style="border: solid black 1px; padding: 20px; display: block;">
+      <input id="event_name" type="text" style="display: block;" placeholder="Event Name" />
+      <textarea id="event_data" rows="5" cols="50" style="display: block; margin-top: 20px;">{ }</textarea>
+      <button type="button" onclick="submit_data()" style="margin-top: 20px;"> Send </button>
+    </div>
+
+    <!-- Server Response  -->
+    <div>
+      <p id='r_event_name' style='border: solid black 1px; padding: 5px;'> </p>
+			<p id='r_event_data' style='border: solid black 1px; padding: 5px;'> </p>
+    </div>
+
+  </body>
+
+</html>
