@@ -1,0 +1,28 @@
+{
+
+  "login": [
+    {
+      "keys": {
+        "username": "string",
+        "password": "string"
+      },
+      "authentification": 0
+    },
+    {
+      "keys": {
+        "token": "string"
+      },
+      "authentification": 0
+    }
+  ],
+
+  "move-to-room": [
+    {
+      "keys": {
+        "room_id": "int"
+      },
+      "authentification": 1
+    }
+  ]
+
+}
