@@ -6,7 +6,7 @@ function Agent(socket, username) {
   this.socket = socket;
 
   (Agent.objects = Agent.objects || []).push(this);
-  server.logger.log("Agent Initialized");
+  server.log("Agent Initialized");
 }
 
 module.exports = Agent;

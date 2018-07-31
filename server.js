@@ -11,7 +11,9 @@ require(__dirname + '/utilities/logger.js');
 require(__dirname + '/communication/socket_inputs.js');
 
 server.models = {};
+
 server.models.Agent = require(__dirname + '/models/agent.js');
+
 require(__dirname + '/models/event.js');
 server.modules.fs.readdirSync(__dirname + '/models/events/').forEach(function(file) {
   require(__dirname + '/models/events/' + file);
@@ -23,5 +25,6 @@ server.modules.app.get('/', function(req, res) {
 });
 
 server.modules.server.listen(process.env.PORT || 80, function() {
-  server.logger.log('Starting server on port ' + server.modules.server.address().port);
+  server.log('Starting server on port ' + server.modules.server.address().port);
 });
+

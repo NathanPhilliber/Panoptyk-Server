@@ -11,5 +11,5 @@ server.models.Event_login.formats = [{
   }];
 
 server.models.Event_login.validate = function(structure) {
-  return server.models.Event.validate(server.models.Event_login.formats, structure);
+  return server.models.Event.validate_key_format(server.models.Event_login.formats, structure);
 };
