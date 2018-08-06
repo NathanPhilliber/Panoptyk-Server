@@ -1,11 +1,21 @@
-
+/**
+ * Room model.
+ */
 function Room() {
   this.room_id = null;
   this.name = null;
   this.adjacents = [];
   this.occupants = [];
+
+  (Room.objects = Room.objects || []).push(this);
+  server.log("Room " + this.name + " Initialized.", 2);
 }
 
+
+/**
+ * Add an agent to this room and send updates.
+ * @param {Object} agent - agent object to put in this room.
+ */
 Room.prototype.add_agent = function(agent) {
     occupants.push(agent);
     agent.room = this;
@@ -14,6 +24,12 @@ Room.prototype.add_agent = function(agent) {
     server.send.room_data(agent.socket, this);
 }
 
+
+/**
+ * Removes an agent from this room.
+ * @param {Object} agent - agent to remove
+ * @param {Object} new_room - room agent is heading to.
+ */
 Room.prototype.remove_agent = function(agent, new_room) {
     var index = this.occupants.indexOf(agent);
 
@@ -29,6 +45,11 @@ Room.prototype.remove_agent = function(agent, new_room) {
 
 }
 
+
+/**
+ * Get data to send to client.
+ * @returns {Object}
+ */
 Room.prototype.get_data = function() {
     return {
         'room_id': this.room_id,
@@ -37,12 +58,34 @@ Room.prototype.get_data = function() {
     };
 }
 
+
+/**
+ * Get the data for agents in this room.
+ * @returns {Object}
+ */
 Room.prototype.get_agents = function() {
     var agents = [];
     for (var agent in this.occupants) {
         agents.push(agent.get_public_data());
     }
     return agents;
+}
+
+
+/**
+ * Static function. Get a room by id.
+ * @param room_id {int} - id of room.
+ * @returns {Object/null}
+ */
+Room.get_room_by_id = function(room_id) {
+    for (var room in Room.objects) {
+        if (room.room_id == room_id) {
+            return room;
+        }
+    }
+
+    server.log("Could not find room with id " + room_id + ".", 1);
+    return null;
 }
 
 module.exports = Room;
