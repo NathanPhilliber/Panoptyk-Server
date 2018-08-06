@@ -2,7 +2,47 @@
 function Room() {
   this.room_id = null;
   this.name = null;
-  this.adjecents = [];
+  this.adjacents = [];
+  this.occupants = [];
+}
+
+Room.prototype.add_agent = function(agent) {
+    occupants.push(agent);
+    agent.room = this;
+
+    server.send.agent_enter_room(agent);
+    server.send.room_data(agent.socket, this);
+}
+
+Room.prototype.remove_agent = function(agent, new_room) {
+    var index = this.occupants.indexOf(agent);
+
+    if (index == -1) {
+        server.log("Agent " + agent.agent_name + " not in room " + this.name + ".", 0);
+        return false;
+    }
+
+    server.send.agent_exit_room(agent, new_room);
+
+    this.occupants.splice(index, 1);
+    agent.room = null;
+
+}
+
+Room.prototype.get_data = function() {
+    return {
+        'room_id': this.room_id,
+        'adjacent_rooms': this.adjacents,
+        'layout': 0 //TODO
+    };
+}
+
+Room.prototype.get_agents = function() {
+    var agents = [];
+    for (var agent in this.occupants) {
+        agents.push(agent.get_public_data());
+    }
+    return agents;
 }
 
 module.exports = Room;
