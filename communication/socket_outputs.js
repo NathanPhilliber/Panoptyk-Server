@@ -25,22 +25,25 @@ server.send.login_complete = function(agent) {
 /**
  * Notify all agents in a room that agent entered the room.
  * @param {Object} agent - agent object
+ * @param {Object} old_room - room object agent is coming from
  */
-server.send.agent_enter_room = function(agent) {
+server.send.agent_enter_room = function(agent, old_room) {
     server.log("Agent " + agent.name + " entered room " + agent.room.name + ".", 2);
-    agent.socket.to(agent.room.room_id).emit('agent-enter-room', {'agent_data': agent.get_public_data()});
+    agent.socket.to(agent.room.room_id).emit('agent-enter-room',
+            {'agent_data': agent.get_public_data(), 'room_id': old_room.room_id});
 }
 
 
 /**
  * Notify all agents in a room that agent left the room.
+ * Assumes agent is still in old room.
  * @param {Object} agent - agent object
- * @param {Object} newRoom - room object that agent is exiting to.
+ * @param {Object} new_room - room object that agent is exiting to.
  */
-server.send.agent_exit_room = function(agent, newRoom) {
+server.send.agent_exit_room = function(agent, new_room) {
     server.log("Agent " + agent.name + " left room " + agent.room.name + ".", 2);
     agent.socket.to(agent.room.room_id).emit('agent-exit-room',
-            {'agent_id': agent.agent_id, 'room_id': newRoom.room_id});
+            {'agent_id': agent.agent_id, 'room_id': new_room.room_id});
 }
 
 
@@ -51,7 +54,8 @@ server.send.agent_exit_room = function(agent, newRoom) {
  */
 server.send.room_data = function(socket, room) {
     server.log("Agent " + agent.name + " got room data for room " + room.name + ".", 2);
-    socket.emit('room-data', {'room_data': room.get_data(), 'agents': room.get_agents()});
+    socket.emit('room-data',
+            {'room_data': room.get_data(), 'agents': room.get_agents(), 'items': room.get_items()});
 }
 
 

@@ -1,0 +1,18 @@
+Progress Report 8/6/18
+Nathan Philliber
+
+This week I was able to make more progress in getting the event system setup.
+All events (excluding trade related ones) now have implemented client -> server messages
+and server -> client messages.
+
+This work also involved filling out the Agent, Room, and Item models. Models are able to
+generate their own events and send updates in an intelligent way.
+
+
+Plans for next week:
+    Begin simplistic frontend.
+
+Plans for future weeks:
+    Implement trade events / logic.
+    Login authentification system.
+    System for saving / loading objects.

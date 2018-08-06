@@ -41,6 +41,7 @@ Item.prototype.remove_from_room = function() {
 
 /**
  * Give this item to an agent and send updates.
+ * Does not modify agent object (Call from agent).
  * @param {Object} agent - agent object to give item to.
  */
 Item.prototype.give_to_agent = function(agent) {
@@ -52,6 +53,7 @@ Item.prototype.give_to_agent = function(agent) {
 
 /**
  * Take this item from an agent and send updates.
+ * Does not modify agent object (Call from agent).
  */
 Item.prototype.take_from_agent = function() {
 

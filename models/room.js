@@ -1,14 +1,31 @@
 /**
  * Room model.
+ * @param {string} name - name of room
  */
-function Room() {
-  this.room_id = null;
-  this.name = null;
+function Room(name) {
+  this.name = name;
   this.adjacents = [];
   this.occupants = [];
+  this.items = [];
 
   (Room.objects = Room.objects || []).push(this);
+  this.room_id = Room.objects.length;
   server.log("Room " + this.name + " Initialized.", 2);
+}
+
+
+/**
+ * Allow movement from this room to another room.
+ * @param {Object} other_room - room object to connect
+ * @param {boolean} two_way - allow movement from other room to this room, default true
+ */
+Room.prototype.connect_room = function(other_room, two_way=true) {
+    this.adjacents.push(other_room);
+    if (two_way) {
+        other_room.connect_room(this, false);
+    }
+
+    server.log("Conected room " + this.name + " to room " + other_room.name + ".", 2);
 }
 
 
@@ -16,11 +33,11 @@ function Room() {
  * Add an agent to this room and send updates.
  * @param {Object} agent - agent object to put in this room.
  */
-Room.prototype.add_agent = function(agent) {
+Room.prototype.add_agent = function(agent, old_room) {
     occupants.push(agent);
     agent.room = this;
 
-    server.send.agent_enter_room(agent);
+    server.send.agent_enter_room(agent, old_room);
     server.send.room_data(agent.socket, this);
 }
 
@@ -42,7 +59,6 @@ Room.prototype.remove_agent = function(agent, new_room) {
 
     this.occupants.splice(index, 1);
     agent.room = null;
-
 }
 
 
@@ -55,7 +71,7 @@ Room.prototype.get_data = function() {
         'room_id': this.room_id,
         'adjacent_rooms': this.adjacents,
         'layout': 0 //TODO
-    };
+    }
 }
 
 
@@ -69,6 +85,19 @@ Room.prototype.get_agents = function() {
         agents.push(agent.get_public_data());
     }
     return agents;
+}
+
+
+/**
+ * Get the data for items in this room.
+ * @returns {Object}
+ */
+Room.prototype.get_items = function() {
+    var items = [];
+    for (var item in this.items) {
+        items.push(item.get_data());
+    }
+    return items;
 }
 
 

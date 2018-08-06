@@ -22,6 +22,67 @@ function Agent(socket, username) {
 
 
 /**
+ * Static function. Find agent with given id.
+ * @param {int} agent_id - agent id
+ * @returns {Object/null}
+ */
+Agent.get_agent_by_id = function(agent_id) {
+    for (var agent in Agent.objects) {
+        if (agent.agent_id == agent_id) {
+            return agent;
+        }
+    }
+
+    server.log("Could not find agent with id " + agent_id + ".", 0);
+    return null;
+}
+
+
+/**
+ * Static function. Find agent associated with a socket.
+ * @param {Object} socket - Socket.io object
+ * @returns {Object/null}
+ */
+Agent.get_agent_by_socket = function(socket) {
+    for (var agent in Agent.objects) {
+        if (agent.socket == socket) {
+            return agent;
+        }
+    }
+
+    server.log("Could not find agent with socket " + socket.id + ".", 0);
+    return null;
+}
+
+
+/**
+ * Add an item to agent's inventory, update item, and send updates.
+ * @param {Object} item - item object
+ */
+Agent.prototype.add_item_inventory = function(item) {
+    this.inventory.push(item);
+    item.give_to_agent(this);
+}
+
+
+/**
+ * Remove an item from agent inventory, update item, and send updates.
+ * @param {Object} item - item object
+ */
+Agent.prototype.remove_item_inventory = function(item) {
+    var index = this.inventory.indexOf(item);
+
+    if (index == -1) {
+        server.log("Tried to remove invalid item " + item.name + " from agent " + this.name + ".", 0);
+        return false;
+    }
+
+    this.inventory.splice(index, 1);
+    item.take_from_agent();
+}
+
+
+/**
  * Remove agent from their current room and put in new room.
  * @param {Object} new_room - room to move to
  */
