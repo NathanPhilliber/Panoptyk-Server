@@ -30,10 +30,10 @@ server.models.Event.validate_key_format = function(goodFormats, inputFormat) {
 
 
 server.models.Event.validate_room_adjacent = function(old_room, new_room) {
-    if (old_room.adjacents.indexOf(new_room) !== -1) {
-        return {'status': true, 'message': ''};
-    }
+  if (old_room.adjacents.indexOf(new_room) !== -1) {
+    return {'status': true, 'message': ''};
+  }
 
-    return {'status': false, 'message': 'Invalid room movement'};
+  return {'status': false, 'message': 'Invalid room movement'};
 }
 

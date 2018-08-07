@@ -27,14 +27,14 @@ function Agent(socket, username) {
  * @returns {Object/null}
  */
 Agent.get_agent_by_id = function(agent_id) {
-    for (var agent in Agent.objects) {
-        if (agent.agent_id == agent_id) {
-            return agent;
-        }
+  for (var agent in Agent.objects) {
+    if (agent.agent_id == agent_id) {
+      return agent;
     }
+  }
 
-    server.log("Could not find agent with id " + agent_id + ".", 0);
-    return null;
+  server.log("Could not find agent with id " + agent_id + ".", 0);
+  return null;
 }
 
 
@@ -44,14 +44,14 @@ Agent.get_agent_by_id = function(agent_id) {
  * @returns {Object/null}
  */
 Agent.get_agent_by_socket = function(socket) {
-    for (var agent in Agent.objects) {
-        if (agent.socket == socket) {
-            return agent;
-        }
+  for (var agent in Agent.objects) {
+    if (agent.socket == socket) {
+      return agent;
     }
+  }
 
-    server.log("Could not find agent with socket " + socket.id + ".", 0);
-    return null;
+  server.log("Could not find agent with socket " + socket.id + ".", 0);
+  return null;
 }
 
 
@@ -60,8 +60,8 @@ Agent.get_agent_by_socket = function(socket) {
  * @param {Object} item - item object
  */
 Agent.prototype.add_item_inventory = function(item) {
-    this.inventory.push(item);
-    item.give_to_agent(this);
+  this.inventory.push(item);
+  item.give_to_agent(this);
 }
 
 
@@ -70,15 +70,15 @@ Agent.prototype.add_item_inventory = function(item) {
  * @param {Object} item - item object
  */
 Agent.prototype.remove_item_inventory = function(item) {
-    var index = this.inventory.indexOf(item);
+  var index = this.inventory.indexOf(item);
 
-    if (index == -1) {
-        server.log("Tried to remove invalid item " + item.name + " from agent " + this.name + ".", 0);
-        return false;
-    }
+  if (index == -1) {
+    server.log("Tried to remove invalid item " + item.name + " from agent " + this.name + ".", 0);
+    return false;
+  }
 
-    this.inventory.splice(index, 1);
-    item.take_from_agent();
+  this.inventory.splice(index, 1);
+  item.take_from_agent();
 }
 
 
@@ -87,8 +87,8 @@ Agent.prototype.remove_item_inventory = function(item) {
  * @param {Object} new_room - room to move to
  */
 Agent.prototype.move_to_room = function(new_room) {
-    agent.room.remove_agent(this, new_room);
-    newRoom.add_agent(this);
+  agent.room.remove_agent(this, new_room);
+  newRoom.add_agent(this);
 }
 
 
@@ -97,11 +97,11 @@ Agent.prototype.move_to_room = function(new_room) {
  * @returns {Object}
  */
 Agent.prototype.get_inventory_data() {
-    var dat = [];
-    for (var item in this.inventory) {
-        dat.push(item.get_data());
-    }
-    return dat;
+  var dat = [];
+  for (var item in this.inventory) {
+    dat.push(item.get_data());
+  }
+  return dat;
 }
 
 
@@ -110,11 +110,11 @@ Agent.prototype.get_inventory_data() {
  * @returns {Object}
  */
 Agent.prototype.get_public_data = function() {
-    return {
-        'agent_id': this.agent_id,
-        'agent_name': this.name,
-        'room_id': this.room.room_id
-    };
+  return {
+    'agent_id': this.agent_id,
+    'agent_name': this.name,
+    'room_id': this.room.room_id
+  }
 }
 
 
@@ -123,9 +123,9 @@ Agent.prototype.get_public_data = function() {
  * @returns {Object}
  */
 Agent.prototype.get_private_data = function() {
-    var dat = this.get_public_data();
-    dat.inventory = this.get_inventory_data();
-    return dat;
+  var dat = this.get_public_data();
+  dat.inventory = this.get_inventory_data();
+  return dat;
 }
 
 module.exports = Agent;
