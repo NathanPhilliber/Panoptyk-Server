@@ -9,8 +9,8 @@ function Room(name) {
   this.items = [];
 
   (Room.objects = Room.objects || []).push(this);
-  this.room_id = Room.objects.length;
-  server.log('Room ' + this.name + ' Initialized.', 2);
+  this.room_id = Room.objects.length - 1;
+  server.log('Room ' + this.name + ' Initialized with id ' + this.room_id + '.', 2);
 }
 
 
@@ -34,11 +34,11 @@ Room.prototype.connect_room = function(other_room, two_way=true) {
  * @param {Object} agent - agent object to put in this room.
  */
 Room.prototype.add_agent = function(agent, old_room) {
-  occupants.push(agent);
+  this.occupants.push(agent);
   agent.room = this;
 
   server.send.agent_enter_room(agent, old_room);
-  server.send.room_data(agent.socket, this);
+  server.send.room_data(agent, this);
 }
 
 
@@ -51,7 +51,7 @@ Room.prototype.remove_agent = function(agent, new_room) {
   var index = this.occupants.indexOf(agent);
 
   if (index == -1) {
-    server.log('Agent ' + agent.agent_name + ' not in room ' + this.name + '.', 0);
+    server.log('Agent ' + agent.name + ' not in room ' + this.name + '.', 0);
     return false;
   }
 
@@ -67,9 +67,14 @@ Room.prototype.remove_agent = function(agent, new_room) {
  * @returns {Object}
  */
 Room.prototype.get_data = function() {
+  var adj_ids = [];
+  for (let room of this.adjacents) {
+    adj_ids.push(room.room_id);
+  }
+
   return {
     'room_id': this.room_id,
-    'adjacent_rooms': this.adjacents,
+    'adjacent_rooms': adj_ids,
     'layout': 0 //TODO
   }
 }
@@ -81,7 +86,7 @@ Room.prototype.get_data = function() {
  */
 Room.prototype.get_agents = function() {
   var agents = [];
-  for (var agent in this.occupants) {
+  for (let agent of this.occupants) {
     agents.push(agent.get_public_data());
   }
 
@@ -95,7 +100,7 @@ Room.prototype.get_agents = function() {
  */
 Room.prototype.get_items = function() {
   var items = [];
-  for (var item in this.items) {
+  for (let item of this.items) {
     items.push(item.get_data());
   }
   return items;
@@ -108,7 +113,8 @@ Room.prototype.get_items = function() {
  * @returns {Object/null}
  */
 Room.get_room_by_id = function(room_id) {
-  for (var room in Room.objects) {
+
+  for (let room of Room.objects) {
     if (room.room_id == room_id) {
       return room;
     }

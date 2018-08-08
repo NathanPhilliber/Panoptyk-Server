@@ -85,7 +85,7 @@ Item.prototype.get_data = function() {
 
 
 Item.get_item_by_id = function(item_id) {
-  for (var item in Item.objects) {
+  for (let item of Item.objects) {
     if (item.item_id == item_id) {
       return item;
     }
@@ -98,7 +98,7 @@ Item.get_item_by_id = function(item_id) {
 
 Item.get_items_by_ids = function(item_ids) {
   var items = [];
-  for (var id in item_ids) {
+  for (let id of item_ids) {
     items.push(Item.get_item_by_id(id));
     if (items[-1] === null) {
       server.log('Could not find item for id ' + id + '.', 0);

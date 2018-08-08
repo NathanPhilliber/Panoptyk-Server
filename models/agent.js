@@ -4,20 +4,19 @@
  * @param {string} username - username of agent
  */
 function Agent(socket, username) {
-  this.agent_id = null;
   this.name = username;
-  this.room = null;
+  this.room = server.models.Room.get_room_by_id(server.settings.default_room_id);
   this.socket = socket;
   this.inventory = [];
 
   (Agent.objects = Agent.objects || []).push(this);
+  this.agent_id = Agent.objects.length - 1;
   server.log('Agent ' + this.name + ' Initialized.', 2);
 
   server.send.login_complete(this);
 
-  // TODO Change this probably:
-  this.room = Room.get_room_by_id(server.settings.default_room_id);
-  this.room.add_agent(this);
+  // TODO Change this probably: (change so old room makes sense)
+  this.room.add_agent(this, this.room);
 }
 
 
@@ -27,7 +26,7 @@ function Agent(socket, username) {
  * @returns {Object/null}
  */
 Agent.get_agent_by_id = function(agent_id) {
-  for (var agent in Agent.objects) {
+  for (let agent of Agent.objects) {
     if (agent.agent_id == agent_id) {
       return agent;
     }
@@ -44,7 +43,7 @@ Agent.get_agent_by_id = function(agent_id) {
  * @returns {Object/null}
  */
 Agent.get_agent_by_socket = function(socket) {
-  for (var agent in Agent.objects) {
+  for (let agent of Agent.objects) {
     if (agent.socket == socket) {
       return agent;
     }
@@ -87,8 +86,9 @@ Agent.prototype.remove_item_inventory = function(item) {
  * @param {Object} new_room - room to move to
  */
 Agent.prototype.move_to_room = function(new_room) {
-  agent.room.remove_agent(this, new_room);
-  newRoom.add_agent(this);
+  var old_room = this.room;
+  this.room.remove_agent(this, new_room);
+  new_room.add_agent(this, old_room);
 }
 
 
@@ -96,7 +96,7 @@ Agent.prototype.move_to_room = function(new_room) {
  * Get the data object for this agent's inventory.
  * @returns {Object}
  */
-Agent.prototype.get_inventory_data() {
+Agent.prototype.get_inventory_data = function() {
   var dat = [];
   for (var item in this.inventory) {
     dat.push(item.get_data());
@@ -129,3 +129,4 @@ Agent.prototype.get_private_data = function() {
 }
 
 module.exports = Agent;
+

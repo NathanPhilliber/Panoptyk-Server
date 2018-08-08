@@ -11,6 +11,7 @@ server.settings = require(__dirname + '/panoptyk-settings.json');
 
 require(__dirname + '/utilities/logger.js');
 require(__dirname + '/communication/socket_inputs.js');
+require(__dirname + '/communication/socket_outputs.js');
 
 server.models = {};
 
@@ -29,8 +30,8 @@ server.modules.app.get('/', function(req, res) {
   res.sendFile(__dirname + '/public/test.html');
 });
 
-server.modules.server.listen(process.env.PORT || 80, function() {
-  server.log('Starting server on port ' + server.modules.server.address().port);
+server.modules.server.listen(process.env.PORT || 8080, function() {
+  server.log('Starting server on port ' + server.modules.server.address().port, 2);
 });
 
 

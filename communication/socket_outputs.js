@@ -52,9 +52,10 @@ server.send.agent_exit_room = function(agent, new_room) {
  * @param {Object} socket - Socket.io object
  * @param {Object} room - room object
  */
-server.send.room_data = function(socket, room) {
-  server.log('Agent ' + agent.name + ' got room data for room ' + room.name + '.', 2);
-  socket.emit('room-data',
+server.send.room_data = function(agent, room) {
+  server.log('Agent ' + agent.name + ' getting room data for room ' + room.name + '.', 2);
+
+  agent.socket.emit('room-data',
       {'room_data': room.get_data(), 'agents': room.get_agents(), 'items': room.get_items()});
 }
 
