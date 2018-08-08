@@ -39,7 +39,7 @@ server.models.Event.validate_room_adjacent = function(old_room, new_room) {
 
 
 server.models.Event.validate_array_types = function(arr, atype) {
-  for (var item in arr) {
+  for (let item of arr) {
     if (typeof item !== atype) {
       return {'status': false, 'message': 'Invalid type in array (' + typeof item + ')'};
     }
@@ -54,7 +54,7 @@ server.models.Event.validate_agent_owns_items = function(agent, item_ids) {
     return {'status': false, 'message': 'No item for id ' + id};
   }
 
-  for (var item in items) {
+  for (let item of items) {
     if (agent.inventory.indexOf(item) == -1) {
       return {'status': false, 'message': 'Agent does not have item ' + item.name};
     }

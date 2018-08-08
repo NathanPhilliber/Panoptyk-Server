@@ -25,9 +25,14 @@ server.modules.fs.readdirSync(__dirname + '/models/events/').forEach(function(fi
   require(__dirname + '/models/events/' + file);
 });
 
+server.modules.app.use('/public/game', server.modules.express.static(__dirname + '/public/game'));
 
-server.modules.app.get('/', function(req, res) {
+server.modules.app.get('/test', function(req, res) {
   res.sendFile(__dirname + '/public/test.html');
+});
+
+server.modules.app.get('/game', function(req, res) {
+  res.sendFile(__dirname + '/public/game/game.html');
 });
 
 server.modules.server.listen(process.env.PORT || 8080, function() {
