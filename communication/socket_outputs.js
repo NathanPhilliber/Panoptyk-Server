@@ -7,8 +7,8 @@ server.send = {}
  * @param {string} errorMessage - error details
  */
 server.send.event_failed = function(socket, eventName, errorMessage) {
-    server.log(eventName + ": " + errorMessage, 1);
-    socket.emit('event-failed', {'event_name': eventName, 'error_message': errorMessage});
+  server.log(eventName + ': ' + errorMessage, 1);
+  socket.emit('event-failed', {'event_name': eventName, 'error_message': errorMessage});
 }
 
 
@@ -17,8 +17,8 @@ server.send.event_failed = function(socket, eventName, errorMessage) {
  * @param {Object} agent - agent object associated with client
  */
 server.send.login_complete = function(agent) {
-    server.log('Sent login confirmation to agent ' + agent.name + ".", 2);
-    agent.socket.emit('login-complete', {'agent_data': agent.get_private_data()});
+  server.log('Sent login confirmation to agent ' + agent.name + '.', 2);
+  agent.socket.emit('login-complete', {'agent_data': agent.get_private_data()});
 }
 
 
@@ -28,9 +28,9 @@ server.send.login_complete = function(agent) {
  * @param {Object} old_room - room object agent is coming from
  */
 server.send.agent_enter_room = function(agent, old_room) {
-    server.log("Agent " + agent.name + " entered room " + agent.room.name + ".", 2);
-    agent.socket.to(agent.room.room_id).emit('agent-enter-room',
-            {'agent_data': agent.get_public_data(), 'room_id': old_room.room_id});
+  server.log('Agent ' + agent.name + ' entered room ' + agent.room.name + '.', 2);
+  agent.socket.to(agent.room.room_id).emit('agent-enter-room',
+      {'agent_data': agent.get_public_data(), 'room_id': old_room.room_id});
 }
 
 
@@ -41,9 +41,9 @@ server.send.agent_enter_room = function(agent, old_room) {
  * @param {Object} new_room - room object that agent is exiting to.
  */
 server.send.agent_exit_room = function(agent, new_room) {
-    server.log("Agent " + agent.name + " left room " + agent.room.name + ".", 2);
-    agent.socket.to(agent.room.room_id).emit('agent-exit-room',
-            {'agent_id': agent.agent_id, 'room_id': new_room.room_id});
+  server.log('Agent ' + agent.name + ' left room ' + agent.room.name + '.', 2);
+  agent.socket.to(agent.room.room_id).emit('agent-exit-room',
+      {'agent_id': agent.agent_id, 'room_id': new_room.room_id});
 }
 
 
@@ -53,9 +53,9 @@ server.send.agent_exit_room = function(agent, new_room) {
  * @param {Object} room - room object
  */
 server.send.room_data = function(socket, room) {
-    server.log("Agent " + agent.name + " got room data for room " + room.name + ".", 2);
-    socket.emit('room-data',
-            {'room_data': room.get_data(), 'agents': room.get_agents(), 'items': room.get_items()});
+  server.log('Agent ' + agent.name + ' got room data for room ' + room.name + '.', 2);
+  socket.emit('room-data',
+      {'room_data': room.get_data(), 'agents': room.get_agents(), 'items': room.get_items()});
 }
 
 
@@ -65,14 +65,13 @@ server.send.room_data = function(socket, room) {
  * @param {Object} items - array of items to add to inventory
  */
 server.send.add_items_inventory = function(agent, items) {
-    var dat = [];
-    for (var item in items) {
-        dat.push(item.get_data());
-    }
+  var dat = [];
+  for (var item in items) {
+    dat.push(item.get_data());
+  }
 
-    server.log("Gave items " + JSON.stringify(dat) + " to agent " + agent.name + ".", 2);
-
-    agent.socket.emit('add-items-inventory', {'items_data': dat});
+  server.log('Gave items ' + JSON.stringify(dat) + ' to agent ' + agent.name + '.', 2);
+  agent.socket.emit('add-items-inventory', {'items_data': dat});
 }
 
 
@@ -82,14 +81,13 @@ server.send.add_items_inventory = function(agent, items) {
  * @param {Object} items - array of items to be removed from agent's inventory.
  */
 server.send.remove_items_inventory = function(agent, items) {
-    var dat = [];
-    for (var item in items) {
-        dat.push(item.item_id);
-    }
+  var dat = [];
+  for (var item in items) {
+    dat.push(item.item_id);
+  }
 
-    server.log("Remove items " + JSON.stringify(dat) + " from agent " + agent.name + ".", 2);
-
-    agent.socket.emit('remove-items-inventory', {'item_ids': dat});
+  server.log('Remove items ' + JSON.stringify(dat) + ' from agent ' + agent.name + '.', 2);
+  agent.socket.emit('remove-items-inventory', {'item_ids': dat});
 }
 
 
@@ -99,14 +97,13 @@ server.send.remove_items_inventory = function(agent, items) {
  * @param {Object} room - room object
  */
 server.send.add_items_room = function(items, room) {
-    var dat = [];
-    for (var item in items) {
-        dat.push(item.get_data());
-    }
+  var dat = [];
+  for (var item in items) {
+    dat.push(item.get_data());
+  }
 
-    server.log("Put items " + JSON.stringify(dat) + " to room " + room.name + ".", 2);
-
-    server.modules.io.in(room.room_id).emit('add-items-room', {'items_data': dat});
+  server.log('Put items ' + JSON.stringify(dat) + ' to room ' + room.name + '.', 2);
+  server.modules.io.in(room.room_id).emit('add-items-room', {'items_data': dat});
 }
 
 
@@ -116,14 +113,13 @@ server.send.add_items_room = function(items, room) {
  * @param {Object} room - room object
  */
 server.send.remove_items_room = function(items, room) {
-    var dat = [];
-    for (var item in items) {
-        dat.push(item.item_id);
-    }
+  var dat = [];
+  for (var item in items) {
+    dat.push(item.item_id);
+  }
 
-    server.log("Remove items " + JSON.stringify(dat) + " from room " + room.name + ".", 2);
-
-    server.modules.io.in(room.room_id).emit('remove-items-room', {'item_ids': dat});
+  server.log('Remove items ' + JSON.stringify(dat) + ' from room ' + room.name + '.', 2);
+  server.modules.io.in(room.room_id).emit('remove-items-room', {'item_ids': dat});
 }
 
 

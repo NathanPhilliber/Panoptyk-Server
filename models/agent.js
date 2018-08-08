@@ -11,7 +11,7 @@ function Agent(socket, username) {
   this.inventory = [];
 
   (Agent.objects = Agent.objects || []).push(this);
-  server.log("Agent " + this.name + " Initialized.", 2);
+  server.log('Agent ' + this.name + ' Initialized.', 2);
 
   server.send.login_complete(this);
 
@@ -33,7 +33,7 @@ Agent.get_agent_by_id = function(agent_id) {
     }
   }
 
-  server.log("Could not find agent with id " + agent_id + ".", 0);
+  server.log('Could not find agent with id ' + agent_id + '.', 0);
   return null;
 }
 
@@ -50,7 +50,7 @@ Agent.get_agent_by_socket = function(socket) {
     }
   }
 
-  server.log("Could not find agent with socket " + socket.id + ".", 0);
+  server.log('Could not find agent with socket ' + socket.id + '.', 0);
   return null;
 }
 
@@ -73,7 +73,7 @@ Agent.prototype.remove_item_inventory = function(item) {
   var index = this.inventory.indexOf(item);
 
   if (index == -1) {
-    server.log("Tried to remove invalid item " + item.name + " from agent " + this.name + ".", 0);
+    server.log('Tried to remove invalid item ' + item.name + ' from agent ' + this.name + '.', 0);
     return false;
   }
 

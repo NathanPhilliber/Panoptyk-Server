@@ -11,7 +11,7 @@ function Item(name, type) {
   this.agent = null;
 
   (Item.objects = Item.objects || []).push(this);
-  server.log("Item " + this.type + ":" + this.name + " Initialized.", 2);
+  server.log('Item ' + this.type + ':' + this.name + ' Initialized.', 2);
 }
 
 
@@ -32,7 +32,7 @@ Item.prototype.put_in_room = function(room) {
 Item.prototype.remove_from_room = function() {
 
   if (this.room === null) {
-    server.log("Tried to take item " + this.name + " from room, but item does not have room.", 0);
+    server.log('Tried to take item ' + this.name + ' from room, but item does not have room.', 0);
     return false;
   }
 
@@ -61,7 +61,7 @@ Item.prototype.give_to_agent = function(agent) {
 Item.prototype.take_from_agent = function() {
 
   if (this.agent === null) {
-    server.log("Tried to take item " + this.name + " from agent, but item does not have agent.", 0);
+    server.log('Tried to take item ' + this.name + ' from agent, but item does not have agent.', 0);
     return false;
   }
 
@@ -83,5 +83,30 @@ Item.prototype.get_data = function() {
   }
 }
 
+
+Item.get_item_by_id = function(item_id) {
+  for (var item in Item.objects) {
+    if (item.item_id == item_id) {
+      return item;
+    }
+  }
+
+  server.log('Could not find item with id ' + item_id + '.', 0);
+  return null;
+}
+
+
+Item.get_items_by_ids = function(item_ids) {
+  var items = [];
+  for (var id in item_ids) {
+    items.push(Item.get_item_by_id(id));
+    if (items[-1] === null) {
+      server.log('Could not find item for id ' + id + '.', 0);
+      return null;
+    }
+  }
+
+  return items;
+}
 
 module.exports = Item;

@@ -37,3 +37,28 @@ server.models.Event.validate_room_adjacent = function(old_room, new_room) {
   return {'status': false, 'message': 'Invalid room movement'};
 }
 
+
+server.models.Event.validate_array_types = function(arr, atype) {
+  for (var item in arr) {
+    if (typeof item !== atype) {
+      return {'status': false, 'message': 'Invalid type in array (' + typeof item + ')'};
+    }
+  }
+
+  return {'status': true, 'message': ''};
+}
+
+server.models.Event.validate_agent_owns_items = function(agent, item_ids) {
+  var items = Item.get_items_by_ids(item_ids);
+  if (items === null) {
+    return {'status': false, 'message': 'No item for id ' + id};
+  }
+
+  for (var item in items) {
+    if (agent.inventory.indexOf(item) == -1) {
+      return {'status': false, 'message': 'Agent does not have item ' + item.name};
+    }
+  }
+
+  return {'status': true, 'message': '', 'items': items};
+}

@@ -38,11 +38,11 @@ server.modules.server.listen(process.env.PORT || 80, function() {
 
 // TEST DATA. DELETE THIS.
 
-var room0 = new server.models.Room("Test_Room_0");
-var room1 = new server.models.Room("Test_Room_1");
-var room2 = new server.models.Room("Test_Room_2");
-var room3 = new server.models.Room("Test_Room_3");
-var room4 = new server.models.Room("Test_Room_4");
+var room0 = new server.models.Room('Test_Room_0');
+var room1 = new server.models.Room('Test_Room_1');
+var room2 = new server.models.Room('Test_Room_2');
+var room3 = new server.models.Room('Test_Room_3');
+var room4 = new server.models.Room('Test_Room_4');
 
 room0.connect_room(room1);
 room0.connect_room(room2);

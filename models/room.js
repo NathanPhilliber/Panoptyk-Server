@@ -10,7 +10,7 @@ function Room(name) {
 
   (Room.objects = Room.objects || []).push(this);
   this.room_id = Room.objects.length;
-  server.log("Room " + this.name + " Initialized.", 2);
+  server.log('Room ' + this.name + ' Initialized.', 2);
 }
 
 
@@ -25,7 +25,7 @@ Room.prototype.connect_room = function(other_room, two_way=true) {
     other_room.connect_room(this, false);
   }
 
-  server.log("Conected room " + this.name + " to room " + other_room.name + ".", 2);
+  server.log('Conected room ' + this.name + ' to room ' + other_room.name + '.', 2);
 }
 
 
@@ -51,7 +51,7 @@ Room.prototype.remove_agent = function(agent, new_room) {
   var index = this.occupants.indexOf(agent);
 
   if (index == -1) {
-    server.log("Agent " + agent.agent_name + " not in room " + this.name + ".", 0);
+    server.log('Agent ' + agent.agent_name + ' not in room ' + this.name + '.', 0);
     return false;
   }
 
@@ -114,7 +114,7 @@ Room.get_room_by_id = function(room_id) {
     }
   }
 
-  server.log("Could not find room with id " + room_id + ".", 1);
+  server.log('Could not find room with id ' + room_id + '.', 1);
   return null;
 }
 
