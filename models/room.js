@@ -74,6 +74,7 @@ Room.prototype.get_data = function() {
 
   return {
     'room_id': this.room_id,
+    'room_name': this.name,
     'adjacent_rooms': adj_ids,
     'layout': 0 //TODO
   }

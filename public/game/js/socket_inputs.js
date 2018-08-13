@@ -7,6 +7,9 @@ Client.socket.on('disconnect', function() {
 
 Client.socket.on('login-complete', function(data) {
   console.log("Login Success");
+  new Agent(data.agent_data.agent_id, data.agent_data.agent_name, true);
+  updateAgentInfo(data.agent_data.agent_name, data.agent_data.agent_id);
+  showGameArea();
 });
 
 Client.socket.on('agent-enter-room', function(data) {
@@ -19,6 +22,7 @@ Client.socket.on('agent-exit-room', function(data) {
 
 Client.socket.on('room-data', function(data) {
   console.log("Room Data");
+  new Room(data.room_data.room_id, data.room_data.room_name, data.room_data.adjacent_rooms, data.room_data.layout, data.agents, data.items);
 });
 
 Client.socket.on('add-items-inventory', function(data) {

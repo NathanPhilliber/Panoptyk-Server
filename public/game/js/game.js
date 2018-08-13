@@ -1,4 +1,6 @@
-var game = new Phaser.Game({
+var graphics;
+
+game = new Phaser.Game({
   width: 800,
   height: 600,
   parent: 'i_div_game',
@@ -14,9 +16,9 @@ function preload() {
 
 function create() {
   console.log("Game Create State");
+  graphics = this;
 }
 
 function update() {
 
 }
-

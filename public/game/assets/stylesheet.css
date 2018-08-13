@@ -1,0 +1,32 @@
+#i_div_game {
+  display: inline-block;
+}
+
+#i_div_loginArea {
+  display: block;
+  padding: 5px;
+  margin: 5px;
+}
+
+#i_div_sidebar {
+  outline: 1px solid black;
+  display: inline-block;
+  padding: 2px;
+  margin: 5px;
+}
+
+#i_div_agentInfo {
+  outline: 1px solid black;
+  padding: 5px;
+  margin: 5px;
+}
+
+#i_div_inventory {
+  outline: 1px solid black;
+  padding: 5px;
+  margin: 5px;
+}
+
+.c_p_inline {
+  display: inline-block;
+}
