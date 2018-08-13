@@ -56,7 +56,7 @@ server.send.room_data = function(agent, room) {
   server.log('Agent ' + agent.name + ' getting room data for room ' + room.name + '.', 2);
 
   agent.socket.emit('room-data',
-      {'room_data': room.get_data(), 'agents': room.get_agents(), 'items': room.get_items()});
+      {'room_data': room.get_data(), 'agents': room.get_agents(agent), 'items': room.get_items()});
 }
 
 
@@ -83,7 +83,7 @@ server.send.add_items_inventory = function(agent, items) {
  */
 server.send.remove_items_inventory = function(agent, items) {
   var dat = [];
-  for (var item in items) {
+  for (let item of items) {
     dat.push(item.item_id);
   }
 
@@ -99,7 +99,7 @@ server.send.remove_items_inventory = function(agent, items) {
  */
 server.send.add_items_room = function(items, room) {
   var dat = [];
-  for (var item in items) {
+  for (let item of items) {
     dat.push(item.get_data());
   }
 
@@ -115,7 +115,7 @@ server.send.add_items_room = function(items, room) {
  */
 server.send.remove_items_room = function(items, room) {
   var dat = [];
-  for (var item in items) {
+  for (let item of items) {
     dat.push(item.item_id);
   }
 

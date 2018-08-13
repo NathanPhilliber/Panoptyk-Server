@@ -56,3 +56,21 @@ room2.connect_room(room3, false);
 room2.connect_room(room4);
 room3.connect_room(room1, false);
 room1.connect_room(room4);
+
+var item0 = new server.models.Item("Test_Item_0", "Type0");
+var item1 = new server.models.Item("Test_Item_1", "Type0");
+var item2 = new server.models.Item("Test_Item_2", "Type1");
+var item3 = new server.models.Item("Test_Item_3", "Type1");
+var item4 = new server.models.Item("Test_Item_4", "Type2");
+var item5 = new server.models.Item("Test_Item_5", "Type2");
+var item6 = new server.models.Item("Test_Item_6", "Type3");
+var item7 = new server.models.Item("Test_Item_7", "Type3");
+
+item0.put_in_room(room0);
+item1.put_in_room(room0);
+item2.put_in_room(room0);
+item3.put_in_room(room1);
+item4.put_in_room(room2);
+item5.put_in_room(room3);
+item6.put_in_room(room4);
+item7.put_in_room(room4);

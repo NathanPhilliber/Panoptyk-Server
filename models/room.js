@@ -42,6 +42,14 @@ Room.prototype.add_agent = function(agent, old_room) {
 }
 
 
+Room.prototype.add_item = function(item) {
+  this.items.push(item);
+}
+
+Room.prototype.remove_item = function(item) {
+  this.items.slice(this.items.indexOf(item), 1);
+}
+
 /**
  * Removes an agent from this room.
  * @param {Object} agent - agent to remove
@@ -69,7 +77,7 @@ Room.prototype.remove_agent = function(agent, new_room) {
 Room.prototype.get_data = function() {
   var adj_ids = [];
   for (let room of this.adjacents) {
-    adj_ids.push(room.room_id);
+    adj_ids.push({'room_id':room.room_id, 'room_name':room.name});
   }
 
   return {
@@ -85,10 +93,12 @@ Room.prototype.get_data = function() {
  * Get the data for agents in this room.
  * @returns {Object}
  */
-Room.prototype.get_agents = function() {
+Room.prototype.get_agents = function(cur_agent=null) {
   var agents = [];
   for (let agent of this.occupants) {
-    agents.push(agent.get_public_data());
+    if (agent !== cur_agent) {
+      agents.push(agent.get_public_data());
+    }
   }
 
   return agents;

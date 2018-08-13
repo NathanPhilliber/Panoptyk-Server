@@ -4,13 +4,13 @@
  * @param {string} type - item type
  */
 function Item(name, type) {
-  this.item_id = null;
   this.type = type;
   this.name = name;
   this.room = null;
   this.agent = null;
 
   (Item.objects = Item.objects || []).push(this);
+  this.item_id = Item.objects.length - 1;
   server.log('Item ' + this.type + ':' + this.name + ' Initialized.', 2);
 }
 
@@ -21,7 +21,7 @@ function Item(name, type) {
  */
 Item.prototype.put_in_room = function(room) {
   this.room = room;
-
+  room.add_item(this);
   server.send.add_items_room([this], room);
 }
 
