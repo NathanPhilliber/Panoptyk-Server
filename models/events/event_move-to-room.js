@@ -3,7 +3,7 @@ function Event_moveToRoom(socket, inputData) {
   this.agent = server.models.Agent.get_agent_by_socket(socket);
 
   if (!(res = server.models.Event_moveToRoom.validate(inputData, this.agent)).status) {
-    server.log('Bad event moveToRoom data.', 1);
+    server.log('Bad event moveToRoom data ('+JSON.stringify(inputData) + ').', 1);
     server.send.event_failed(socket, server.models.Event_moveToRoom.event_name, res.message);
     return false;
   }

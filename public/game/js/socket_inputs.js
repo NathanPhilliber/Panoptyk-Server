@@ -42,5 +42,5 @@ Client.socket.on('remove-items-room', function(data) {
 });
 
 Client.socket.on('event-failed', function(data) {
-  console.warning("ERROR: " + data.message);
+  console.log("ERROR: " + data.error_message);
 });

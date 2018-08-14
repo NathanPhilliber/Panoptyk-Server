@@ -12,6 +12,11 @@ game = new Phaser.Game({
 
 function preload() {
   console.log("Game Load State");
+
+  this.load.image('agent', 'public/game/assets/agent_sprite.png');
+  this.load.image('agent_other', 'public/game/assets/agent_other_sprite.png');
+  this.load.image('item', 'public/game/assets/item_sprite.png');
+  this.load.image('exit', 'public/game/assets/exit_sprite.png');
 }
 
 function create() {
