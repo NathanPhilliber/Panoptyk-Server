@@ -60,7 +60,7 @@ function ExitNode(room_id, room_name, xpos) {
   this.sprite.setInteractive();
   this.sprite.on('pointerdown', function(ev) {
     console.log("Moving to room " + room_id);
-    Client.send.moveToRoom(room_id);
+    Agent.my_agent.move(xpos, game.canvas.height-33, Client.send.moveToRoom, room_id);
   });
   this.title = graphics.add.text(xpos, game.canvas.height-33, room_name, {fill:'#fff', font:'16px Arial'});
   this.title.setOrigin(0.5,1);

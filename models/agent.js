@@ -72,7 +72,7 @@ Agent.prototype.remove_item_inventory = function(item) {
   var index = this.inventory.indexOf(item);
 
   if (index == -1) {
-    server.log('Tried to remove invalid item ' + item.name + ' from agent ' + this.name + '.', 0);
+    server.log('Tried to remove invalid item '+item.name+' from agent '+this.name+'.', 0);
     return false;
   }
 
