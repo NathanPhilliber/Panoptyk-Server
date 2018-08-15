@@ -1,5 +1,7 @@
 server.models.Event = {};
 
+success_msg = {'status': true, 'message': ''};
+
 // Check if provided data is same format as one of Event_X.formats
 // No extra keys allowed
 server.models.Event.validate_key_format = function(goodFormats, inputFormat) {
@@ -22,7 +24,7 @@ server.models.Event.validate_key_format = function(goodFormats, inputFormat) {
       }
     }
 
-    return {'status': true, 'message': ''};
+    return success_msg;
   }
 
   return {'status': false, 'message': 'Invalid or missing key'};
@@ -31,7 +33,7 @@ server.models.Event.validate_key_format = function(goodFormats, inputFormat) {
 
 server.models.Event.validate_room_adjacent = function(old_room, new_room) {
   if (old_room.adjacents.indexOf(new_room) !== -1) {
-    return {'status': true, 'message': ''};
+    return success_msg;
   }
 
   return {'status': false, 'message': 'Invalid room movement'};
@@ -45,7 +47,7 @@ server.models.Event.validate_array_types = function(arr, atype) {
     }
   }
 
-  return {'status': true, 'message': ''};
+  return success_msg;
 }
 
 server.models.Event.validate_agent_owns_items = function(agent, item_ids) {
@@ -60,5 +62,14 @@ server.models.Event.validate_agent_owns_items = function(agent, item_ids) {
     }
   }
 
-  return {'status': true, 'message': '', 'items': items};
+  return success_msg;
 }
+
+server.models.Event.validate_agent_logged_in = function(agent) {
+  if (agent !== null) {
+    return success_msg;
+  }
+
+  return {'status': false, 'message': 'Agent not logged in'};
+}
+

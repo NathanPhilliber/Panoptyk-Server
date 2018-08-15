@@ -27,6 +27,9 @@ Event_moveToRoom.formats = [{
 
 Event_moveToRoom.validate = function(structure, agent) {
 
+  if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {
+    return res;
+  }
   if (!(res = server.models.Event.validate_key_format(server.models.Event_moveToRoom.formats, structure)).status) {
     return res;
   }

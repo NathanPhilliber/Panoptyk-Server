@@ -1,3 +1,4 @@
+Agent.objects = [];
 /**
  * Agent model.
  * @param {Object} socket - Socket.io socket object
