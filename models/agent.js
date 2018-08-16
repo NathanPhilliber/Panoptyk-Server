@@ -129,5 +129,13 @@ Agent.prototype.get_private_data = function() {
   return dat;
 }
 
+
+Agent.prototype.logout = function() {
+  server.log("Agent " + this.name + " logged out.", 2);
+  this.room.remove_agent(this, this.room.adjacents[0]);
+
+}
+
+
 module.exports = Agent;
 
