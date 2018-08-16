@@ -1,7 +1,7 @@
 
-move_speed = 2.5;
+Agent.move_speed = 2.5;
 
-function Agent(id, username, myAgent=false) {
+function Agent(id, username, my_agent=false) {
   this.agent_id = id;
   this.name = username;
   this.x = Math.random() * (game.canvas.width-150) + 75;
@@ -10,30 +10,29 @@ function Agent(id, username, myAgent=false) {
 
   console.log("Agent Initialized (" + id + ", " + username + ")");
 
-  this.draw(myAgent);
-  if (myAgent) {
+  this.draw(my_agent);
+  if (my_agent) {
     Agent.my_agent = this;
   }
 }
 
-Agent.prototype.draw = function(myAgent) {
-  this.sprite = graphics.add.sprite(this.x, this.y, myAgent ? 'agent' : 'agent_other');
+Agent.prototype.draw = function(my_agent) {
+  this.sprite = graphics.add.sprite(this.x, this.y, my_agent ? 'agent' : 'agent_other');
   this.sprite.setOrigin(0.5, 0);
 
   this.title = graphics.add.text(this.x, this.y, this.name, {fill:'#fff', font:'16px Arial' });
   this.title.setOrigin(0.5, 1);
 }
 
-Agent.prototype.move = function(x, y, on_complete, params) {
+Agent.prototype.move = function(x, y, on_complete, param0) {
   graphics.tweens.add({targets:[this.sprite, this.title], x:x, y:y,
-    duration:move_speed * Math.sqrt(Math.pow(x-this.x, 2)+Math.pow(y-this.y, 2)),
-    onComplete:function(){on_complete(params)}});
+    duration:Agent.move_speed * Math.sqrt(Math.pow(x-this.x, 2)+Math.pow(y-this.y, 2)),
+    onComplete:function(){on_complete(param0)}});
 
-
-//  (this.sprite).to({x:x, y:y}, 1000, Phaser.Easing.Linear.None, true);
 }
 
 Agent.prototype.destroy = function() {
   this.sprite.destroy();
   this.title.destroy();
 }
+

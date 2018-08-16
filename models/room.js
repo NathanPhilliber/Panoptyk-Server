@@ -36,6 +36,7 @@ Room.prototype.connect_room = function(other_room, two_way=true) {
 Room.prototype.add_agent = function(agent, old_room) {
   this.occupants.push(agent);
   agent.room = this;
+  agent.socket.join(this.room_id);
 
   server.send.agent_enter_room(agent, old_room);
   server.send.room_data(agent, this);
@@ -62,6 +63,8 @@ Room.prototype.remove_agent = function(agent, new_room) {
     server.log('Agent ' + agent.name + ' not in room ' + this.name + '.', 0);
     return false;
   }
+
+  agent.socket.leave(this.room_id);
 
   server.send.agent_exit_room(agent, new_room);
 
