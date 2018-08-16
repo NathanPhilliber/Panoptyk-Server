@@ -39,7 +39,7 @@ Room.prototype.add_agent = function(agent, old_room) {
   agent.socket.join(this.room_id);
 
   server.send.agent_enter_room(agent, old_room);
-  server.send.room_data(agent, this);
+  server.send.room_data(agent, this, old_room.room_id);
 }
 
 

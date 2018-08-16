@@ -1,31 +1,44 @@
 current_room = -1;
 
-function Room(room_id, room_name, adjacents, layout, agents, items) {
+function Room(room_id, room_name, adjacents, layout, agents, items, old_room_id) {
 
   if (current_room !== -1) {
     current_room.destroy();
   }
 
+  graphics.cameras.main.setBackgroundColor(
+    '#'+(parseFloat('.' + ((room_id+1)*(room_id+1)*1127))*0xFFFFFF<<0).toString(16));
+
   this.room_id = room_id;
   this.name = room_name;
   this.layout = layout;
 
-  this.agents = [];
-  for (let agent of agents) {
-    this.agents.push(new Agent(agent.agent_id, agent.agent_name));
-  }
-
   var xpos = 50;
   this.adjacents = [];
   for (let room_data of adjacents) {
-    console.log(JSON.stringify(room_data));
     this.adjacents.push(new ExitNode(room_data.room_id, room_data.room_name, xpos));
+
+    console.log(room_data.room_id + " " + old_room_id);
+    if (room_data.room_id == old_room_id) {
+      Agent.my_agent.set_location(xpos, game.canvas.height-33);
+
+    }
+
     xpos += 150;
   }
+
+  Agent.my_agent.move(
+    Math.random() * (game.canvas.width-150) + 75,
+    Math.random() * (game.canvas.height-150) + 75, function(){}, null);
 
   this.items = []
   for (let item of items) {
     this.items.push(new Item(item.item_id, item.item_name, item.item_type));
+  }
+
+  this.agents = [];
+  for (let agent of agents) {
+    this.agents.push(new Agent(agent.agent_id, agent.agent_name));
   }
 
   this.title = graphics.add.text(10, 10, this.name, { fill: '#fff', font:'32px Arial' });

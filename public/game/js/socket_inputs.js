@@ -21,8 +21,9 @@ Client.socket.on('agent-exit-room', function(data) {
 });
 
 Client.socket.on('room-data', function(data) {
+  console.log(JSON.stringify(data));
   console.log("Room Data");
-  new Room(data.room_data.room_id, data.room_data.room_name, data.room_data.adjacent_rooms, data.room_data.layout, data.agents, data.items);
+  new Room(data.room_data.room_id, data.room_data.room_name, data.room_data.adjacent_rooms, data.room_data.layout, data.agents, data.items, data.old_room_id);
 });
 
 Client.socket.on('add-items-inventory', function(data) {

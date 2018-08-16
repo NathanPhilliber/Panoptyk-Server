@@ -24,9 +24,13 @@ Agent.prototype.draw = function(my_agent) {
   this.title.setOrigin(0.5, 1);
 }
 
-Agent.prototype.move = function(x, y, on_complete, param0) {
+Agent.prototype.move = function(x, y, on_complete, param0, duration=-1) {
+  if (duration < 0) {
+    duration = Agent.move_speed * Math.sqrt(Math.pow(x-this.x, 2)+Math.pow(y-this.y, 2));
+  }
+
   graphics.tweens.add({targets:[this.sprite, this.title], x:x, y:y,
-    duration:Agent.move_speed * Math.sqrt(Math.pow(x-this.x, 2)+Math.pow(y-this.y, 2)),
+    duration:duration,
     onComplete:function(){on_complete(param0)}});
 
 }
@@ -36,3 +40,10 @@ Agent.prototype.destroy = function() {
   this.title.destroy();
 }
 
+Agent.prototype.set_location = function(x, y) {
+  console.log("set location " + x + " " + y);
+  this.sprite.x = x;
+  this.sprite.y = y;
+  this.title.x = x;
+  this.title.y = y;
+}
