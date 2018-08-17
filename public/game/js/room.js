@@ -18,14 +18,10 @@ function Room(room_id, room_name, adjacents, layout, agents, items, old_room_id)
   for (let room_data of adjacents) {
     this.adjacents.push(new ExitNode(room_data.room_id, room_data.room_name, xpos));
 
-    console.log(room_data.room_id + " " + old_room_id);
-    if (room_data.room_id == old_room_id) {
-      Agent.my_agent.set_location(xpos, game.canvas.height-33);
-
-    }
-
     xpos += 150;
   }
+
+  this.place_agent(old_room_id, Agent.my_agent);
 
   Agent.my_agent.move(
     Math.random() * (game.canvas.width-150) + 75,
@@ -64,6 +60,35 @@ Room.prototype.destroy = function() {
   }
 }
 
+Room.prototype.place_agent = function(old_room_id, agent) {
+  (this.agents = this.agents || []).push(agent);
+  for (let exit of this.adjacents) {
+    if (exit.room_id == old_room_id) {
+      agent.set_location(exit.sprite.x, exit.sprite.y);
+      break;
+    }
+  }
+}
+
+Room.prototype.remove_agent = function(agent_id, room_id) {
+  console.log("Removing agent id=" + agent_id + " to room=" + room_id);
+  console.log(this.agents.length);
+  for (let agent of this.agents) {
+    console.log(agent.agent_id + " ?= " + agent_id);
+    if (agent.agent_id == agent_id) {
+      for (let exit of this.adjacents) {
+        if (exit.room_id == room_id) {
+          console.log("Found agent and exit");
+          agent.move(exit.sprite.x, exit.sprite.y, function(agent) {
+            agent.destroy();
+          }, agent);
+          return;
+        }
+      }
+    }
+  }
+}
+
 function ExitNode(room_id, room_name, xpos) {
   this.room_id = room_id;
   this.name = room_name;
@@ -83,3 +108,5 @@ ExitNode.prototype.destroy = function() {
   this.sprite.destroy();
   this.title.destroy();
 }
+
+

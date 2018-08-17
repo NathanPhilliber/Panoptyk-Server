@@ -14,10 +14,14 @@ Client.socket.on('login-complete', function(data) {
 
 Client.socket.on('agent-enter-room', function(data) {
   console.log("Agent Enter Room");
+  var agent = new Agent(data.agent_data.agent_id, data.agent_data.agent_name, false);
+  current_room.place_agent(data.room_id, agent);
+  agent.move(Math.random() * (game.canvas.width-150) + 75, Math.random() * (game.canvas.height-150) + 75);
 });
 
 Client.socket.on('agent-exit-room', function(data) {
   console.log("Agent Exit Room");
+  current_room.remove_agent(data.agent_id, data.room_id);
 });
 
 Client.socket.on('room-data', function(data) {

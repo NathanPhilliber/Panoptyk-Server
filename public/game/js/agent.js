@@ -24,7 +24,7 @@ Agent.prototype.draw = function(my_agent) {
   this.title.setOrigin(0.5, 1);
 }
 
-Agent.prototype.move = function(x, y, on_complete, param0, duration=-1) {
+Agent.prototype.move = function(x, y, on_complete=function(){}, param0=null, duration=-1) {
   if (duration < 0) {
     duration = Agent.move_speed * Math.sqrt(Math.pow(x-this.x, 2)+Math.pow(y-this.y, 2));
   }
