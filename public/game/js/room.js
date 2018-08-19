@@ -7,7 +7,7 @@ function Room(room_id, room_name, adjacents, layout, agents, items, old_room_id)
   }
 
   graphics.cameras.main.setBackgroundColor(
-    '#'+(parseFloat('.' + ((room_id+1)*(room_id+1)*1127))*0xFFFFFF<<0).toString(16));
+    '#'+(parseFloat('.' + ((room_id+3)*(room_id+3)*1127))*0x888888<<0).toString(16));
 
   this.room_id = room_id;
   this.name = room_name;

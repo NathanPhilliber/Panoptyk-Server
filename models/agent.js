@@ -1,23 +1,57 @@
 Agent.objects = [];
+
 /**
  * Agent model.
  * @param {Object} socket - Socket.io socket object
  * @param {string} username - username of agent
  */
-function Agent(socket, username) {
+function Agent(username, room=null, inventory=[], id=null) {
   this.name = username;
-  this.room = server.models.Room.get_room_by_id(server.settings.default_room_id);
-  this.socket = socket;
-  this.inventory = [];
+  this.room = room;
+  this.socket = null;
+  this.inventory = inventory;
 
   (Agent.objects = Agent.objects || []).push(this);
-  this.agent_id = Agent.objects.length - 1;
+  this.agent_id = id == null ? Agent.objects.length - 1 : id;
   server.log('Agent ' + this.name + ' Initialized.', 2);
 
-  server.send.login_complete(this);
+}
 
-  // TODO Change this probably: (change so old room makes sense)
-  this.room.add_agent(this, this.room);
+Agent.load = function(data) {
+  var inventory = [];
+
+  // load items
+
+  new Agent(data.username, Room.get_room_by_id(data.room_id), inventory, data.agent_id);
+}
+
+Agent.login = function(username, socket) {
+  for (let agent of Agent.objects) {
+    if (agent.name == username) {
+      agent.socket = socket;
+      server.send.login_complete(agent);
+      agent.room.add_agent(agent);
+      return agent;
+    }
+  }
+
+  var agent = new Agent(username, server.models.Room.get_room_by_id(server.settings.default_room_id));
+  agent.socket = socket;
+  server.send.login_complete(agent);
+  agent.room.add_agent(agent);
+  return agent;
+}
+
+Agent.prototype.serialize = function() {
+  var data = {
+    name: this.name,
+    room_id: this.room.room_id,
+    inventory: [],
+    agent_id: this.agent_id
+  };
+  for (let item of this.inventory) {
+    data.inventory.push(item.item_id);
+  }
 }
 
 
@@ -132,7 +166,7 @@ Agent.prototype.get_private_data = function() {
 
 Agent.prototype.logout = function() {
   server.log("Agent " + this.name + " logged out.", 2);
-  this.room.remove_agent(this, this.room.adjacents[0]);
+  this.room.remove_agent(this, this.room.adjacents[0], false);
 
 }
 

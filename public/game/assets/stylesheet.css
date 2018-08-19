@@ -11,7 +11,8 @@
 #i_div_sidebar {
   outline: 1px solid black;
   display: inline-block;
-  padding: 2px;
+  flex-grow: 1;
+  padding: 0 2px;
   margin: 5px;
 }
 
@@ -29,4 +30,8 @@
 
 .c_p_inline {
   display: inline-block;
+}
+
+#i_div_bodyContentAll {
+  display: flex;
 }

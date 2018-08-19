@@ -7,7 +7,7 @@ function Event_login(socket, inputData) {
     return;
   }
 
-  this.agent = new server.models.Agent(socket, inputData.username);
+  this.agent = server.models.Agent.login(inputData.username, socket);
 
   (server.models.Event.objects = server.models.Event.objects || []).push(this);
   server.log('Event login for agent ' + this.agent.name + ' registered.', 2);

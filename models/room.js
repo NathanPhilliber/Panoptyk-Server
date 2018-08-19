@@ -33,10 +33,14 @@ Room.prototype.connect_room = function(other_room, two_way=true) {
  * Add an agent to this room and send updates.
  * @param {Object} agent - agent object to put in this room.
  */
-Room.prototype.add_agent = function(agent, old_room) {
+Room.prototype.add_agent = function(agent, old_room=null) {
   this.occupants.push(agent);
   agent.room = this;
   agent.socket.join(this.room_id);
+
+  if (old_room == null) {
+    old_room = this.adjacents[Math.floor(Math.random() * this.adjacents.length)];
+  }
 
   server.send.agent_enter_room(agent, old_room);
   server.send.room_data(agent, this, old_room.room_id);
@@ -56,7 +60,7 @@ Room.prototype.remove_item = function(item) {
  * @param {Object} agent - agent to remove
  * @param {Object} new_room - room agent is heading to.
  */
-Room.prototype.remove_agent = function(agent, new_room) {
+Room.prototype.remove_agent = function(agent, new_room, update_agent=true) {
   var index = this.occupants.indexOf(agent);
 
   if (index == -1) {
@@ -65,11 +69,13 @@ Room.prototype.remove_agent = function(agent, new_room) {
   }
 
   agent.socket.leave(this.room_id);
-
   server.send.agent_exit_room(agent, new_room);
 
   this.occupants.splice(index, 1);
-  agent.room = null;
+
+  if (update_agent) {
+    agent.room = null;
+  }
 }
 
 

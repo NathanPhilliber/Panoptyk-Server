@@ -7,6 +7,7 @@ Client.socket.on('disconnect', function() {
 
 Client.socket.on('login-complete', function(data) {
   console.log("Login Success");
+  console.log(data);
   new Agent(data.agent_data.agent_id, data.agent_data.agent_name, true);
   updateAgentInfo(data.agent_data.agent_name, data.agent_data.agent_id);
   showGameArea();
