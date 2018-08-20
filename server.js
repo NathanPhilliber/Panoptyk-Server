@@ -43,6 +43,7 @@ process.on('SIGINT', () => {
   server.log("Shutting down", 2);
 
   server.models.Agent.save_all();
+  server.models.Room.save_all();
 
   server.log("Server closed", 2);
   process.exit(0);

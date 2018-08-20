@@ -48,7 +48,7 @@ Agent.prototype.serialize = function() {
     room_id: this.room.room_id,
     inventory: [],
     agent_id: this.agent_id
-  };
+  }
   for (let item of this.inventory) {
     data.inventory.push(item.item_id);
   }
@@ -60,12 +60,17 @@ Agent.prototype.serialize = function() {
 Agent.save_all = function() {
   server.log("Saving agents...", 2);
   for (let agent of Agent.objects) {
-    server.modules.fs.writeFile(server.settings.data_dir + '/agents/' + agent.name + '.json',
+
+    server.log("Saving agent: " + agent.name, 2);
+
+    server.modules.fs.writeFile(server.settings.data_dir + '/agents/' +
+        agent.agent_id + '_' + agent.name + '.json',
       JSON.stringify(agent.serialize()), 'utf8', function(err){
         if (err) {
           server.log(err);
         }
       });
+
   }
   server.log("Agents saved.", 2);
 }
@@ -80,8 +85,9 @@ Agent.load_all = function() {
         server.log(err);
         return;
       }
-      Agent.load(JSON.parse(data));
-
+      var json = JSON.parse(data);
+      server.log("Loading agent " + data.name, 2);
+      Agent.load(json);
     });
   });
 

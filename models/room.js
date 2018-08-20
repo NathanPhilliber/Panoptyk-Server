@@ -2,17 +2,59 @@
  * Room model.
  * @param {string} name - name of room
  */
-function Room(name) {
+function Room(name, room_id=null) {
   this.name = name;
   this.adjacents = [];
   this.occupants = [];
   this.items = [];
 
   (Room.objects = Room.objects || []).push(this);
-  this.room_id = Room.objects.length - 1;
+  this.room_id = room_id == null ? Room.objects.length - 1 : room_id;
   server.log('Room ' + this.name + ' Initialized with id ' + this.room_id + '.', 2);
 }
 
+Room.load = function(data) {
+  new Room(data.name, data.room_id);
+}
+
+Room.prototype.serialize = function() {
+  var data = {
+    name: this.name,
+    room_id: this.room_id
+  }
+
+  return data;
+}
+
+Room.save_all = function() {
+  server.log("Saving rooms...", 2);
+  for (let room of Room.objects) {
+    server.modules.fs.writeFile(server.settings.data_dir + '/rooms/' + room.room_id + "_" + room.name + '.json',
+      JSON.stringify(room.serialize()), 'utf8', function(err) {
+        if (err) {
+          server.log(err);
+        }
+      });
+  }
+  server.log("Rooms saved.", 2);
+}
+
+Room.load_all = function() {
+  server.log("Loading rooms...", 2);
+
+  server.modules.fs.readdirSync(server.settings.data_dir + '/rooms/').forEach(function(file) {
+    server.modules.fs.readFile(server.settings.data_dir + '/rooms/' + file, function read(err, data) {
+      if (err) {
+        server.log(err);
+        return;
+      }
+
+      Room.load(JSON.parse(data));
+    });
+  });
+
+  server.log("Rooms loaded.", 2);
+}
 
 /**
  * Allow movement from this room to another room.
