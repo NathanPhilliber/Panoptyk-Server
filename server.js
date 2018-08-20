@@ -15,9 +15,9 @@ require(__dirname + '/communication/socket_outputs.js');
 
 server.models = {};
 
+server.models.Room = require(__dirname + '/models/room.js');
 server.models.Agent = require(__dirname + '/models/agent.js');
 server.models.Item = require(__dirname + '/models/item.js');
-server.models.Room = require(__dirname + '/models/room.js');
 server.models.Trade = require(__dirname + '/models/trade.js');
 
 require(__dirname + '/models/event.js');
@@ -39,7 +39,14 @@ server.modules.server.listen(process.env.PORT || 80, function() {
   server.log('Starting server on port ' + server.modules.server.address().port, 2);
 });
 
+process.on('SIGINT', () => {
+  server.log("Shutting down", 2);
 
+  server.models.Agent.save_all();
+
+  server.log("Server closed", 2);
+  process.exit(0);
+});
 
 
 // TEST DATA. DELETE THIS.
@@ -74,3 +81,5 @@ item4.put_in_room(room2);
 item5.put_in_room(room3);
 item6.put_in_room(room4);
 item7.put_in_room(room4);
+
+server.models.Agent.load_all();

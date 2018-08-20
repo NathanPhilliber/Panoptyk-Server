@@ -13,7 +13,7 @@ function Agent(username, room=null, inventory=[], id=null) {
 
   (Agent.objects = Agent.objects || []).push(this);
   this.agent_id = id == null ? Agent.objects.length - 1 : id;
-  server.log('Agent ' + this.name + ' Initialized.', 2);
+  server.log('Agent ' + this.name + ' initialized.', 2);
 
 }
 
@@ -22,7 +22,7 @@ Agent.load = function(data) {
 
   // load items
 
-  new Agent(data.username, Room.get_room_by_id(data.room_id), inventory, data.agent_id);
+  new Agent(data.name, server.models.Room.get_room_by_id(data.room_id), inventory, data.agent_id);
 }
 
 Agent.login = function(username, socket) {
@@ -52,6 +52,40 @@ Agent.prototype.serialize = function() {
   for (let item of this.inventory) {
     data.inventory.push(item.item_id);
   }
+
+  return data;
+}
+
+
+Agent.save_all = function() {
+  server.log("Saving agents...", 2);
+  for (let agent of Agent.objects) {
+    server.modules.fs.writeFile(server.settings.data_dir + '/agents/' + agent.name + '.json',
+      JSON.stringify(agent.serialize()), 'utf8', function(err){
+        if (err) {
+          server.log(err);
+        }
+      });
+  }
+  server.log("Agents saved.", 2);
+}
+
+
+Agent.load_all = function() {
+  server.log("Loading agents...", 2);
+
+  server.modules.fs.readdirSync(server.settings.data_dir + '/agents/').forEach(function(file) {
+    server.modules.fs.readFile(server.settings.data_dir + '/agents/' + file, function read(err, data) {
+      if (err) {
+        server.log(err);
+        return;
+      }
+      Agent.load(JSON.parse(data));
+
+    });
+  });
+
+  server.log("Agents loaded", 2);
 }
 
 
