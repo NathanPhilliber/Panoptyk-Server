@@ -63,13 +63,9 @@ Agent.save_all = function() {
 
     server.log("Saving agent: " + agent.name, 2);
 
-    server.modules.fs.writeFile(server.settings.data_dir + '/agents/' +
+    server.modules.fs.writeFileSync(server.settings.data_dir + '/agents/' +
         agent.agent_id + '_' + agent.name + '.json',
-      JSON.stringify(agent.serialize()), 'utf8', function(err){
-        if (err) {
-          server.log(err);
-        }
-      });
+      JSON.stringify(agent.serialize()), 'utf8');
 
   }
   server.log("Agents saved.", 2);
@@ -86,7 +82,7 @@ Agent.load_all = function() {
         return;
       }
       var json = JSON.parse(data);
-      server.log("Loading agent " + data.name, 2);
+      server.log("Loading agent " + json.name, 2);
       Agent.load(json);
     });
   });

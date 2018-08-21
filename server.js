@@ -35,7 +35,7 @@ server.modules.app.get('/game', function(req, res) {
   res.sendFile(__dirname + '/public/game/game.html');
 });
 
-server.modules.server.listen(process.env.PORT || 80, function() {
+server.modules.server.listen(process.env.PORT || 8080, function() {
   server.log('Starting server on port ' + server.modules.server.address().port, 2);
 });
 
@@ -49,9 +49,11 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
+server.models.Room.load_all();
 
 // TEST DATA. DELETE THIS.
 
+/*
 var room0 = new server.models.Room('Test_Room_0');
 var room1 = new server.models.Room('Test_Room_1');
 var room2 = new server.models.Room('Test_Room_2');
@@ -82,5 +84,5 @@ item4.put_in_room(room2);
 item5.put_in_room(room3);
 item6.put_in_room(room4);
 item7.put_in_room(room4);
-
+*/
 server.models.Agent.load_all();

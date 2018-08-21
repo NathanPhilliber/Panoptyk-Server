@@ -27,15 +27,26 @@ Room.prototype.serialize = function() {
 }
 
 Room.save_all = function() {
+
+  var room_to_adjacents = {};
+
   server.log("Saving rooms...", 2);
   for (let room of Room.objects) {
-    server.modules.fs.writeFile(server.settings.data_dir + '/rooms/' + room.room_id + "_" + room.name + '.json',
-      JSON.stringify(room.serialize()), 'utf8', function(err) {
-        if (err) {
-          server.log(err);
-        }
-      });
+    server.log("Saving room " + room.name, 2);
+    server.modules.fs.writeFileSync(server.settings.data_dir + '/rooms/' + room.room_id + "_" + room.name + '.json',
+      JSON.stringify(room.serialize()), 'utf8');
+
+    room_to_adjacents[room.room_id] = [];
+    for (let adj of room.adjacents) {
+      room_to_adjacents[room.room_id].push(adj.room_id);
+    }
   }
+
+  server.log("Saving Room Connections", 2);
+
+  server.modules.fs.writeFileSync(server.settings.data_dir + '/rooms/room_connections.json',
+    JSON.stringify(room_to_adjacents), 'utf8');
+
   server.log("Rooms saved.", 2);
 }
 
@@ -43,15 +54,23 @@ Room.load_all = function() {
   server.log("Loading rooms...", 2);
 
   server.modules.fs.readdirSync(server.settings.data_dir + '/rooms/').forEach(function(file) {
-    server.modules.fs.readFile(server.settings.data_dir + '/rooms/' + file, function read(err, data) {
-      if (err) {
-        server.log(err);
-        return;
-      }
+    var data = server.modules.fs.readFileSync(server.settings.data_dir + '/rooms/' + file, 'utf8');
+    data = JSON.parse(data);
+    server.log("Loading room " + data.name, 2);
+    Room.load(data);
 
-      Room.load(JSON.parse(data));
-    });
   });
+
+  server.log("Loading Room Connections", 2);
+  var connections = JSON.parse(server.modules.fs.readFileSync(server.settings.data_dir + '/rooms/room_connections.json'));
+
+  for (var room_id in connections) {
+    var room = Room.get_room_by_id(room_id);
+    for (let adj_id of connections[room_id]) {
+      var adj = Room.get_room_by_id(adj_id);
+      room.connect_room(adj, false);
+    }
+  }
 
   server.log("Rooms loaded.", 2);
 }
