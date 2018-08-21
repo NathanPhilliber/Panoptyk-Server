@@ -8,9 +8,17 @@ function Item(id, name, type) {
   this.graphics = graphics.add.graphics(0,0);
   this.sprite = graphics.add.sprite(this.x, this.y, 'item');
   this.sprite.setOrigin(0.5, 0);
+  this.sprite.setInteractive();
+
+  var this_item = this;
+
+  this.sprite.on('pointerdown', function(ev) {
+    console.log("Request pickup item " + this_item.item_id);
+    Client.send.takeItems([this_item]);
+  });
   this.draw();
 
-  console.log("Item " + name + " initialized");
+  console.log("Item " + this.item_id + ":" + this.name + " initialized");
 }
 
 Item.prototype.draw = function() {

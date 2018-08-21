@@ -9,10 +9,20 @@ Client.send.moveToRoom = function(room_id) {
 }
 
 Client.send.takeItems = function(items) {
+  var id_list = [];
+  for (let item of items) {
+    id_list.push(item.item_id);
+  }
 
+  Client.socket.emit('take-items', {item_ids:id_list});
 }
 
 Client.send.dropItems = function(items) {
+  var id_list = [];
+  for (let item of items) {
+    id_list.push(item.item_id);
+  }
 
+  Client.socket.emit('drop-items', {item_ids:id_list});
 }
 
