@@ -1,3 +1,5 @@
+Room.objects = [];
+
 /**
  * Room model.
  * @param {string} name - name of room
@@ -54,22 +56,28 @@ Room.load_all = function() {
   server.log("Loading rooms...", 2);
 
   server.modules.fs.readdirSync(server.settings.data_dir + '/rooms/').forEach(function(file) {
-    var data = server.modules.fs.readFileSync(server.settings.data_dir + '/rooms/' + file, 'utf8');
-    data = JSON.parse(data);
-    server.log("Loading room " + data.name, 2);
-    Room.load(data);
-
+    if (file !== 'room_connections.json') {
+      var data = server.modules.fs.readFileSync(server.settings.data_dir + '/rooms/' + file, 'utf8');
+      data = JSON.parse(data);
+      server.log("Loading room " + data.name, 2);
+      Room.load(data);
+    }
   });
 
   server.log("Loading Room Connections", 2);
-  var connections = JSON.parse(server.modules.fs.readFileSync(server.settings.data_dir + '/rooms/room_connections.json'));
+  try {
+    var connections = JSON.parse(server.modules.fs.readFileSync(server.settings.data_dir + '/rooms/room_connections.json'));
 
-  for (var room_id in connections) {
-    var room = Room.get_room_by_id(room_id);
-    for (let adj_id of connections[room_id]) {
-      var adj = Room.get_room_by_id(adj_id);
-      room.connect_room(adj, false);
+    for (var room_id in connections) {
+      var room = Room.get_room_by_id(room_id);
+      for (let adj_id of connections[room_id]) {
+        var adj = Room.get_room_by_id(adj_id);
+        room.connect_room(adj, false);
+      }
     }
+  }
+  catch(err) {
+    server.log(err, 1);
   }
 
   server.log("Rooms loaded.", 2);

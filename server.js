@@ -10,6 +10,7 @@ server.modules.fs = require('fs');
 server.settings = require(__dirname + '/panoptyk-settings.json');
 
 require(__dirname + '/utilities/logger.js');
+require(__dirname + '/utilities/directory.js');
 require(__dirname + '/communication/socket_inputs.js');
 require(__dirname + '/communication/socket_outputs.js');
 
@@ -44,13 +45,22 @@ process.on('SIGINT', () => {
 
   server.models.Agent.save_all();
   server.models.Room.save_all();
+  server.models.Item.save_all();
 
   server.log("Server closed", 2);
   process.exit(0);
 });
 
-server.models.Room.load_all();
+server.directory.make(server.settings.data_dir);
+server.directory.make(server.settings.data_dir + '/agents');
+server.directory.make(server.settings.data_dir + '/rooms');
+server.directory.make(server.settings.data_dir + '/items');
 
+
+
+server.models.Room.load_all();
+server.models.Agent.load_all();
+server.models.Item.load_all();
 // TEST DATA. DELETE THIS.
 
 /*
@@ -85,4 +95,4 @@ item5.put_in_room(room3);
 item6.put_in_room(room4);
 item7.put_in_room(room4);
 */
-server.models.Agent.load_all();
+

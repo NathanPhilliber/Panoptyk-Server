@@ -169,7 +169,7 @@ Agent.prototype.move_to_room = function(new_room) {
  */
 Agent.prototype.get_inventory_data = function() {
   var dat = [];
-  for (var item in this.inventory) {
+  for (let item of this.inventory) {
     dat.push(item.get_data());
   }
   return dat;

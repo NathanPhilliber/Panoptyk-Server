@@ -11,6 +11,7 @@ Client.socket.on('login-complete', function(data) {
   console.log(data);
   new Agent(data.agent_data.agent_id, data.agent_data.agent_name, true);
   updateAgentInfo(data.agent_data.agent_name, data.agent_data.agent_id);
+  updateInventoryAdd(data.agent_data.inventory);
   showGameArea();
 });
 
@@ -33,18 +34,30 @@ Client.socket.on('room-data', function(data) {
 
 Client.socket.on('add-items-inventory', function(data) {
   console.log("Add Items Inventory");
+  updateInventoryAdd(data.items_data);
 });
 
 Client.socket.on('add-items-room', function(data) {
   console.log("Add Items Room");
+
+  for (let item of data.items_data) {
+    current_room.place_item(item, data.agent_id);
+  }
+
 });
 
 Client.socket.on('remove-items-inventory', function(data) {
   console.log("Remove Items Inventory");
+
+  updateInventoryRemove(data.item_ids);
 });
 
 Client.socket.on('remove-items-room', function(data) {
   console.log("Remove Items Room");
+  console.log(data);
+  for (let item_id of data.item_ids) {
+    current_room.remove_item(item_id, data.agent_id);
+  }
 });
 
 Client.socket.on('event-failed', function(data) {

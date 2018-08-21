@@ -68,6 +68,7 @@ Room.prototype.place_agent = function(old_room_id, agent) {
       break;
     }
   }
+
 }
 
 Room.prototype.remove_agent = function(agent_id, room_id) {
@@ -89,6 +90,50 @@ Room.prototype.remove_agent = function(agent_id, room_id) {
   }
 }
 
+Room.prototype.place_item = function(item, agent_id=null) {
+  var agent = this.get_agent(agent_id);
+
+  if (agent == null) {
+    this.items.push(new Item(item.item_id, item.item_name, item.item_type));
+  }
+  else {
+    this.items.push(new Item(item.item_id, item.item_name, item.item_type, agent.sprite.x, agent.sprite.y));
+  }
+
+}
+
+Room.prototype.remove_item = function(item_id, agent_id=null) {
+  var agent = this.get_agent(agent_id);
+
+  for (let item of this.items) {
+    if (item.item_id == item_id) {
+      if (agent !== null) {
+        agent.move(item.sprite.x, item.sprite.y, function(item) {
+          item.destroy();
+        }, item);
+      }
+      else {
+        item.destroy();
+      }
+      return;
+    }
+  }
+}
+
+Room.prototype.get_agent(agent_id) {
+  for (let agent of this.agents) {
+    if (agent.agent_id == agent_id) {
+      return agent;
+    }
+  }
+
+  if (Agent.my_agent.agent_id == agent_id) {
+    return Agent.my_agent;
+  }
+
+  return null;
+}
+
 function ExitNode(room_id, room_name, xpos) {
   this.room_id = room_id;
   this.name = room_name;
@@ -108,5 +153,4 @@ ExitNode.prototype.destroy = function() {
   this.sprite.destroy();
   this.title.destroy();
 }
-
 

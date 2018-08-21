@@ -1,10 +1,10 @@
 
-function Item(id, name, type) {
+function Item(id, name, type, x=null, y=null) {
   this.item_id = id;
   this.name = name;
   this.type = type;
-  this.x = Math.random() * (game.canvas.width-150) + 75;
-  this.y = Math.random() * (game.canvas.height-150) + 75;
+  this.x = x == null ? Math.random() * (game.canvas.width-150) + 75 : x;
+  this.y = y == null ? Math.random() * (game.canvas.height-150) + 75 : y;
   this.graphics = graphics.add.graphics(0,0);
   this.sprite = graphics.add.sprite(this.x, this.y, 'item');
   this.sprite.setOrigin(0.5, 0);
