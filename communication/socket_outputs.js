@@ -67,7 +67,7 @@ server.send.room_data = function(agent, room, old_room_id) {
  */
 server.send.add_items_inventory = function(agent, items) {
   var dat = [];
-  for (var item in items) {
+  for (let item of items) {
     dat.push(item.get_data());
   }
 
@@ -97,14 +97,14 @@ server.send.remove_items_inventory = function(agent, items) {
  * @param {Object} items - item objects
  * @param {Object} room - room object
  */
-server.send.add_items_room = function(items, room) {
+server.send.add_items_room = function(items, room, agent_id=null) {
   var dat = [];
   for (let item of items) {
     dat.push(item.get_data());
   }
 
   server.log('Put items ' + JSON.stringify(dat) + ' to room ' + room.name + '.', 2);
-  server.modules.io.in(room.room_id).emit('add-items-room', {'items_data': dat});
+  server.modules.io.in(room.room_id).emit('add-items-room', {'items_data': dat, 'agent_id': agent_id});
 }
 
 
@@ -113,14 +113,14 @@ server.send.add_items_room = function(items, room) {
  * @param {Object} items - item objects
  * @param {Object} room - room object
  */
-server.send.remove_items_room = function(items, room) {
+server.send.remove_items_room = function(items, room, agent_id=null) {
   var dat = [];
   for (let item of items) {
     dat.push(item.item_id);
   }
 
   server.log('Remove items ' + JSON.stringify(dat) + ' from room ' + room.name + '.', 2);
-  server.modules.io.in(room.room_id).emit('remove-items-room', {'item_ids': dat});
+  server.modules.io.in(room.room_id).emit('remove-items-room', {'item_ids': dat, 'agent_id': agent_id});
 }
 
 

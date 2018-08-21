@@ -29,16 +29,25 @@ Item.prototype.put_in_room = function(room) {
 /**
  * Remove item from its room and send updates.
  */
-Item.prototype.remove_from_room = function() {
+Item.remove_from_room = function(items, agent_id=null) {
+  var cur_room = items[0].room;
 
-  if (this.room === null) {
-    server.log('Tried to take item ' + this.name + ' from room, but item does not have room.', 0);
-    return false;
+  for (let item of items) {
+    if (item.room !== cur_room) {
+      server.log('Tried to take items from room, but not all items in same room.', 1);
+      return false;
+    }
+    if (item.room === null) {
+      server.log('Tried to take item ' + item.name + ' from room, but item does not have room.', 1);
+      return false;
+    }
   }
 
-  server.send.remove_items_room([this], this.room);
+  server.send.remove_items_room(items, cur_room, agent_id);
 
-  this.room = null;
+  for (let item of items) {
+    item.room = null;
+  }
 }
 
 
@@ -47,10 +56,12 @@ Item.prototype.remove_from_room = function() {
  * Does not modify agent object (Call from agent).
  * @param {Object} agent - agent object to give item to.
  */
-Item.prototype.give_to_agent = function(agent) {
-  this.agent = agent;
+Item.give_to_agent = function(items, agent) {
+  for (let item of items) {
+    item.agent = agent;
+  }
 
-  server.send.add_items_inventory(agent, [this]);
+  server.send.add_items_inventory(agent, items);
 }
 
 

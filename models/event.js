@@ -53,7 +53,7 @@ server.models.Event.validate_array_types = function(arr, atype) {
 server.models.Event.validate_agent_owns_items = function(agent, item_ids) {
   var items = Item.get_items_by_ids(item_ids);
   if (items === null) {
-    return {'status': false, 'message': 'No item for id ' + id};
+    return {'status': false, 'message': 'No item for id ' + JSON.stringify(item_ids)};
   }
 
   for (let item of items) {
@@ -73,3 +73,17 @@ server.models.Event.validate_agent_logged_in = function(agent) {
   return {'status': false, 'message': 'Agent not logged in'};
 }
 
+server.models.Event.validate_items_in_room = function(room, item_ids) {
+  var items = server.models.Item.get_items_by_ids(item_ids);
+  if (items === null) {
+    return {'status': false, 'message': 'No item for id ' + JSON.stringify(item_ids)};
+  }
+
+  for (let item of items) {
+    if (item.room !== room) {
+      return {'status': false, 'message': 'Item not in room ' + room.name};
+    }
+  }
+
+  return {status:true, message:'', items:items};
+}

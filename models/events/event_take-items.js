@@ -8,6 +8,10 @@ function Event_takeItems(socket, inputData) {
     return false;
   }
 
+  this.items = res.items;
+
+  server.models.Item.remove_from_room(this.items, this.agent.agent_id);
+  server.models.Item.give_to_agent(this.items, this.agent);
 
 }
 
@@ -26,7 +30,13 @@ Event_takeItems.validate = function(structure, agent) {
     return res;
   }
 
-  return server.models.Event.validate_key_format(server.models.Event_takeItems.formats, structure);
+  // check if item in room
+  if (!(res = server.models.Event.validate_items_in_room(agent.room, structure.item_ids)).status) {
+    return res;
+  }
+  // return items as well
+
+  return res;
 };
 
 server.models.Event_takeItems = Event_takeItems;

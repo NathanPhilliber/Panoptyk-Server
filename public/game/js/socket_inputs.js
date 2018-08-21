@@ -3,6 +3,7 @@ Client.socket = io.connect();
 
 Client.socket.on('disconnect', function() {
   console.log("Server Disconnected");
+  Client.socket.disconnect();
 });
 
 Client.socket.on('login-complete', function(data) {
