@@ -103,7 +103,9 @@ Item.remove_from_room = function(items, agent_id=null) {
   server.send.remove_items_room(items, cur_room, agent_id);
 
   for (let item of items) {
+    item.room.remove_item(item);
     item.room = null;
+
   }
 }
 

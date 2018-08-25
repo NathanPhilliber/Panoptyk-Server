@@ -117,11 +117,13 @@ Room.prototype.add_agent = function(agent, old_room=null) {
 
 
 Room.prototype.add_item = function(item) {
+  server.log("Adding item " + item.name + " to room " + this.name, 2);
   this.items.push(item);
 }
 
 Room.prototype.remove_item = function(item) {
-  this.items.slice(this.items.indexOf(item), 1);
+  server.log("Removing item " + item.name + " from room object " + this.name + ", index=" + this.items.indexOf(item), 2);
+  this.items.splice(this.items.indexOf(item), 1);
 }
 
 /**
@@ -188,11 +190,11 @@ Room.prototype.get_agents = function(cur_agent=null) {
  * @returns {Object}
  */
 Room.prototype.get_items = function() {
-  var items = [];
+  var items_data = [];
   for (let item of this.items) {
-    items.push(item.get_data());
+    items_data.push(item.get_data());
   }
-  return items;
+  return items_data;
 }
 
 

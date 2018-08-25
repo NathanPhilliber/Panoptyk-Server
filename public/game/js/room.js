@@ -27,7 +27,7 @@ function Room(room_id, room_name, adjacents, layout, agents, items, old_room_id)
     Math.random() * (game.canvas.width-150) + 75,
     Math.random() * (game.canvas.height-150) + 75, function(){}, null);
 
-  this.items = []
+  this.items = [];
   for (let item of items) {
     this.items.push(new Item(item.item_id, item.item_name, item.item_type));
   }
@@ -120,7 +120,7 @@ Room.prototype.remove_item = function(item_id, agent_id=null) {
   }
 }
 
-Room.prototype.get_agent(agent_id) {
+Room.prototype.get_agent = function(agent_id) {
   for (let agent of this.agents) {
     if (agent.agent_id == agent_id) {
       return agent;
