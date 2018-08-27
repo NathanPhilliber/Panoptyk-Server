@@ -191,7 +191,9 @@ Room.prototype.get_agents = function(cur_agent=null) {
  */
 Room.prototype.get_items = function() {
   var items_data = [];
+  server.log("-- " + this.items.length, 2);
   for (let item of this.items) {
+    server.log(item.item_id, 2);
     items_data.push(item.get_data());
   }
   return items_data;

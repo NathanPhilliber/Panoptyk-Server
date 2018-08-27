@@ -7,7 +7,7 @@ server.log = function(msg, logLevel=0) {
       .replace(/T/, ' ').replace(/\..+/, '') + "]═["
       + server.logger.logLevelNames[logLevel] + "]══";
 
-    msg = prefix + (prefix.length + msg.length > server.settings.log_line_lengh ?
+    msg = prefix + (prefix.length + msg.length > server.settings.log_line_length ?
       '╦═╡ ':'══╡ ') + msg;
 
     msg = msg.replace(new RegExp('(.{'+server.settings.log_line_length+'})', 'g'),

@@ -27,15 +27,28 @@ function updateInventoryRemove(item_ids) {
 }
 
 function updateInventoryAddItem(item) {
-  var node = document.createElement('p');
-  node.innerHTML = "Name: " + item.item_name + ", ID: " + item.item_id + ", Type: " + item.item_type;
-  node.style.outline = '1px solid black';
+  var node = document.createElement('div');
   node.id = 'item_' + item.item_id;
+  node.style.outline = '1px solid black';
+
+  var dropButton = document.createElement('button');
+  dropButton.innerHTML = "Drop";
+
+  dropButton.addEventListener("click", function(){ Client.send.dropItems([item]) });
+
+  var itemText = document.createElement('p');
+  itemText.style.display = "inline-block";
+  itemText.innerHTML = "Name: " + item.item_name + ", ID: " +
+    item.item_id + ", Type: " + item.item_type;
+
+  node.appendChild(dropButton);
+  node.appendChild(itemText);
+
   document.getElementById('i_div_inventory').appendChild(node);
 }
 
 function updateInventoryRemoveItem(item_id) {
-  var del = document.getElementyId('item_' + item_id);
+  var del = document.getElementById('item_' + item_id);
   del.parentNode.removeChild(del);
 }
 

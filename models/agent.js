@@ -148,7 +148,7 @@ Agent.prototype.remove_item_inventory = function(item) {
   }
 
   this.inventory.splice(index, 1);
-  item.take_from_agent();
+
 }
 
 
