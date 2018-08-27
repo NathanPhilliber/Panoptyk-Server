@@ -13,12 +13,9 @@ function Room(room_id, room_name, adjacents, layout, agents, items, old_room_id)
   this.name = room_name;
   this.layout = layout;
 
-  var xpos = 50;
   this.adjacents = [];
   for (let room_data of adjacents) {
-    this.adjacents.push(new ExitNode(room_data.room_id, room_data.room_name, xpos));
-
-    xpos += 150;
+    this.adjacents.push(new ExitNode(room_data.room_id, room_data.room_name));
   }
 
   this.place_agent(old_room_id, Agent.my_agent);
@@ -134,19 +131,36 @@ Room.prototype.get_agent = function(agent_id) {
   return null;
 }
 
-function ExitNode(room_id, room_name, xpos) {
+function ExitNode(room_id, room_name) {
   this.room_id = room_id;
+  var pos = ExitNode.get_exit_spot();
+
   this.name = room_name;
   this.graphics = graphics.add.graphics(0,0);
-  this.sprite = graphics.add.sprite(xpos, game.canvas.height-30, 'exit');
+  this.sprite = graphics.add.sprite(pos.x, pos.y, 'exit');
   this.sprite.setOrigin(0.5, 0);
   this.sprite.setInteractive();
+
   this.sprite.on('pointerdown', function(ev) {
     console.log("Moving to room " + room_id);
-    Agent.my_agent.move(xpos, game.canvas.height-33, Client.send.moveToRoom, room_id);
+    Agent.my_agent.move(pos.x, pos.y, Client.send.moveToRoom, room_id);
   });
-  this.title = graphics.add.text(xpos, game.canvas.height-33, room_name, {fill:'#fff', font:'16px Arial'});
+  this.title = graphics.add.text(pos.x, pos.y, this.name, {fill:'#fff', font:'16px Arial'});
   this.title.setOrigin(0.5,1);
+}
+
+ExitNode.get_exit_spot = function() {
+
+  var side1 = Math.round(Math.random());
+  var side2 = Math.round(Math.random());
+
+  if (side1) {
+    return {x: Math.random() * (game.canvas.width-100)+50, y: side2 * (game.canvas.height-50)+25  };
+  }
+  else{
+    return {x: side2 * (game.canvas.width-100)+50, y: Math.random() * (game.canvas.height-50)+25};
+  }
+
 }
 
 ExitNode.prototype.destroy = function() {
