@@ -77,12 +77,14 @@ Room.prototype.remove_agent = function(agent_id, room_id) {
       for (let exit of this.adjacents) {
         if (exit.room_id == room_id) {
           console.log("Found agent and exit");
-          agent.move(exit.sprite.x, exit.sprite.y, function(agent) {
-            agent.destroy();
-          }, agent);
+          agent.move(exit.sprite.x, exit.sprite.y, function(data) {
+            data[0].destroy();
+            data[1].splice(data[1].indexOf(data[0]), 1);
+          }, [agent, this.agents]);
           return;
         }
       }
+      console.log("Could not find room " + room_id);
     }
   }
 }
@@ -94,9 +96,9 @@ Room.prototype.place_item = function(item, agent_id=null) {
     this.items.push(new Item(item.item_id, item.item_name, item.item_type));
   }
   else {
-    this.items.push(new Item(item.item_id, item.item_name, item.item_type, agent.sprite.x, agent.sprite.y));
+    this.items.push(new Item(item.item_id, item.item_name, item.item_type,
+      agent.sprite.x, agent.sprite.y));
   }
-
 }
 
 Room.prototype.remove_item = function(item_id, agent_id=null) {
@@ -105,12 +107,14 @@ Room.prototype.remove_item = function(item_id, agent_id=null) {
   for (let item of this.items) {
     if (item.item_id == item_id) {
       if (agent !== null) {
-        agent.move(item.sprite.x, item.sprite.y, function(item) {
-          item.destroy();
-        }, item);
+        agent.move(item.sprite.x, item.sprite.y, function(data) {
+          data[0].destroy();
+          data[1].splice(data[1].indexOf(data[0]), 1);
+        }, [item, this.items]);
       }
       else {
         item.destroy();
+        this.items.splice(this.items.indexOf(item), 1);
       }
       return;
     }
@@ -150,17 +154,15 @@ function ExitNode(room_id, room_name) {
 }
 
 ExitNode.get_exit_spot = function() {
-
   var side1 = Math.round(Math.random());
   var side2 = Math.round(Math.random());
 
   if (side1) {
-    return {x: Math.random() * (game.canvas.width-100)+50, y: side2 * (game.canvas.height-50)+25  };
+    return {x: Math.random()*(game.canvas.width-100)+50, y: side2*(game.canvas.height-50)+25};
   }
   else{
-    return {x: side2 * (game.canvas.width-100)+50, y: Math.random() * (game.canvas.height-50)+25};
+    return {x: side2*(game.canvas.width-100)+50, y: Math.random()*(game.canvas.height-50)+25};
   }
-
 }
 
 ExitNode.prototype.destroy = function() {

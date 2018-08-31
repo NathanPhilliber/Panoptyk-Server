@@ -32,7 +32,6 @@ Agent.prototype.move = function(x, y, on_complete=function(){}, param0=null, dur
   graphics.tweens.add({targets:[this.sprite, this.title], x:x, y:y,
     duration:duration,
     onComplete:function(){on_complete(param0)}});
-
 }
 
 Agent.prototype.destroy = function() {
