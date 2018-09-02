@@ -26,20 +26,24 @@ Agent.load = function(data) {
 }
 
 Agent.login = function(username, socket) {
+
+  var sel_agent = null;
+
   for (let agent of Agent.objects) {
     if (agent.name == username) {
-      agent.socket = socket;
-      server.send.login_complete(agent);
-      agent.room.add_agent(agent);
-      return agent;
+      sel_agent = agent;
     }
   }
 
-  var agent = new Agent(username, server.models.Room.get_room_by_id(server.settings.default_room_id));
-  agent.socket = socket;
-  server.send.login_complete(agent);
-  agent.room.add_agent(agent);
-  return agent;
+  if (sel_agent === null) {
+    sel_agent = new Agent(username, server.models.Room.get_room_by_id(server.settings.default_room_id));
+  }
+
+  sel_agent.socket = socket;
+  server.send.login_complete(sel_agent);
+  server.control.add_agent_to_room(sel_agent, sel_agent.room);
+
+  return sel_agent;
 }
 
 Agent.prototype.serialize = function() {
@@ -131,7 +135,6 @@ Agent.get_agent_by_socket = function(socket) {
  */
 Agent.prototype.add_item_inventory = function(item) {
   this.inventory.push(item);
-  item.give_to_agent(this);
 }
 
 
@@ -156,10 +159,12 @@ Agent.prototype.remove_item_inventory = function(item) {
  * Remove agent from their current room and put in new room.
  * @param {Object} new_room - room to move to
  */
-Agent.prototype.move_to_room = function(new_room) {
-  var old_room = this.room;
-  this.room.remove_agent(this, new_room);
-  new_room.add_agent(this, old_room);
+Agent.prototype.put_in_room = function(new_room) {
+  this.room = new_room;
+}
+
+Agent.prototype.remove_from_room = function() {
+  this.room = null;
 }
 
 
@@ -202,8 +207,8 @@ Agent.prototype.get_private_data = function() {
 
 Agent.prototype.logout = function() {
   server.log("Agent " + this.name + " logged out.", 2);
-  this.room.remove_agent(this, this.room.adjacents[0], false);
-
+  //this.room.remove_agent(this, this.room.adjacents[0], false);
+  server.control.remove_agent_from_room(this);
 }
 
 

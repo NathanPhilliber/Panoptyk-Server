@@ -21,6 +21,8 @@ server.models.Agent = require(__dirname + '/models/agent.js');
 server.models.Item = require(__dirname + '/models/item.js');
 server.models.Trade = require(__dirname + '/models/trade.js');
 
+server.control = require(__dirname + '/controllers/controller.js');
+
 require(__dirname + '/models/event.js');
 server.modules.fs.readdirSync(__dirname + '/models/events/').forEach(function(file) {
   require(__dirname + '/models/events/' + file);

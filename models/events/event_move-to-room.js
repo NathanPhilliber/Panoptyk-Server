@@ -11,7 +11,8 @@ function Event_moveToRoom(socket, inputData) {
   this.old_room = this.agent.room;
   this.new_room = server.models.Room.get_room_by_id(inputData.room_id);
 
-  this.agent.move_to_room(this.new_room);
+  //this.agent.move_to_room(this.new_room);
+  server.control.move_agent_to_room(this.agent, this.new_room);
 
   (server.models.Event.objects = server.models.Event.objects || []).push(this);
   server.log('Event move-to-room (' + this.old_room.name + '->'

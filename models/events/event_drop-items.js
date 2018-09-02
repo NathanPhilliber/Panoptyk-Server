@@ -11,8 +11,11 @@ function Event_dropItems(socket, inputData) {
   this.items = res.items;
   this.room = this.agent.room;
 
-  server.models.Item.take_from_agent(this.items);
-  server.models.Item.put_in_room(this.items, this.room);
+  //server.models.Item.take_from_agent(this.items);
+  //server.models.Item.put_in_room(this.items, this.room);
+
+  server.control.remove_items_from_agent_inventory(this.items);
+  server.control.add_items_to_room(this.room, this.items, this.agent);
 
   (server.models.Event.objects = server.models.Event.objects || []).push(this);
   server.log('Event drop-items (' + JSON.stringify(inputData.item_ids) + ') for agent '

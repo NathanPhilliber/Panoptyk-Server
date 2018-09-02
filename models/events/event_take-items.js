@@ -10,9 +10,10 @@ function Event_takeItems(socket, inputData) {
 
   this.items = res.items;
 
-  server.models.Item.remove_from_room(this.items, this.agent.agent_id);
-  server.models.Item.give_to_agent(this.items, this.agent);
-
+  //server.models.Item.remove_from_room(this.items, this.agent.agent_id);
+  //server.models.Item.give_to_agent(this.items, this.agent);
+  server.control.remove_items_from_room(this.items, this.agent);
+  server.control.add_items_to_agent_inventory(this.agent, this.items);
 }
 
 Event_takeItems.event_name = "take-items";

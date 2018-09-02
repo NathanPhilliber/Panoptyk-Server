@@ -76,44 +76,16 @@ Item.load_all = function() {
  * Put item in room and send updates.
  * @param {Object} room - room object to put item in.
  */
-Item.put_in_room = function(items, room) {
-
-  server.log("Putting " + items.length + " items in room.", 2);
-
-  for (let item of items) {
-    item.room = room;
-    room.add_item(item);
-  }
-
-
-  server.send.add_items_room(items, room);
+Item.prototype.put_in_room = function(room) {
+  this.room = room;
 }
 
 
 /**
  * Remove item from its room and send updates.
  */
-Item.remove_from_room = function(items, agent_id=null) {
-  var cur_room = items[0].room;
-
-  for (let item of items) {
-    if (item.room !== cur_room) {
-      server.log('Tried to take items from room, but not all items in same room.', 1);
-      return false;
-    }
-    if (item.room === null) {
-      server.log('Tried to take item ' + item.name + ' from room, but item does not have room.', 1);
-      return false;
-    }
-  }
-
-  server.send.remove_items_room(items, cur_room, agent_id);
-
-  for (let item of items) {
-    item.room.remove_item(item);
-    item.room = null;
-
-  }
+Item.prototype.remove_from_room = function() {
+  this.room = null;
 }
 
 
@@ -122,13 +94,8 @@ Item.remove_from_room = function(items, agent_id=null) {
  * Does not modify agent object (Call from agent).
  * @param {Object} agent - agent object to give item to.
  */
-Item.give_to_agent = function(items, agent) {
-  for (let item of items) {
-    item.agent = agent;
-    agent.inventory.push(item);
-  }
-
-  server.send.add_items_inventory(agent, items);
+Item.prototype.give_to_agent = function(agent) {
+    this.agent = agent;
 }
 
 
@@ -136,24 +103,8 @@ Item.give_to_agent = function(items, agent) {
  * Take this item from an agent and send updates.
  * Does not modify agent object (Call from agent).
  */
-Item.take_from_agent = function(items) {
-
-  for (let item of items) {
-    if (item.agent === null) {
-      server.log('Tried to take item ' + item.name +
-        ' from agent, but item does not have agent.', 0);
-
-      return false;
-    }
-  }
-
-
-  server.send.remove_items_inventory(items[0].agent, items);
-
-  for (let item of items) {
-    item.agent.remove_item_inventory(item);
-    item.agent = null;
-  }
+Item.prototype.take_from_agent = function() {
+  this.agent = null;
 }
 
 
