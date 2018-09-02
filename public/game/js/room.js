@@ -98,6 +98,8 @@ Room.prototype.place_item = function(item, agent_id=null) {
   else {
     this.items.push(new Item(item.item_id, item.item_name, item.item_type,
       agent.sprite.x, agent.sprite.y));
+
+    agent.move(Math.random()*(game.canvas.width-150) + 75, Math.random() * (game.canvas.height-150) + 75);
   }
 }
 
