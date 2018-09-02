@@ -189,4 +189,23 @@ Controller.remove_items_from_room = function(items, by_agent=null) {
 }
 
 
+/**
+ * Add an agent to a cnode. Does vaidation.
+ * @param {Object} cnode - cnode agent wants to join.
+ * @param {Object} agent - agent object
+ */
+Controller.add_agent_to_cnode = function(cnode, agent) {
+
+}
+
+
+/**
+ * Remove an agent from a cnode. Does validation.
+ * @param {Object} cnode - cnode agent wants to leave.
+ * @param {Object} agent - agent object
+ */
+Controller.remove_agent_from_cnode = function(cnode, agent) {
+
+}
+
 module.exports = Controller;
