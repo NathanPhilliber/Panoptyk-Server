@@ -28,15 +28,13 @@ server.send.login_complete = function(agent) {
  * @param {Object} old_room - room object agent is coming from
  */
 server.send.agent_enter_room = function(agent, old_room=null) {
-
   if (old_room == null) {
     old_room = agent.room.adjacents[Math.floor(Math.random() * agent.room.adjacents.length)];
   }
 
-
   server.log('Agent ' + agent.name + ' entered room ' + agent.room.name + '.', 2);
   agent.socket.to(agent.room.room_id).emit('agent-enter-room',
-      {'agent_data': agent.get_public_data(), 'room_id': old_room.room_id});
+    {'agent_data': agent.get_public_data(), 'room_id': old_room.room_id});
 }
 
 
@@ -54,7 +52,7 @@ server.send.agent_exit_room = function(agent, new_room=null) {
 
   server.log('Agent ' + agent.name + ' left room ' + agent.room.name + '.', 2);
   agent.socket.to(agent.room.room_id).emit('agent-exit-room',
-      {'agent_id': agent.agent_id, 'room_id': new_room.room_id});
+    {'agent_id': agent.agent_id, 'room_id': new_room.room_id});
 }
 
 
@@ -65,11 +63,10 @@ server.send.agent_exit_room = function(agent, new_room=null) {
  */
 server.send.room_data = function(agent, room, old_room=null) {
   server.log('Agent ' + agent.name + ' getting room data for room ' + room.name + '.', 2);
-
   var old_room_id = old_room === null ? null : old_room.room_id;
 
   agent.socket.emit('room-data',
-      {'room_data': room.get_data(), 'old_room_id': old_room_id, 'agents': room.get_agents(agent), 'items': room.get_items()});
+    {'room_data': room.get_data(), 'old_room_id': old_room_id, 'agents': room.get_agents(agent), 'items': room.get_items()});
 }
 
 

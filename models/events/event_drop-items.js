@@ -1,3 +1,8 @@
+/**
+ * Event model.
+ * @param {Object} socket - socket.io client socket object.
+ * @param {Object} inputData - raw input recieved.
+ */
 function Event_dropItems(socket, inputData) {
   this.time = new Date();
   this.agent = server.models.Agent.get_agent_by_socket(socket);
@@ -11,9 +16,6 @@ function Event_dropItems(socket, inputData) {
   this.items = res.items;
   this.room = this.agent.room;
 
-  //server.models.Item.take_from_agent(this.items);
-  //server.models.Item.put_in_room(this.items, this.room);
-
   server.control.remove_items_from_agent_inventory(this.items);
   server.control.add_items_to_room(this.room, this.items, this.agent);
 
@@ -25,9 +27,16 @@ function Event_dropItems(socket, inputData) {
 Event_dropItems.event_name = 'drop-items';
 
 Event_dropItems.formats = [{
-    'item_ids': 'object',
-  }];
+  'item_ids': 'object',
+}];
 
+
+/**
+ * Event validation.
+ * @param {Object} structure - raw input recieved.
+ * @param {Object} agent - agent associated with this event.
+ * @return {Object}
+ */
 Event_dropItems.validate = function(structure, agent) {
   if (!(res = server.models.Event.validate_key_format(server.models.Event_dropItems.formats, structure)).status) {
     return res;

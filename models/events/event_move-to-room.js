@@ -1,3 +1,8 @@
+/**
+ * Event model.
+ * @param {Object} socket - socket.io client socket object.
+ * @param {Object} inputData - raw input recieved.
+ */
 function Event_moveToRoom(socket, inputData) {
   this.time = new Date();
   this.agent = server.models.Agent.get_agent_by_socket(socket);
@@ -11,7 +16,6 @@ function Event_moveToRoom(socket, inputData) {
   this.old_room = this.agent.room;
   this.new_room = server.models.Room.get_room_by_id(inputData.room_id);
 
-  //this.agent.move_to_room(this.new_room);
   server.control.move_agent_to_room(this.agent, this.new_room);
 
   (server.models.Event.objects = server.models.Event.objects || []).push(this);
@@ -26,6 +30,13 @@ Event_moveToRoom.formats = [{
   'room_id': 'number'
 }]
 
+
+/**
+ * Event validation.
+ * @param {Object} structure - raw input recieved.
+ * @param {Object} agent - agent associated with this event.
+ * @return {Object}
+ */
 Event_moveToRoom.validate = function(structure, agent) {
 
   if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {

@@ -1,3 +1,8 @@
+/**
+ * Event model.
+ * @param {Object} socket - socket.io client socket object.
+ * @param {Object} inputData - raw input recieved.
+ */
 function Event_takeItems(socket, inputData) {
   this.time = new Date();
   this.agent = server.models.Agent.get_agent_by_socket(socket);
@@ -10,8 +15,6 @@ function Event_takeItems(socket, inputData) {
 
   this.items = res.items;
 
-  //server.models.Item.remove_from_room(this.items, this.agent.agent_id);
-  //server.models.Item.give_to_agent(this.items, this.agent);
   server.control.remove_items_from_room(this.items, this.agent);
   server.control.add_items_to_agent_inventory(this.agent, this.items);
 }
@@ -22,6 +25,13 @@ Event_takeItems.formats = [{
     "item_ids": "object"
   }];
 
+
+/**
+ * Event validation.
+ * @param {Object} structure - raw input recieved.
+ * @param {Object} agent - agent associated with this event.
+ * @return {Object}
+ */
 Event_takeItems.validate = function(structure, agent) {
   if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {
     return res;
@@ -35,8 +45,8 @@ Event_takeItems.validate = function(structure, agent) {
   if (!(res = server.models.Event.validate_items_in_room(agent.room, structure.item_ids)).status) {
     return res;
   }
-  // return items as well
 
+  // return items as well
   return res;
 };
 

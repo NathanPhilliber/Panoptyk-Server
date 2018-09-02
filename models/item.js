@@ -4,6 +4,9 @@ Item.objects = [];
  * Item model.
  * @param {string} name - item name
  * @param {string} type - item type
+ * @param {Object} room - room object item is in. (Optional).
+ * @param {Object} agent - agent that owns item. (Optional).
+ * @param {int} id - id of item. If null, one will be assigned.
  */
 function Item(name, type, room=null, agent=null, id=null) {
   this.type = type;
@@ -25,11 +28,21 @@ function Item(name, type, room=null, agent=null, id=null) {
   server.log('Item ' + this.type + ':' + this.name + ' Initialized.', 2);
 }
 
+
+/**
+ * Load an item JSON into memory.
+ * @param {JSON} data - serialized item object.
+ */
 Item.load = function(data) {
   new Item(data.name, data.type, server.models.Room.get_room_by_id(data.room_id),
     server.models.Agent.get_agent_by_id(data.agent_id), data.item_id);
 }
 
+
+/**
+ * Serialize this item object into a JSON object.
+ * @return {JSON}
+ */
 Item.prototype.serialize = function() {
   var data = {
     name: this.name,
@@ -42,6 +55,10 @@ Item.prototype.serialize = function() {
   return data;
 }
 
+
+/**
+ * Serialize all items and save them to files.
+ */
 Item.save_all = function() {
   server.log("Saving items...", 2);
 
@@ -55,6 +72,10 @@ Item.save_all = function() {
   server.log("Items saved.", 2);
 }
 
+
+/**
+ * Load all items from file into memory.
+ */
 Item.load_all = function() {
   server.log("Loading items...", 2);
 
@@ -72,8 +93,9 @@ Item.load_all = function() {
   });
 }
 
+
 /**
- * Put item in room and send updates.
+ * Put item in room.
  * @param {Object} room - room object to put item in.
  */
 Item.prototype.put_in_room = function(room) {
@@ -90,8 +112,7 @@ Item.prototype.remove_from_room = function() {
 
 
 /**
- * Give this item to an agent and send updates.
- * Does not modify agent object (Call from agent).
+ * Give this item to an agent.
  * @param {Object} agent - agent object to give item to.
  */
 Item.prototype.give_to_agent = function(agent) {
@@ -100,8 +121,7 @@ Item.prototype.give_to_agent = function(agent) {
 
 
 /**
- * Take this item from an agent and send updates.
- * Does not modify agent object (Call from agent).
+ * Take this item from an agent.
  */
 Item.prototype.take_from_agent = function() {
   this.agent = null;
@@ -121,6 +141,11 @@ Item.prototype.get_data = function() {
 }
 
 
+/**
+ * Find an item by its id.
+ * @param {int} item_id - item id
+ * @return {Object/null}
+ */
 Item.get_item_by_id = function(item_id) {
   for (let item of Item.objects) {
     if (item.item_id == item_id) {
@@ -133,6 +158,11 @@ Item.get_item_by_id = function(item_id) {
 }
 
 
+/**
+ * Turn list of ids into list of items.
+ * @param {[int]} item_ids - list of item ids
+ * @returns {[Object]/null}
+ */
 Item.get_items_by_ids = function(item_ids) {
   var items = [];
   for (let id of item_ids) {

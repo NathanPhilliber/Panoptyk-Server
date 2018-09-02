@@ -1,6 +1,11 @@
 server.logger = {};
 server.logger.logLevelNames = ['ERROR', 'WARNING', 'INFO'];
 
+/**
+ * Log a message at specified important level.
+ * @param {string} msg - message to log.
+ * @param {int} logLevel - level of message importance.
+ */
 server.log = function(msg, logLevel=0) {
   if (logLevel <= server.settings.log_level){
     var prefix = '[' + (new Date()).toISOString()

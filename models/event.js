@@ -2,8 +2,12 @@ server.models.Event = {};
 
 success_msg = {'status': true, 'message': ''};
 
-// Check if provided data is same format as one of Event_X.formats
-// No extra keys allowed
+/**
+ * Validate a given dictionary has same keys as one of theprovided ones.
+ * @param {[Object]} goodFormats - given formats to match to.
+ * @param {Object} inputFormat - dictionary being inspected.
+ * @return {Object} {status: boolean, message: string}
+ */
 server.models.Event.validate_key_format = function(goodFormats, inputFormat) {
 
   formatLoop:
@@ -31,6 +35,12 @@ server.models.Event.validate_key_format = function(goodFormats, inputFormat) {
 }
 
 
+/**
+ * Validate one room is adjacent to another.
+ * @param {Object} old_room - starting room.
+ * @param {Object} new_room - target room.
+ * @return {Object} {status: boolean, message: string}
+ */
 server.models.Event.validate_room_adjacent = function(old_room, new_room) {
   if (old_room.adjacents.indexOf(new_room) !== -1) {
     return success_msg;
@@ -40,6 +50,12 @@ server.models.Event.validate_room_adjacent = function(old_room, new_room) {
 }
 
 
+/**
+ * Validate a list contains all of one type.
+ * @param {Object} arr - list
+ * @param {string} atype - type
+ * @return {Object} {status: boolean, message: string}
+ */
 server.models.Event.validate_array_types = function(arr, atype) {
   for (let item of arr) {
     if (typeof item !== atype) {
@@ -50,6 +66,13 @@ server.models.Event.validate_array_types = function(arr, atype) {
   return success_msg;
 }
 
+
+/**
+ * Validate agent owns list of items.
+ * @param {Object} agent - agent that might own items.
+ * @param {[int]} item_ids - ids of items agent is supposed to own.
+ * @return {Object} {status: boolean, message: string, items:[Object]}
+ */
 server.models.Event.validate_agent_owns_items = function(agent, item_ids) {
   var items = server.models.Item.get_items_by_ids(item_ids);
   if (items === null) {
@@ -65,6 +88,12 @@ server.models.Event.validate_agent_owns_items = function(agent, item_ids) {
   return {status:true, message:'', items:items};
 }
 
+
+/**
+ * Validate that an agent is logged in.
+ * @param {Object} agent - agent object.
+ * @return {Object} {status: boolean, message: string}
+ */
 server.models.Event.validate_agent_logged_in = function(agent) {
   if (agent !== null) {
     return success_msg;
@@ -73,6 +102,13 @@ server.models.Event.validate_agent_logged_in = function(agent) {
   return {'status': false, 'message': 'Agent not logged in'};
 }
 
+
+/**
+ * Validate items are in room.
+ * @param {Object} room - room items are supposed to be in.
+ * @param {[int]} item_ids - ids of items room is supposed to have.
+ * @return {Object} {status: boolean, message: string, items:[Object]}
+ */
 server.models.Event.validate_items_in_room = function(room, item_ids) {
   var items = server.models.Item.get_items_by_ids(item_ids);
   if (items === null) {

@@ -1,3 +1,8 @@
+/**
+ * Event model.
+ * @param {Object} socket - socket.io client socket object.
+ * @param {Object} inputData - raw input recieved.
+ */
 function Event_login(socket, inputData) {
   this.time = new Date();
 
@@ -13,8 +18,6 @@ function Event_login(socket, inputData) {
   server.log('Event login for agent ' + this.agent.name + ' registered.', 2);
 }
 
-//server.models.Event_login = {};
-
 Event_login.event_name = 'login';
 
 Event_login.formats = [{
@@ -26,6 +29,12 @@ Event_login.formats = [{
   'token': 'string'
 }];
 
+
+/**
+ * Event validation.
+ * @param {Object} structure - raw input recieved.
+ * @return {Object}
+ */
 Event_login.validate = function(structure) {
   if (!(res = server.models.Event.validate_key_format(server.models.Event_login.formats, structure)).status) {
     return res;

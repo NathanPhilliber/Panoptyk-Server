@@ -2,8 +2,10 @@ Agent.objects = [];
 
 /**
  * Agent model.
- * @param {Object} socket - Socket.io socket object
  * @param {string} username - username of agent
+ * @param {Object} room - room of agent. Does not put agent in room, simply saves it.
+ * @param {[Object]} inventory - list of items that agent owns.
+ * @param {int} id - id of agent. If null, one will be assigned.
  */
 function Agent(username, room=null, inventory=[], id=null) {
   this.name = username;
@@ -17,14 +19,25 @@ function Agent(username, room=null, inventory=[], id=null) {
 
 }
 
+
+/**
+ * Load and initialize agent object from JSON.
+ * @param {dict} data - serialized agent JSON.
+ */
 Agent.load = function(data) {
   var inventory = [];
 
-  // load items
+  // load items (handled by items)
 
   new Agent(data.name, server.models.Room.get_room_by_id(data.room_id), inventory, data.agent_id);
 }
 
+
+/**
+ * Login an agent. Create new agent or update existing agent with new socket. Send out updates.
+ * @param {string} username - username of agent.
+ * @param {Object} socket - socket.io client socket object.
+ */
 Agent.login = function(username, socket) {
 
   var sel_agent = null;
@@ -46,6 +59,11 @@ Agent.login = function(username, socket) {
   return sel_agent;
 }
 
+
+/**
+ * Get JSON dictionary representing this agent.
+ * @returns {JSON}
+ */
 Agent.prototype.serialize = function() {
   var data = {
     name: this.name,
@@ -61,6 +79,9 @@ Agent.prototype.serialize = function() {
 }
 
 
+/**
+ * Serialize and write all agents to files.
+ */
 Agent.save_all = function() {
   server.log("Saving agents...", 2);
   for (let agent of Agent.objects) {
@@ -76,6 +97,9 @@ Agent.save_all = function() {
 }
 
 
+/**
+ * Load all agents from file into memory.
+ */
 Agent.load_all = function() {
   server.log("Loading agents...", 2);
 
@@ -107,7 +131,7 @@ Agent.get_agent_by_id = function(agent_id) {
     }
   }
 
-  server.log('Could not find agent with id ' + agent_id + '.', 0);
+  server.log('Could not find agent with id ' + agent_id + '.', 1);
   return null;
 }
 
@@ -124,13 +148,13 @@ Agent.get_agent_by_socket = function(socket) {
     }
   }
 
-  server.log('Could not find agent with socket ' + socket.id + '.', 0);
+  server.log('Could not find agent with socket ' + socket.id + '.', 1);
   return null;
 }
 
 
 /**
- * Add an item to agent's inventory, update item, and send updates.
+ * Add an item to agent's inventory.
  * @param {Object} item - item object
  */
 Agent.prototype.add_item_inventory = function(item) {
@@ -139,7 +163,7 @@ Agent.prototype.add_item_inventory = function(item) {
 
 
 /**
- * Remove an item from agent inventory, update item, and send updates.
+ * Remove an item from agent inventory.
  * @param {Object} item - item object
  */
 Agent.prototype.remove_item_inventory = function(item) {
@@ -151,18 +175,21 @@ Agent.prototype.remove_item_inventory = function(item) {
   }
 
   this.inventory.splice(index, 1);
-
 }
 
 
 /**
- * Remove agent from their current room and put in new room.
+ * Put agent in room.
  * @param {Object} new_room - room to move to
  */
 Agent.prototype.put_in_room = function(new_room) {
   this.room = new_room;
 }
 
+
+/**
+ * Remove agent from room.
+ */
 Agent.prototype.remove_from_room = function() {
   this.room = null;
 }
@@ -205,12 +232,14 @@ Agent.prototype.get_private_data = function() {
 }
 
 
+/**
+ * Called on agent logout.
+ */
 Agent.prototype.logout = function() {
   server.log("Agent " + this.name + " logged out.", 2);
-  //this.room.remove_agent(this, this.room.adjacents[0], false);
+
   server.control.remove_agent_from_room(this);
 }
 
 
 module.exports = Agent;
-

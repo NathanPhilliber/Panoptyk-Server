@@ -3,6 +3,7 @@ Room.objects = [];
 /**
  * Room model.
  * @param {string} name - name of room
+ * @param {int} room_id - Room id, if null one will be assigned.
  */
 function Room(name, room_id=null) {
   this.name = name;
@@ -15,10 +16,20 @@ function Room(name, room_id=null) {
   server.log('Room ' + this.name + ' Initialized with id ' + this.room_id + '.', 2);
 }
 
+
+/**
+ * Load a JSON object into memory.
+ * @param {JSON} data - serialized room JSON.
+ */
 Room.load = function(data) {
   new Room(data.name, data.room_id);
 }
 
+
+/**
+ * Serialize this room into JSON object.
+ * @return {JSON}
+ */
 Room.prototype.serialize = function() {
   var data = {
     name: this.name,
@@ -28,8 +39,11 @@ Room.prototype.serialize = function() {
   return data;
 }
 
-Room.save_all = function() {
 
+/**
+ * Serialize and write all rooms to file.
+ */
+Room.save_all = function() {
   var room_to_adjacents = {};
 
   server.log("Saving rooms...", 2);
@@ -52,6 +66,10 @@ Room.save_all = function() {
   server.log("Rooms saved.", 2);
 }
 
+
+/**
+ * Load all room from file to memory.
+ */
 Room.load_all = function() {
   server.log("Loading rooms...", 2);
 
@@ -83,6 +101,7 @@ Room.load_all = function() {
   server.log("Rooms loaded.", 2);
 }
 
+
 /**
  * Allow movement from this room to another room.
  * @param {Object} other_room - room object to connect
@@ -99,7 +118,17 @@ Room.prototype.connect_room = function(other_room, two_way=true) {
 
 
 /**
- * Add an agent to this room and send updates.
+ * Check if it's possible to move from this room to target room.
+ * @param {Object} room2 - target room
+ * @return {boolean}
+ */
+Room.prototype.is_connected_to = function(room2) {
+  return this.adjacents.indexOf(room2) !== -1;
+}
+
+
+/**
+ * Add an agent to this room.
  * @param {Object} agent - agent object to put in this room.
  */
 Room.prototype.add_agent = function(agent, old_room=null) {
@@ -107,15 +136,25 @@ Room.prototype.add_agent = function(agent, old_room=null) {
 }
 
 
+/**
+ * Add an item to this room.
+ * @param {Object} item - item to put in room.
+ */
 Room.prototype.add_item = function(item) {
   server.log("Adding item " + item.name + " to room " + this.name, 2);
   this.items.push(item);
 }
 
+
+/**
+ * Remove an item from this room.
+ * @param {Object} item - item to remove.
+ */
 Room.prototype.remove_item = function(item) {
   server.log("Removing item " + item.name + " from room object " + this.name + ", index=" + this.items.indexOf(item), 2);
   this.items.splice(this.items.indexOf(item), 1);
 }
+
 
 /**
  * Removes an agent from this room.
@@ -199,6 +238,5 @@ Room.get_room_by_id = function(room_id) {
   server.log('Could not find room with id ' + room_id + '.', 1);
   return null;
 }
-
 
 module.exports = Room;
