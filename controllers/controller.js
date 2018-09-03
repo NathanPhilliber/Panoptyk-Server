@@ -110,7 +110,7 @@ Controller.add_agent_to_room = function(agent, new_room, old_room=null) {
  * @param {Object} agent - agent to remove from room.
  * @param {Object} new_room - room agent is moving to. (Optional).
  */
-Controller.remove_agent_from_room = function(agent, new_room=null) {
+Controller.remove_agent_from_room = function(agent, new_room=null, update_agent_model=true) {
   if (agent === null) {
     server.log("Cannot remove null agent from room", 0);
     return;
@@ -127,7 +127,10 @@ Controller.remove_agent_from_room = function(agent, new_room=null) {
 
   server.send.agent_exit_room(agent, new_room);
 
-  agent.remove_from_room();
+  if (update_agent_model) {
+    agent.remove_from_room();
+  }
+
   old_room.remove_agent(agent);
 }
 
@@ -190,12 +193,16 @@ Controller.remove_items_from_room = function(items, by_agent=null) {
 
 
 /**
- * Add an agent to a cnode. Does vaidation.
+ * Add an agent to a cnode. Does validation.
  * @param {Object} cnode - cnode agent wants to join.
  * @param {Object} agent - agent object
  */
 Controller.add_agent_to_cnode = function(cnode, agent) {
+  server.log("Adding agent " + agent.name + " to cnode " + cnode.cnode_id, 2);
+  agent.join_cnode(cnode);
+  cnode.add_agent(agent);
 
+  server.send.agent_join_cnode(agent);
 }
 
 
@@ -205,7 +212,11 @@ Controller.add_agent_to_cnode = function(cnode, agent) {
  * @param {Object} agent - agent object
  */
 Controller.remove_agent_from_cnode = function(cnode, agent) {
+  server.log("Removing agent " + agent.name + " from cnode " + cnode.cnode_id, 2);
+  agent.leave_cnode();
+  cnode.remove_agent(agent);
 
+  server.send.agent_leave_cnode(agent, cnode);
 }
 
 module.exports = Controller;

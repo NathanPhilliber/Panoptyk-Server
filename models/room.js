@@ -10,6 +10,7 @@ function Room(name, room_id=null) {
   this.adjacents = [];
   this.occupants = [];
   this.items = [];
+  this.cnodes = [];
 
   (Room.objects = Room.objects || []).push(this);
   this.room_id = room_id == null ? Room.objects.length - 1 : room_id;
@@ -183,12 +184,40 @@ Room.prototype.get_data = function() {
     adj_ids.push({'room_id':room.room_id, 'room_name':room.name});
   }
 
-  return {
+  var cnode_datas = [];
+  for (let cnode of this.cnodes) {
+    cnode_datas.push(cnode.get_data());
+  }
+
+  var data = {
     'room_id': this.room_id,
     'room_name': this.name,
     'adjacent_rooms': adj_ids,
-    'layout': 0 //TODO
+    'layout': {
+      'cnodes': cnode_datas
+    }
   }
+
+  server.log(JSON.stringify(data))
+
+  return data;;
+}
+
+
+Room.prototype.add_cnode = function(cnode) {
+  this.cnodes.push(cnode);
+}
+
+
+Room.prototype.remove_cnode = function(cnode) {
+  var index = this.cnodes.indexOf(cnode);
+
+  if (index == -1) {
+    server.log("Could not remove cnode " + cnode.cnode_id, 0);
+    return;
+  }
+
+  this.cnodes.splice(index, 1);
 }
 
 

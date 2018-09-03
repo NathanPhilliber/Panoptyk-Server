@@ -138,6 +138,18 @@ server.send.remove_items_room = function(items, room, by_agent=null) {
 }
 
 
+server.send.agent_join_cnode = function(agent) {
+  server.log('Agent ' + agent.name + ' entered cnode ' + agent.cnode.cnode_id + '.', 2);
+  server.modules.io.in(agent.room.room_id).emit('agent-join-cnode', {'code_id': agent.cnode.cnode_id, 'agent_id': agent.agent_id});
+}
+
+
+server.send.agent_leave_cnode = function(agent, cnode) {
+  server.log('Agent ' + agent.name + ' left cnode ' + cnode.cnode_id + '.', 2);
+  server.modules.io.in(agent.room.room_id).emit('agent-leave-cnode', {'cnode_id': cnode.cnode_id, 'agent_id': agent.agent_id});
+}
+
+
 server.send.add_items_trade = function(socket, trade, items) {
 
 }

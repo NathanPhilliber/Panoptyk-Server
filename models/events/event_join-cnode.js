@@ -8,21 +8,18 @@ function Event_joinCnode(socket, inputData) {
   this.agent = server.models.Agent.get_agent_by_socket(socket);
 
   if (!(res = server.models.Event_joinCnode.validate(inputData, this.agent)).status) {
-    server.log('Bad event moveToRoom data ('+JSON.stringify(inputData) + ').', 1);
-    server.send.event_failed(socket, server.models.Event_moveToRoom.event_name, res.message);
+    server.log('Bad event joinCnode data ('+JSON.stringify(inputData) + ').', 1);
+    server.send.event_failed(socket, server.models.Event_joinCnode.event_name, res.message);
     return false;
   }
 
-  this.old_room = this.agent.room;
-  this.new_room = server.models.Room.get_room_by_id(inputData.room_id);
+  this.cnode = res.cnode;
 
-  server.control.move_agent_to_room(this.agent, this.new_room);
+  server.control.add_agent_to_cnode(this.cnode, this.agent);
 
   (server.models.Event.objects = server.models.Event.objects || []).push(this);
-  server.log('Event move-to-room (' + this.old_room.name + '->'
-      + this.new_room.name  + ') for agent ' + this.agent.name + ' registered.', 2);
+  server.log('Event join-cnode (' + this.cnode.cnode_id + ') for agent ' + this.agent.name + ' registered.', 2);
 }
-
 
 Event_joinCnode.event_name = 'join-cnode';
 
@@ -42,10 +39,13 @@ Event_joinCnode.validate = function(structure, agent) {
   if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_key_format(server.models.Event_moveToRoom.formats, structure)).status) {
+  if (!(res = server.models.Event.validate_key_format(server.models.Event_joinCnode.formats, structure)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_room_adjacent(agent.room, server.models.Room.get_room_by_id(structure.room_id))).status) {
+  if (!(res = server.models.Event.validate_cnode_exists(agent.room, server.models.Cnode.get_cnode_by_id(structure.cnode_id))).status) {
+    return res;
+  }
+  if (!(res = server.models.Event.validate_cnode_has_space(res.cnode)).status) {
     return res;
   }
   return res;

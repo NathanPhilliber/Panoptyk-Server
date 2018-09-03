@@ -12,6 +12,7 @@ function Agent(username, room=null, inventory=[], id=null) {
   this.room = room;
   this.socket = null;
   this.inventory = inventory;
+  this.cnode = null;
 
   (Agent.objects = Agent.objects || []).push(this);
   this.agent_id = id == null ? Agent.objects.length - 1 : id;
@@ -238,7 +239,23 @@ Agent.prototype.get_private_data = function() {
 Agent.prototype.logout = function() {
   server.log("Agent " + this.name + " logged out.", 2);
 
-  server.control.remove_agent_from_room(this);
+  server.control.remove_agent_from_room(this, null, false);
+}
+
+
+/**
+ *
+ */
+Agent.prototype.join_cnode = function(cnode) {
+  this.cnode = cnode;
+}
+
+
+/**
+ *
+ */
+Agent.prototype.leave_cnode = function() {
+  this.cnode = null;
 }
 
 

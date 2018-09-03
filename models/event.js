@@ -123,3 +123,25 @@ server.models.Event.validate_items_in_room = function(room, item_ids) {
 
   return {status:true, message:'', items:items};
 }
+
+
+server.models.Event.validate_cnode_exists = function(room, cnode) {
+  if (cnode == null) {
+    return {'status': false, 'message': 'Cnode does not exist'};
+  }
+  if (cnode.room !== room) {
+    return {'status': false, 'message': 'Cnode not in agents room'};
+  }
+
+  return {status:true, message:'', cnode:cnode}
+}
+
+
+server.models.Event.validate_cnode_has_space = function(cnode) {
+  if (cnode.agents.length >= cnode.max_agents) {
+    return {status: false, message: 'Cnode is full', cnode:cnode}
+  }
+
+  return {status: true, message:'', cnode:cnode}
+}
+

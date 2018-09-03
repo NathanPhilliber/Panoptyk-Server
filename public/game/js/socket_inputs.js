@@ -31,6 +31,11 @@ Client.socket.on('room-data', function(data) {
   console.log("Room Data");
   console.log(data);
   new Room(data.room_data.room_id, data.room_data.room_name, data.room_data.adjacent_rooms, data.room_data.layout, data.agents, data.items, data.old_room_id);
+
+  for (let cnode_data of data.room_data.layout.cnodes) {
+    new Cnode(cnode_data.cnode_id, cnode_data.max_agents, cnode_data.agent_ids);
+  }
+
 });
 
 Client.socket.on('add-items-inventory', function(data) {
@@ -59,6 +64,18 @@ Client.socket.on('remove-items-room', function(data) {
   for (let item_id of data.item_ids) {
     current_room.remove_item(item_id, data.agent_id);
   }
+});
+
+Client.socket.on('cnode-data', function(data) {
+  console.log("cnode-data event: " + data);
+});
+
+Client.socket.on('agent-join-cnode', function(data) {
+  console.log("agent-join-cnode event: " + data);
+});
+
+Client.socket.on('agent-leave-cnode', function(data) {
+  console.log("agent-leave-cnode event: " + data);
 });
 
 Client.socket.on('event-failed', function(data) {
