@@ -1,5 +1,5 @@
 server.logger = {};
-server.logger.logLevelNames = ['ERROR', 'WARNING', 'INFO'];
+server.logger.logLevelNames = [' ERROR ', 'WARNING', '  INFO '];
 
 /**
  * Log a message at specified important level.
@@ -12,11 +12,11 @@ server.log = function(msg, logLevel=0) {
       .replace(/T/, ' ').replace(/\..+/, '') + "]═["
       + server.logger.logLevelNames[logLevel] + "]══";
 
-    msg = prefix + (prefix.length + msg.length > server.settings.log_line_length ?
+    msg = prefix + (prefix.length + msg.length >= server.settings.log_line_length ?
       '╦═╡ ':'══╡ ') + msg;
 
     msg = msg.replace(new RegExp('(.{'+server.settings.log_line_length+'})', 'g'),
-      '$1\n                              ╠══╡ ');
+      '$1\n                                 ╠══╡ ');
 
     var index = msg.lastIndexOf("╠");
     if (index > 0) {

@@ -123,6 +123,8 @@ Controller.remove_agent_from_room = function(agent, new_room=null, update_agent_
     return;
   }
 
+  Controller.remove_agent_from_cnode_if_in(agent);
+
   agent.socket.leave(old_room.room_id);
 
   server.send.agent_exit_room(agent, new_room);
@@ -198,6 +200,8 @@ Controller.remove_items_from_room = function(items, by_agent=null) {
  * @param {Object} agent - agent object
  */
 Controller.add_agent_to_cnode = function(cnode, agent) {
+  Controller.remove_agent_from_cnode_if_in(agent);
+
   server.log("Adding agent " + agent.name + " to cnode " + cnode.cnode_id, 2);
   agent.join_cnode(cnode);
   cnode.add_agent(agent);
@@ -217,6 +221,12 @@ Controller.remove_agent_from_cnode = function(cnode, agent) {
   cnode.remove_agent(agent);
 
   server.send.agent_leave_cnode(agent, cnode);
+}
+
+Controller.remove_agent_from_cnode_if_in = function(agent) {
+  if (agent.cnode !== null) {
+    Controller.remove_agent_from_cnode(agent.cnode, agent);
+  }
 }
 
 module.exports = Controller;

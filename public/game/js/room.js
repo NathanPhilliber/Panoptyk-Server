@@ -12,6 +12,7 @@ function Room(room_id, room_name, adjacents, layout, agents, items, old_room_id)
   this.room_id = room_id;
   this.name = room_name;
   this.layout = layout;
+  this.cnodes = [];
 
   this.adjacents = [];
   for (let room_data of adjacents) {
@@ -54,6 +55,10 @@ Room.prototype.destroy = function() {
 
   for (let exit of this.adjacents) {
     exit.destroy();
+  }
+
+  for (let cnode of this.cnodes) {
+    cnode.destroy();
   }
 }
 

@@ -33,7 +33,8 @@ Client.socket.on('room-data', function(data) {
   new Room(data.room_data.room_id, data.room_data.room_name, data.room_data.adjacent_rooms, data.room_data.layout, data.agents, data.items, data.old_room_id);
 
   for (let cnode_data of data.room_data.layout.cnodes) {
-    new Cnode(cnode_data.cnode_id, cnode_data.max_agents, cnode_data.agent_ids);
+    var cnode = new Cnode(cnode_data.cnode_id, cnode_data.max_agents, cnode_data.agent_ids);
+    current_room.cnodes.push(cnode);
   }
 
 });

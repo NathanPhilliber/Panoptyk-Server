@@ -145,3 +145,11 @@ server.models.Event.validate_cnode_has_space = function(cnode) {
   return {status: true, message:'', cnode:cnode}
 }
 
+
+server.models.Event.validate_cnode_has_agent = function(cnode, agent) {
+  if (cnode.get_agent_by_id(agent.agent_id) == null) {
+    return {status: false, message: 'Agent does not belong to cnode', cnode:cnode}
+  }
+
+  return {status: true, message: '', cnode: cnode}
+}
