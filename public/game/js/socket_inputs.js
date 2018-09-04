@@ -73,6 +73,8 @@ Client.socket.on('cnode-data', function(data) {
 
 Client.socket.on('agent-join-cnode', function(data) {
   console.log("agent-join-cnode event: " + data);
+  console.log(data);
+  current_room.get_cnode(data.cnode_id).add_agent(current_room.get_agent(data.agent_id));
 });
 
 Client.socket.on('agent-leave-cnode', function(data) {

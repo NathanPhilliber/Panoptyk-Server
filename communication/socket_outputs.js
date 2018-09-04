@@ -140,7 +140,7 @@ server.send.remove_items_room = function(items, room, by_agent=null) {
 
 server.send.agent_join_cnode = function(agent) {
   server.log('Agent ' + agent.name + ' entered cnode ' + agent.cnode.cnode_id + '.', 2);
-  server.modules.io.in(agent.room.room_id).emit('agent-join-cnode', {'code_id': agent.cnode.cnode_id, 'agent_id': agent.agent_id});
+  server.modules.io.in(agent.room.room_id).emit('agent-join-cnode', {'cnode_id': agent.cnode.cnode_id, 'agent_id': agent.agent_id});
 }
 
 

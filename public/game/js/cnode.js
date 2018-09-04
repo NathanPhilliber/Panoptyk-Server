@@ -26,3 +26,29 @@ function Cnode(cnode_id, max_agents, agent_ids) {
 Cnode.prototype.destroy = function() {
   this.sprite.destroy();
 }
+
+Cnode.prototype.add_agent = function(agent) {
+  this.agents.push(agent);
+  var pos = this.get_spot();
+  agent.move(pos.x, pos.y);
+}
+
+Cnode.prototype.remove_agent = function(agent) {
+  var index = this.agents.indexOf(agent);
+
+  if (index == -1) {
+    console.log("could not remove agent, agent not in cnode " + this.cnode_id);
+    return;
+  }
+
+  this.agents.splice(index, 1);
+  agent.move(Math.random()*game.canvas.width, Math.random()*game.canvas.height);
+}
+
+
+Cnode.prototype.get_spot = function() {
+  return {
+    x: Math.random()*this.sprite.width + this.sprite.x - this.sprite.width/2,
+    y: Math.random()*this.sprite.height + this.sprite.y - this.sprite.height/2
+  }
+}

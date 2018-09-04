@@ -142,6 +142,17 @@ Room.prototype.get_agent = function(agent_id) {
   return null;
 }
 
+Room.prototype.get_cnode = function(cnode_id) {
+  for (let cnode of this.cnodes) {
+    if (cnode.cnode_id == cnode_id) {
+      return cnode;
+    }
+  }
+
+  console.log("Could not find cnode with id " + cnode_id);
+  return null;
+}
+
 function ExitNode(room_id, room_name) {
   this.room_id = room_id;
   var pos = ExitNode.get_exit_spot();
