@@ -204,11 +204,18 @@ Room.prototype.get_data = function() {
 }
 
 
+/**
+ * Add a cnode to a room.
+ * @param 
+ */
 Room.prototype.add_cnode = function(cnode) {
   this.cnodes.push(cnode);
 }
 
 
+/**
+ *
+ */
 Room.prototype.remove_cnode = function(cnode) {
   var index = this.cnodes.indexOf(cnode);
 

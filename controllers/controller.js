@@ -223,6 +223,11 @@ Controller.remove_agent_from_cnode = function(cnode, agent) {
   server.send.agent_leave_cnode(agent, cnode);
 }
 
+
+/**
+ * Remove agent from their cnode if they are in one. Otherwise do nothing.
+ * @param {Object} agent - agent object
+ */
 Controller.remove_agent_from_cnode_if_in = function(agent) {
   if (agent.cnode !== null) {
     Controller.remove_agent_from_cnode(agent.cnode, agent);

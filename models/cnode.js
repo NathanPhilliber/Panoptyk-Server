@@ -1,6 +1,11 @@
 Cnode.objects = [];
 
-
+/**
+ * Cnode constructor.
+ * @param {Object} room - room object cnode is in
+ * @param {int} max_agents - number of agents that can use this cnode at once.
+ * @param {int} id - cnode id, if null one will be assigned.
+ */
 function Cnode(room, max_agents=4, id=null) {
   this.cnode_id = id === null ? Cnode.objects.length : id;
   Cnode.objects.push(this);
@@ -14,10 +19,18 @@ function Cnode(room, max_agents=4, id=null) {
 }
 
 
+/**
+ * Create a cnode instance from JSON.
+ * @param {JSON} data - serialized cnode json.
+ */
 Cnode.load = function(data) {
   new Cnode(server.models.Room.get_room_by_id(data.room_id), data.max_agents, data.cnode_id);
 }
 
+
+/**
+ * Represent this cnode as a json dictionary.
+ * @return {JSON}
 Cnode.prototype.serialize = function() {
   return {
     room_id: this.room.room_id,
@@ -26,6 +39,10 @@ Cnode.prototype.serialize = function() {
   }
 }
 
+
+/**
+ * Serialize and write all cnodes to file.
+ */
 Cnode.save_all = function() {
   server.log("Saving cnodes...", 2);
   for (let cnode of Cnode.objects) {
@@ -37,6 +54,10 @@ Cnode.save_all = function() {
   server.log("Cnodes saved.", 2);
 }
 
+
+/**
+ * Load all cnodes from file into memory.
+ */
 Cnode.load_all = function() {
   server.log("Loading cnodes...", 2);
 
@@ -50,10 +71,20 @@ Cnode.load_all = function() {
   server.log("Cnodes loaded.", 2);
 }
 
+
+/**
+ * Add an agent to this cnode.
+ * @param {Object} agent - agent object
+ */
 Cnode.prototype.add_agent = function(agent) {
   this.agents.push(agent);
 }
 
+
+/**
+ * Remove an agent from this cnode.
+ * @param {Object} agent - agent object.
+ */
 Cnode.prototype.remove_agent = function(agent) {
   var index = this.agents.indexOf(agent);
 
@@ -65,6 +96,11 @@ Cnode.prototype.remove_agent = function(agent) {
   this.agents.splice(index);
 }
 
+
+/**
+ * Get a list of agent ids for this cnode.
+ * @param {Object} ignore_agent - do not include this agent object in list. (Optional).
+ * @return {[int]}
 Cnode.prototype.get_agent_ids = function(ignore_agent=null) {
   var ids = [];
   for (let agent of this.agents) {
@@ -76,6 +112,11 @@ Cnode.prototype.get_agent_ids = function(ignore_agent=null) {
   return ids;
 }
 
+
+/**
+ * Data to send to client for this cnode.
+ * @return {Object}
+ */
 Cnode.prototype.get_data = function() {
   return {
     cnode_id: this.cnode_id,
@@ -84,6 +125,12 @@ Cnode.prototype.get_data = function() {
   }
 }
 
+
+/**
+ * Find a cnode given an id.
+ * @param {int} cnode_id - id of cnode to find.
+ * @return {Object/null}
+ */
 Cnode.get_cnode_by_id = function(cnode_id) {
   for (let cnode of Cnode.objects) {
     if (cnode.cnode_id == cnode_id) {
