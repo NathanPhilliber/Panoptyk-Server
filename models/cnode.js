@@ -31,6 +31,7 @@ Cnode.load = function(data) {
 /**
  * Represent this cnode as a json dictionary.
  * @return {JSON}
+ */
 Cnode.prototype.serialize = function() {
   return {
     room_id: this.room.room_id,
@@ -89,7 +90,7 @@ Cnode.prototype.remove_agent = function(agent) {
   var index = this.agents.indexOf(agent);
 
   if (index == -1) {
-    server.log("Tried to remove agent not in cnode " + cnode.cnode_id, 0);
+    server.log("Tried to remove agent not in cnode " + this.cnode_id, 0);
     return;
   }
 
@@ -101,6 +102,7 @@ Cnode.prototype.remove_agent = function(agent) {
  * Get a list of agent ids for this cnode.
  * @param {Object} ignore_agent - do not include this agent object in list. (Optional).
  * @return {[int]}
+ */
 Cnode.prototype.get_agent_ids = function(ignore_agent=null) {
   var ids = [];
   for (let agent of this.agents) {
