@@ -15,8 +15,6 @@
   <script src="public/game/js/socket_outputs.js" type="text/javascript"></script>
   <script src="public/game/js/login.js" type="text/javascript"></script>
   <script src="public/game/js/agent.js" type="text/javascript"></script>
-  
-  
   <script src="public/game/js/item.js" type="text/javascript"></script>
   
   <title>Panoptyk</title>
@@ -32,14 +30,27 @@
     </div>
     <div id="i_div_game"></div>
     <div id="i_div_sidebar">
-      <div id="i_div_agentInfo">
+      
+      <div class="tab">
+        <button class="tablinks" onclick="changeTab(event, 'i_div_agentInfo')" id="i_div_agentInfo_tab">Info</button>
+        <button class="tablinks" onclick="changeTab(event, 'i_div_inventory')">Inventory</button>
+        <button class="tablinks" onclick="changeTab(event, 'i_div_trade')">Trade</button>
+      </div>
+      
+      <div id="i_div_agentInfo" class="tabcontent">
         <h3> Agent Info </h3>
         <div><p class="c_p_inline">Agent: </p> <p class="c_p_inline" id="i_p_agentName"></p></div>
         <div><p class="c_p_inline">Agent ID: </p> <p class="c_p_inline" id="i_p_agentID"></p></div>
       </div>
-      <div id="i_div_inventory">
+
+      <div id="i_div_inventory" class="tabcontent">
         <h3> Inventory </h3>
       </div>
+      
+      <div id="i_div_trade" class="tabcontent">
+        <h3> Trade </h3>
+      </div>
+    
     </div>
   </div>
 
