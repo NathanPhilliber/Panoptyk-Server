@@ -31,6 +31,10 @@ Cnode.prototype.add_agent = function(agent) {
   this.agents.push(agent);
   var pos = this.get_spot();
   agent.move(pos.x, pos.y);
+
+  if (agent == Agent.my_agent) {
+    loadTradeMeetingSpot("Meeting Location", this.agents);
+  }
 }
 
 Cnode.prototype.remove_agent = function(agent) {
@@ -43,6 +47,10 @@ Cnode.prototype.remove_agent = function(agent) {
 
   this.agents.splice(index, 1);
   agent.move(Math.random()*game.canvas.width, Math.random()*game.canvas.height);
+
+  if (agent == Agent.my_agent) {
+    clearTradeMeetingSpot();
+  }
 }
 
 

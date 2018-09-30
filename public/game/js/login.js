@@ -65,6 +65,25 @@ function showGameArea() {
   document.getElementById("i_div_sidebar").style.display = "inline-block";
 }
 
+function loadTradeMeetingSpot(name, agents) {
+  document.getElementById("i_h_meetingSpotName").innerHTML = name;
+  var adiv = document.getElementById("i_div_meetingSpotAgents");
+
+  for (let agent of agents) {
+    adiv.appendChild(getAgentMeetingRow(agent));
+  }
+}
+
+function clearTradeMeetingSpot() {
+  document.getElementById("i_h_meetingSpotName").innerHTML = "Not in a meeting location.";
+
+  document.getElementById("i_div_meetingSpotAgents").innerHTML = "";
+}
+
+function getAgentMeetingRow(agent) {
+
+}
+
 function changeTab(evt, tabID) {
     // Declare all variables
     var i, tabcontent, tablinks;
