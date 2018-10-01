@@ -13,7 +13,7 @@ function Trade(agent_ini, agent_res, room, cnode, id=null) {
   this.agent_res = agent_res;
   this.room = room;
   this.cnode = cnode;
-  this.result_status = 2;
+  this.result_status = 3;
 
   this.items_ini = [];
   this.items_res = [];
