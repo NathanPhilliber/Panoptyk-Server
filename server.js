@@ -19,8 +19,8 @@ server.models = {};
 server.models.Room = require(__dirname + '/models/room.js');
 server.models.Agent = require(__dirname + '/models/agent.js');
 server.models.Item = require(__dirname + '/models/item.js');
-server.models.Trade = require(__dirname + '/models/trade.js');
 server.models.Cnode = require(__dirname + '/models/cnode.js');
+server.models.Trade = require(__dirname + '/models/trade.js');
 
 server.control = require(__dirname + '/controllers/controller.js');
 
@@ -50,6 +50,7 @@ process.on('SIGINT', () => {
   server.models.Room.save_all();
   server.models.Item.save_all();
   server.models.Cnode.save_all();
+  server.models.Trade.save_all();
 
   server.log("Server closed", 2);
   process.exit(0);
@@ -60,11 +61,13 @@ server.directory.make(server.settings.data_dir + '/agents');
 server.directory.make(server.settings.data_dir + '/rooms');
 server.directory.make(server.settings.data_dir + '/items');
 server.directory.make(server.settings.data_dir + '/cnodes');
+server.directory.make(server.settings.data_dir + '/trades');
 
 server.models.Room.load_all();
 server.models.Agent.load_all();
 server.models.Item.load_all();
 server.models.Cnode.load_all();
+server.models.Trade.load_all();
 
 
 /*
