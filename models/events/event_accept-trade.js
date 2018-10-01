@@ -17,6 +17,8 @@ function Event_acceptTrade(socket, inputData) {
   this.to_agent = res.to_agent;
   this.trade = res.trade;
 
+  server.control.accept_trade(this.trade);
+
   (server.models.Event.objects = server.models.Event.objects || []).push(this);
   server.log('Event accept-trade (' + this.trade.trade_id + ') for agent ' + this.from_agent.name + '/' + this.to_agent.name + ' registered.', 2);
 }
@@ -45,7 +47,7 @@ Event_acceptTrade.validate = function(structure, agent) {
   if (!(res = server.models.Event.validate_trade_exists(structure.trade_id)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_trade_status(res.trade, 3)).status) {
+  if (!(res = server.models.Event.validate_trade_status(res.trade, [3])).status) {
     return res;
   }
   if (!(res = server.models.Event.validate_agent_logged_in(res.trade.agent_ini)).status) {

@@ -234,4 +234,46 @@ Controller.remove_agent_from_cnode_if_in = function(agent) {
   }
 }
 
+
+Controller.create_trade = function(cnode, from_agent, to_agent) {
+  var trade = server.models.Trade(from_agent, to_agent, cnode);
+
+  server.send.trade_requested(to_agent.socket, trade);
+
+  return trade;
+}
+
+
+Controller.accept_trade = function(trade) {
+  server.send.trade_accepted(trade.agent_ini.socket, trade);
+  server.send.trade_accepted(trade.agent_res.socket, trade);
+  trade.set_status(2);
+}
+
+
+Controller.cancel_trade = function(trade) {
+  server.send.trade_declined(trade.agent_ini.socket, trade);
+  server.send.trade_declined(trade.agent_res.socket, trade);
+  trade.set_status(0);
+}
+
+
+Controller.perform_trade = function(trade) {
+  server.log("Ending trade " + trade.trade_id, 2);
+
+  server.send.trade_complete(trade.agent_ini.socket, trade);
+  server.send.trade_complete(trade.agent_res.socket, trade);
+
+  Controller.remove_items_from_agent_inventory(trade.items_ini);
+  Controller.remove_items_from_agent_inventory(trade.items_res);
+
+  Controller.add_items_to_agent_inventory(trade.agent_ini, trade.items_res);
+  Controller.add_items_to_agent_inventory(trade.agent_res, trade.items_ini);
+
+  trade.set_status(1);
+
+  server.log("Successfully completed trade " + trade.trade_id, 2);
+}
+
+
 module.exports = Controller;

@@ -16,7 +16,7 @@ function Event_requestTrade(socket, inputData) {
   this.cnode = res.cnode;
   this.to_agent = res.to_agent;
 
-  this.trade = new server.models.Trade(this.agent, this.to_agent, this.agent.room, this.cnode);
+  this.trade = server.control.create_trade(this.cnode, this.agent, this.to_agent);
 
   (server.models.Event.objects = server.models.Event.objects || []).push(this);
   server.log('Event request-trade (' + this.cnode.cnode_id + ') for agent ' + this.agent.name + ' registered.', 2);

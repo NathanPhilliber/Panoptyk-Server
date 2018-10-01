@@ -170,26 +170,36 @@ server.send.remove_items_trade = function(socket, trade, items) {
 
 
 server.send.agent_ready_trade = function(socket, trade, agent, readyStatus) {
-
+  socket.emit("agent-ready-trade", {trade_id:trade.trade_id, agent_id:agent.agent_id, ready_status:readyStatus});
 }
 
 
 server.send.trade_requested = function(socket, trade) {
+  server.log("Trade "+ trade.trade_id + " requested (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
 
+  socket.emit("trade-requested", {trade_id:trade.trade_id, agent_id:trade.agent_ini.agent_id});
 }
 
 
 server.send.trade_accepted = function(socket, trade) {
+  server.log("Trade "+ trade.trade_id + " accepted (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
 
+  socket.emit("trade-accepted", {trade_id:trade.trade_id});
 }
 
 
 server.send.trade_declined = function(socket, trade) {
+  server.log("Trade "+ trade.trade_id + " declined (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
 
+  socket.emit("trade-declined", {trade_id:trade.trade_id});
 }
 
 
 server.send.trade_complete = function(socket, trade) {
+  server.log("Trade "+ trade.trade_id + " completed (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
 
+  socket.emit("trade-complete", {trade_id:trade.trade_id});
 }
+
+
 

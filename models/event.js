@@ -153,3 +153,22 @@ server.models.Event.validate_cnode_has_agent = function(cnode, agent) {
 
   return {status: true, message: '', cnode: cnode}
 }
+
+server.models.Event.validate_trade_exists = function(trade_id) {
+  var trade = server.models.Trade.get_trade_by_id(trade_id);
+
+  if (!trade) {
+    return {status: false, message: 'Could not find trade with id ' + trade_id}
+  }
+
+  return {status: true, message: '', trade:trade}
+}
+
+server.models.Event.validate_trade_status = function(trade, status_options) {
+  if (status_options.indexOf(trade.result_status) == -1) {
+    return {status: false, message: 'Trade not in correct state', trade:trade}
+  }
+
+  return {status: true, message:'', trade:trade}
+}
+

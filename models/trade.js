@@ -4,14 +4,12 @@ Trade.objects = [];
  * Trade model.
  * @param {Object} agent_ini - initiating agent
  * @param {Object} agent_res - responding agent
- * @param {Object} room - room object trade is in.
  * @param {Object} cnode - cnode trade is happening in.
  * @param {int} id - id of trade. If null, one will be assigned.
  */
-function Trade(agent_ini, agent_res, room, cnode, id=null) {
+function Trade(agent_ini, agent_res, cnode, id=null) {
   this.agent_ini = agent_ini;
   this.agent_res = agent_res;
-  this.room = room;
   this.cnode = cnode;
   this.result_status = 3;
 
@@ -32,7 +30,6 @@ function Trade(agent_ini, agent_res, room, cnode, id=null) {
 Trade.load = function(data) {
   new Trade(server.models.Agent.get_agent_by_id(data.agent_ini_id),
             server.models.Agent.get_agent_by_id(data.agent_res_id),
-            server.models.Room.get_room_by_id(data.room_id),
             server.models.Cnode.get_cnode_by_id(data.cnode_id),
             data.trade_id);
 
@@ -48,7 +45,6 @@ Trade.prototype.serialize = function() {
     trade_id: this.trade_id,
     agent_ini_id: this.agent_ini.agent_id,
     agent_res_id: this.agent_res.agent_id,
-    room_id: this.room.room_id,
     cnode_id: this.cnode.cnode_id,
     result_status: this.result_status
   }
@@ -129,6 +125,9 @@ Trade.prototype.get_data = function() {
   }
 }
 
+Trade.prototype.set_status = function(stat) {
+  this.result_status = stat;
+}
 
 /**
  * Find a trade by its id.
