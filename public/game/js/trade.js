@@ -42,11 +42,39 @@ Trade.prototype.draw = function() {
   table.appendChild(tradeRow);
 
 
+  var itemSelectDiv = document.createElement("div");
+  var itemSelect = document.createElement("select");
+  var addItemButton = document.createElement("button");
+  itemSelect.style.display = "inline-block";
+  addItemButton.style.display = "inline-block";
+  addItemButton.innerHTML = "add";
+  itemSelectDiv.appendChild(itemSelect);
+  itemSelectDiv.appendChild(addItemButton);
+
+  var options = Trade.get_available_options();
+  for (let option of options) {
+    itemSelect.add(option);
+  }
+
+  tradeArea1.appendChild(itemSelectDiv);
+
   node.appendChild(title);
   node.appendChild(cancelButton);
   node.appendChild(table);
 
   container.appendChild(node);
+}
+
+Trade.get_available_options = function() {
+  var options = [];
+  for (var item_id in inventory) {
+    var option = document.createElement("option");
+    option.value = item_id;
+    option.text = inventory[item_id].item_name;
+    options.push(option);
+  }
+  return options;
+
 }
 
 Trade.prototype.destroy = function() {

@@ -27,7 +27,9 @@ function updateInventoryRemove(item_ids) {
   }
 }
 
+inventory = {};
 function updateInventoryAddItem(item) {
+  inventory[item.item_id] = item;
   var node = document.createElement('div');
   node.id = 'item_' + item.item_id;
   node.style.outline = '1px solid black';
@@ -46,6 +48,12 @@ function updateInventoryAddItem(item) {
   node.appendChild(itemText);
 
   document.getElementById('i_div_inventory').appendChild(node);
+}
+
+function updateInventoryRemoveItem(item_id) {
+  delete inventory[item_id];
+  var del = document.getElementById('item_' + item_id);
+  del.parentNode.removeChild(del);
 }
 
 function showLoginArea() {
