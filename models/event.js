@@ -177,7 +177,7 @@ server.models.Event.validate_trade_exists = function(trade_id) {
 }
 
 server.models.Event.validate_trade_status = function(trade, status_options) {
-  if (status_options.indexOf(trade.result_status) == -1) {
+  if (!trade || status_options.indexOf(trade.result_status) == -1) {
     return {status: false, message: 'Trade not in correct state', trade:trade}
   }
 

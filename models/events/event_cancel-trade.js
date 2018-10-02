@@ -13,14 +13,12 @@ function Event_cancelTrade(socket, inputData) {
     return false;
   }
 
-  this.cnode = res.cnode;
-  this.to_agent = res.to_agent;
   this.trade = res.trade;
 
   server.control.cancel_trade(this.trade);
 
   (server.models.Event.objects = server.models.Event.objects || []).push(this);
-  server.log('Event cancel-trade (' + this.trade.trade_id + ') for agent ' + this.from_agent.name + '/' + this.to_agent.name + ' registered.', 2);
+  server.log('Event cancel-trade (' + this.trade.trade_id + ') for agent ' + this.trade.agent_ini.name + '/' + this.trade.agent_res.name + ' registered.', 2);
 }
 
 Event_cancelTrade.event_name = 'cancel-trade';
@@ -50,11 +48,12 @@ Event_cancelTrade.validate = function(structure, agent) {
   if (!(res = server.models.Event.validate_trade_status(res.trade, [2, 3])).status) {
     return res;
   }
+  var res2 = res;
   if (!(res = server.models.Event.validate_agent_logged_in(res.trade.agent_ini)).status) {
     return res;
   }
 
-  return res;
+  return res2;
 };
 
 server.models.Event_cancelTrade = Event_cancelTrade;

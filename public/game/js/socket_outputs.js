@@ -42,3 +42,22 @@ Client.send.requestTrade = function(agent_id) {
 Client.send.acceptTrade = function(trade_id) {
   Client.socket.emit('accept-trade', {trade_id:trade_id});
 }
+
+Client.send.cancelTrade = function(trade_id) {
+  Client.socket.emit('cancel-trade', {trade_id:trade_id});
+}
+
+Client.send.offerItemsTrade = function(trade_id, items) {
+
+}
+
+Client.send.withdrawItemsTrade = function(trade_id, items) {
+
+}
+
+Client.send.readyTrade = function(trade_id, status) {
+
+}
+
+
+

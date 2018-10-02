@@ -99,6 +99,7 @@ Client.socket.on('trade-accepted', function(data) {
 Client.socket.on('trade-declined', function(data) {
   console.log('trade-declined event');
 
+  Agent.my_agent.remove_trade(data.trade_id);
 });
 
 Client.socket.on('trade-complete', function(data) {

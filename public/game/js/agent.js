@@ -51,4 +51,9 @@ Agent.prototype.set_location = function(x, y) {
 
 Agent.prototype.add_trade = function(trade) {
   Agent.my_agent.trades[trade.trade_id] = trade;
+  updateTradeRequest(trade.trade_id, trade.agent.agent_id, false);
+}
+
+Agent.prototype.remove_trade = function(trade_id) {
+  Agent.my_agent.trades[trade_id].destroy();
 }

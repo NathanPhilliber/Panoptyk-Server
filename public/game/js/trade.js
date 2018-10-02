@@ -17,6 +17,11 @@ Trade.prototype.draw = function() {
   var title = document.createElement('h6');
   title.innerHTML = "Trade with " + this.agent.name;
 
+  var trade_id = this.trade_id;
+  var cancelButton = document.createElement("button");
+  cancelButton.innerHTML = "Cancel Trade";
+  cancelButton.addEventListener("click", function(){Client.send.cancelTrade(trade_id)});
+
   var table = document.createElement('table');
   table.style.width = "100%";
 
@@ -38,6 +43,7 @@ Trade.prototype.draw = function() {
 
 
   node.appendChild(title);
+  node.appendChild(cancelButton);
   node.appendChild(table);
 
   container.appendChild(node);
