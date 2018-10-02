@@ -236,7 +236,7 @@ Controller.remove_agent_from_cnode_if_in = function(agent) {
 
 
 Controller.create_trade = function(cnode, from_agent, to_agent) {
-  var trade = server.models.Trade(from_agent, to_agent, cnode);
+  var trade = new server.models.Trade(from_agent, to_agent, cnode);
 
   server.send.trade_requested(to_agent.socket, trade);
 
@@ -245,8 +245,8 @@ Controller.create_trade = function(cnode, from_agent, to_agent) {
 
 
 Controller.accept_trade = function(trade) {
-  server.send.trade_accepted(trade.agent_ini.socket, trade);
-  server.send.trade_accepted(trade.agent_res.socket, trade);
+  server.send.trade_accepted(trade.agent_ini.socket, trade, trade.agent_res);
+  server.send.trade_accepted(trade.agent_res.socket, trade, trade.agent_ini);
   trade.set_status(2);
 }
 

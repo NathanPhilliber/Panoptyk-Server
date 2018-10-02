@@ -8,6 +8,7 @@ function Agent(id, username, my_agent=false) {
   this.y = Math.random() * (game.canvas.height-150) + 75;
   this.graphics = graphics.add.graphics(0,0);
   this.cnode = null;
+  this.trades = {};
 
   console.log("Agent Initialized (" + id + ", " + username + ")");
 
@@ -46,4 +47,8 @@ Agent.prototype.set_location = function(x, y) {
   this.sprite.y = y;
   this.title.x = x;
   this.title.y = y;
+}
+
+Agent.prototype.add_trade = function(trade) {
+  Agent.my_agent.trades[trade.trade_id] = trade;
 }

@@ -1,3 +1,7 @@
+table, th, td {
+  border: 1px solid black;
+}
+
 #i_div_game {
   display: inline-block;
 }

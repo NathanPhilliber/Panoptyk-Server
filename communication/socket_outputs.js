@@ -181,10 +181,10 @@ server.send.trade_requested = function(socket, trade) {
 }
 
 
-server.send.trade_accepted = function(socket, trade) {
+server.send.trade_accepted = function(socket, trade, other_agent) {
   server.log("Trade "+ trade.trade_id + " accepted (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
 
-  socket.emit("trade-accepted", {trade_id:trade.trade_id});
+  socket.emit("trade-accepted", {trade_id:trade.trade_id, agent_id:other_agent.agent_id});
 }
 
 

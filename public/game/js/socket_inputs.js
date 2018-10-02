@@ -50,7 +50,6 @@ Client.socket.on('add-items-room', function(data) {
   for (let item of data.items_data) {
     current_room.place_item(item, data.agent_id);
   }
-
 });
 
 Client.socket.on('remove-items-inventory', function(data) {
@@ -81,6 +80,40 @@ Client.socket.on('agent-leave-cnode', function(data) {
   console.log("agent-leave-cnode event: " + JSON.stringify(data));
 
   current_room.get_cnode(data.cnode_id).remove_agent(current_room.get_agent(data.agent_id));
+});
+
+Client.socket.on('trade-requested', function(data) {
+  console.log("trade-requested event: " + JSON.stringify(data));
+
+  updateTradeRequest(data.trade_id, data.agent_id);
+  current_room.get_agent(data.agent_id).last_trade_id = data.trade_id;
+});
+
+Client.socket.on('trade-accepted', function(data) {
+  console.log('trade-accepted event: ' + JSON.stringify(data));
+
+  // create trade object
+  Agent.my_agent.add_trade(new Trade(current_room.get_agent(data.agent_id), data.trade_id));
+});
+
+Client.socket.on('trade-declined', function(data) {
+  console.log('trade-declined event');
+
+});
+
+Client.socket.on('trade-complete', function(data) {
+  console.log('trade-complete event');
+
+});
+
+Client.socket.on('add-items-trade', function(data) {
+  console.log('add-items-trade event');
+
+});
+
+Client.socket.on('remove-items-trade', function(data) {
+  console.log('remove-items-trade');
+
 });
 
 Client.socket.on('event-failed', function(data) {

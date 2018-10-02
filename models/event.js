@@ -142,7 +142,7 @@ server.models.Event.validate_cnode_has_space = function(cnode) {
     return {status: false, message: 'Cnode is full', cnode:cnode}
   }
 
-  return {status: true, message:'', cnode:cnode}
+  return {status: true, message:'', cnode:cnode};
 }
 
 
@@ -151,7 +151,19 @@ server.models.Event.validate_cnode_has_agent = function(cnode, agent) {
     return {status: false, message: 'Agent does not belong to cnode', cnode:cnode}
   }
 
-  return {status: true, message: '', cnode: cnode}
+  return {status: true, message: '', cnode: cnode};
+}
+
+server.models.Event.validate_agents_share_cnode = function(agent1, agent2) {
+  if (agent1.cnode != agent2.cnode || !agent1.cnode) {
+    return {status:false, message: 'Agents not in same cnode'}
+  }
+
+  return {status: true, message:'', cnode:agent1.cnode, to_agent:agent2};
+}
+
+server.models.Event.validate_agents_not_already_trading = function(agent1, agent2) {
+
 }
 
 server.models.Event.validate_trade_exists = function(trade_id) {
@@ -161,7 +173,7 @@ server.models.Event.validate_trade_exists = function(trade_id) {
     return {status: false, message: 'Could not find trade with id ' + trade_id}
   }
 
-  return {status: true, message: '', trade:trade}
+  return {status: true, message: '', trade:trade};
 }
 
 server.models.Event.validate_trade_status = function(trade, status_options) {

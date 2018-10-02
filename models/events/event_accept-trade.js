@@ -14,7 +14,7 @@ function Event_acceptTrade(socket, inputData) {
   }
 
   this.cnode = res.cnode;
-  this.to_agent = res.to_agent;
+  this.to_agent = res.trade.agent_ini;
   this.trade = res.trade;
 
   server.control.accept_trade(this.trade);
@@ -50,11 +50,12 @@ Event_acceptTrade.validate = function(structure, agent) {
   if (!(res = server.models.Event.validate_trade_status(res.trade, [3])).status) {
     return res;
   }
+  var res2 = res;
   if (!(res = server.models.Event.validate_agent_logged_in(res.trade.agent_ini)).status) {
     return res;
   }
 
-  return res;
+  return res2;
 };
 
 server.models.Event_acceptTrade = Event_acceptTrade;

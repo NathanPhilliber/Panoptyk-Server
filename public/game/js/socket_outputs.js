@@ -33,3 +33,12 @@ Client.send.joinCnode = function(cnode) {
 Client.send.leaveCnode = function(cnode) {
   Client.socket.emit('leave-cnode', {cnode_id: cnode.cnode_id});
 }
+
+Client.send.requestTrade = function(agent_id) {
+  console.log("Requesting trade with agent " + agent_id);
+  Client.socket.emit('request-trade', {agent_id: agent_id});
+}
+
+Client.send.acceptTrade = function(trade_id) {
+  Client.socket.emit('accept-trade', {trade_id:trade_id});
+}

@@ -82,14 +82,22 @@ function getAgentMeetingRow(agent) {
   node.id = 'tradeAgentDiv_' + agent.agent_id;
 
   var tradeButton = document.createElement('button');
+  tradeButton.id = "tradeButton_" + agent.agent_id;
   tradeButton.innerHTML = "Trade";
-  tradeButton.addEventListener("click", function(){});
+  tradeButton.addEventListener("click", function(){Client.send.requestTrade(agent.agent_id)});
+
+  var confirmButton = document.createElement("button");
+  confirmButton.id = "tradeConfirm_" + agent.agent_id;
+  confirmButton.innerHTML = "Accept Trade Request";
+  confirmButton.addEventListener("click", function(){Client.send.acceptTrade(agent.last_trade_id)});
+  confirmButton.style.display = "none";
 
   var agentText = document.createElement('p');
   agentText.style.display = 'inline-block';
   agentText.innerHTML = agent.name;
 
   node.appendChild(tradeButton);
+  node.appendChild(confirmButton);
   node.appendChild(agentText);
 
   return node;
@@ -98,6 +106,11 @@ function getAgentMeetingRow(agent) {
 function removeAgentMeetingRow(agent_id) {
   var node = document.getElementById("tradeAgentDiv_" + agent_id);
   node.parentNode.removeChild(node);
+}
+
+function updateTradeRequest(trade_id, agent_id, show=true){
+  document.getElementById("tradeButton_" + agent_id).style.display = show ? "none" : "inline-block";
+  document.getElementById("tradeConfirm_" + agent_id).style.display = show ? "inline-block" : "none";
 }
 
 function changeTab(evt, tabID) {
