@@ -34,7 +34,11 @@ Cnode.prototype.add_agent = function(agent) {
   agent.move(pos.x, pos.y);
 
   if (agent == Agent.my_agent) {
+    agent.cnode = this;
     loadTradeMeetingSpot("Meeting Location", this.agents);
+  }
+  else if(Agent.my_agent.cnode == this){
+    document.getElementById("i_div_meetingSpotAgents").appendChild(getAgentMeetingRow(agent));
   }
 }
 
@@ -51,6 +55,9 @@ Cnode.prototype.remove_agent = function(agent) {
 
   if (agent == Agent.my_agent) {
     clearTradeMeetingSpot();
+  }
+  else if(Agent.my_agent.cnode == this) {
+    removeAgentMeetingRow(agent.agent_id);
   }
 }
 

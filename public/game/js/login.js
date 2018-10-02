@@ -48,11 +48,6 @@ function updateInventoryAddItem(item) {
   document.getElementById('i_div_inventory').appendChild(node);
 }
 
-function updateInventoryRemoveItem(item_id) {
-  var del = document.getElementById('item_' + item_id);
-  del.parentNode.removeChild(del);
-}
-
 function showLoginArea() {
   document.getElementById("i_div_loginArea").style.display = "block";
   document.getElementById("i_div_game").style.display = "none";
@@ -70,7 +65,9 @@ function loadTradeMeetingSpot(name, agents) {
   var adiv = document.getElementById("i_div_meetingSpotAgents");
 
   for (let agent of agents) {
-    adiv.appendChild(getAgentMeetingRow(agent));
+    if (agent != Agent.my_agent){
+      adiv.appendChild(getAgentMeetingRow(agent));
+    }
   }
 }
 
@@ -81,7 +78,26 @@ function clearTradeMeetingSpot() {
 }
 
 function getAgentMeetingRow(agent) {
+  var node = document.createElement('div');
+  node.id = 'tradeAgentDiv_' + agent.agent_id;
 
+  var tradeButton = document.createElement('button');
+  tradeButton.innerHTML = "Trade";
+  tradeButton.addEventListener("click", function(){});
+
+  var agentText = document.createElement('p');
+  agentText.style.display = 'inline-block';
+  agentText.innerHTML = agent.name;
+
+  node.appendChild(tradeButton);
+  node.appendChild(agentText);
+
+  return node;
+}
+
+function removeAgentMeetingRow(agent_id) {
+  var node = document.getElementById("tradeAgentDiv_" + agent_id);
+  node.parentNode.removeChild(node);
 }
 
 function changeTab(evt, tabID) {

@@ -78,7 +78,9 @@ Client.socket.on('agent-join-cnode', function(data) {
 });
 
 Client.socket.on('agent-leave-cnode', function(data) {
-  console.log("agent-leave-cnode event: " + data);
+  console.log("agent-leave-cnode event: " + JSON.stringify(data));
+
+  current_room.get_cnode(data.cnode_id).remove_agent(current_room.get_agent(data.agent_id));
 });
 
 Client.socket.on('event-failed', function(data) {
