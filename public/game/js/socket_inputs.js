@@ -105,6 +105,7 @@ Client.socket.on('trade-declined', function(data) {
 Client.socket.on('trade-complete', function(data) {
   console.log('trade-complete event');
 
+  Agent.my_agent.remove_trade(data.trade_id);
 });
 
 Client.socket.on('add-items-trade', function(data) {

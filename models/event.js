@@ -158,6 +158,23 @@ server.models.Event.validate_items_in_trade = function(items, trade, owner) {
   return {status:true, message:'', trade:trade, items:items};
 }
 
+server.models.Event.validate_ready_status = function(trade, agent, rstatus) {
+  if (agent == trade.agent_ini) {
+    if (trade.status_ini != rstatus) {
+      return {status:false, message:'Trade ready status already set'}
+    }
+  }
+  else if(agent == trade.agent_res) {
+    if (trade.status_res != rstatus) {
+      return {status:false, message:'Trade ready status already set'}
+    }
+  }
+  else{
+    return {status:false, message:'Agent not in trade'}
+  }
+
+  return {status:true, message:'', trade:trade};
+}
 
 server.models.Event.validate_cnode_exists = function(room, cnode) {
   if (cnode == null) {

@@ -25,6 +25,19 @@ Trade.prototype.draw = function() {
   cancelButton.innerHTML = "Cancel Trade";
   cancelButton.addEventListener("click", function(){Client.send.cancelTrade(trade_id)});
 
+  var confirmButton = document.createElement("button");
+  confirmButton.innerHTML = "Approve Trade";
+  confirmButton.addEventListener("click", function() {
+    if (confirmButton.innerHTML == "Approve Trade") {
+      confirmButton.innerHTML = "Unapprove Trade";
+      Client.send.readyTrade(trade_id, true);
+    }
+    else {
+      confirmButton.innerHTML = "Approve Trade";
+      Client.send.readyTrade(trade_id, false);
+    }
+  });
+
   var table = document.createElement('table');
   table.style.width = "100%";
 
@@ -82,6 +95,7 @@ Trade.prototype.draw = function() {
 
   node.appendChild(title);
   node.appendChild(cancelButton);
+  node.appendChild(confirmButton);
   node.appendChild(table);
 
   container.appendChild(node);

@@ -1,4 +1,5 @@
 Trade.objects = [];
+Trade.actives = [];
 
 /**
  * Trade model.
@@ -7,17 +8,24 @@ Trade.objects = [];
  * @param {Object} cnode - cnode trade is happening in.
  * @param {int} id - id of trade. If null, one will be assigned.
  */
-function Trade(agent_ini, agent_res, cnode, id=null) {
+function Trade(agent_ini, agent_res, cnode, id=null, result_status=3) {
   this.agent_ini = agent_ini;
   this.agent_res = agent_res;
   this.cnode = cnode;
-  this.result_status = 3;
+  this.result_status = result_status;
 
   this.items_ini = [];
   this.items_res = [];
 
+  this.status_ini = false;
+  this.status_res = false;
+
   (Trade.objects = Trade.objects || []).push(this);
   this.trade_id = id == null ? Trade.objects.length - 1 : id;
+
+  if (this.result_status == 3) {
+    Trade.actives.push(this);
+  }
 
   server.log('Trade ' + this.trade_id + ' Initialized.', 2);
 }
@@ -31,7 +39,8 @@ Trade.load = function(data) {
   new Trade(server.models.Agent.get_agent_by_id(data.agent_ini_id),
             server.models.Agent.get_agent_by_id(data.agent_res_id),
             server.models.Cnode.get_cnode_by_id(data.cnode_id),
-            data.trade_id);
+            data.trade_id,
+            data.result_status);
 
 }
 
@@ -129,6 +138,16 @@ Trade.prototype.set_status = function(stat) {
   this.result_status = stat;
 }
 
+Trade.prototype.set_agent_ready = function(agent, rstatus) {
+  if (agent == this.agent_ini) {
+    this.status_ini = rstatus;
+  }
+  else if(agent == this.agent_res) {
+    this.status_res = rstatus;
+  }
+
+  return this.status_ini && this.status_res;
+}
 
 Trade.prototype.add_items = function(items, owner) {
   if (owner == this.agent_ini) {
@@ -182,6 +201,8 @@ Trade.prototype.cleanup = function() {
     unlocked += item.item_id + " ";
   }
 
+  Trade.actives.splice(Trade.actives.indexOf(this), 1);
+
   server.log("Unlocked trade " + this.trade_id + " items [ " + unlocked + "]", 2);
 }
 
@@ -199,6 +220,18 @@ Trade.get_trade_by_id = function(trade_id) {
 
   server.log('Could not find trade with id ' + trade_id + '.', 0, 'trade.js');
   return null;
+}
+
+Trade.get_active_trades_with_agent = function(agent) {
+  trades = [];
+
+  for (let trade of Trade.actives) {
+    if (trade.agent_ini == agent || trade.agent_res == agent) {
+      trades.push(trade);
+    }
+  }
+
+  return trades;
 }
 
 module.exports = Trade;

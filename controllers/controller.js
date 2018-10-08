@@ -217,6 +217,9 @@ Controller.add_agent_to_cnode = function(cnode, agent) {
  */
 Controller.remove_agent_from_cnode = function(cnode, agent) {
   server.log("Removing agent " + agent.name + " from cnode " + cnode.cnode_id, 2);
+
+  Controller.end_all_trades_with_agent(agent);
+
   agent.leave_cnode();
   cnode.remove_agent(agent);
 
@@ -234,6 +237,11 @@ Controller.remove_agent_from_cnode_if_in = function(agent) {
   }
 }
 
+Controller.end_all_trades_with_agent = function(agent) {
+  for (let trade of server.models.Trade.get_active_trades_with_agent(agent)) {
+    Controller.cancel_trade(trade);
+  }
+}
 
 Controller.create_trade = function(cnode, from_agent, to_agent) {
   var trade = new server.models.Trade(from_agent, to_agent, cnode);
@@ -280,6 +288,8 @@ Controller.perform_trade = function(trade) {
 Controller.add_items_to_trade = function(trade, items, owner_agent) {
   server.log("Adding items to trade " + trade.trade_id  + "...", 2);
 
+  Controller.set_trade_unready_if_ready(trade, owner_agent);
+
   trade.add_items(items, owner_agent);
 
   server.send.add_items_trade(trade.agent_ini.socket, trade, items, owner_agent);
@@ -291,12 +301,35 @@ Controller.add_items_to_trade = function(trade, items, owner_agent) {
 Controller.remove_items_from_trade = function(trade, items, owner_agent) {
   server.log("Removing items from trade " + trade.trade_id  + "...", 2);
 
+  Controller.set_trade_unready_if_ready(trade, owner_agent);
+
   trade.remove_items(items, owner_agent);
 
   server.send.remove_items_trade(trade.agent_ini.socket, trade, items, owner_agent);
   server.send.remove_items_trade(trade.agent_res.socket, trade, items, owner_agent);
 
   server.log("Successfully removed items from trade " + trade.trade_id, 2);
+}
+
+Controller.set_trade_agent_status = function(trade, agent, rstatus) {
+  var end_trade = trade.set_agent_ready(agent, rstatus);
+
+  server.send.agent_ready_trade(
+    agent == trade.agent_ini ? trade.agent_ini.socket : trade.agent_res.socket,
+    trade, agent, rstatus);
+
+  if (end_trade) {
+    Controller.perform_trade(trade);
+  }
+}
+
+Controller.set_trade_unready_if_ready = function(trade, agent) {
+  if (trade.agent_ini == agent && trade.status_ini) {
+    Controller.set_trade_agent_status(trade, agent, false);
+  }
+  else if (trade.agent_res == agent && trade.status_res) {
+    Controller.set_trade_agent_status(trade, agent, false);
+  }
 }
 
 module.exports = Controller;
