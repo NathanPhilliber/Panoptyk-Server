@@ -255,6 +255,7 @@ Controller.cancel_trade = function(trade) {
   server.send.trade_declined(trade.agent_ini.socket, trade);
   server.send.trade_declined(trade.agent_res.socket, trade);
   trade.set_status(0);
+  trade.cleanup();
 }
 
 
@@ -271,6 +272,7 @@ Controller.perform_trade = function(trade) {
   Controller.add_items_to_agent_inventory(trade.agent_res, trade.items_ini);
 
   trade.set_status(1);
+  trade.cleanup();
 
   server.log("Successfully completed trade " + trade.trade_id, 2);
 }

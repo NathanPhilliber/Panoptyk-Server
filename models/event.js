@@ -125,6 +125,17 @@ server.models.Event.validate_items_in_room = function(room, item_ids) {
 }
 
 
+server.models.Event.validate_items_not_in_transaction = function(items) {
+  for (let item of items) {
+    if (item.in_transaction) {
+      return {'status': false, 'message': 'Item is currently in transaction'}
+    }
+  }
+
+  return {status:true, message:'', items:items};
+}
+
+
 server.models.Event.validate_cnode_exists = function(room, cnode) {
   if (cnode == null) {
     return {'status': false, 'message': 'Cnode does not exist'};
@@ -183,4 +194,5 @@ server.models.Event.validate_trade_status = function(trade, status_options) {
 
   return {status: true, message:'', trade:trade}
 }
+
 

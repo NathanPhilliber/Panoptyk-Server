@@ -45,7 +45,10 @@ Event_dropItems.validate = function(structure, agent) {
     return res;
   }
   if (!(res = server.models.Event.validate_agent_owns_items(agent, structure.item_ids)).status) {
-    return res; // Make sure this one is last ^^
+    return res;
+  }
+  if (!(res = server.models.Event.validate_items_not_in_transaction(res.items)).status) {
+    return res;
   }
   return res;
 };

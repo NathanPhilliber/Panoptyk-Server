@@ -26,7 +26,7 @@ Event_offerItemsTrade.event_name = 'offer-items-trade';
 
 Event_offerItemsTrade.formats = [{
   'trade_id': 'number',
-  'item_ids': 'Object'
+  'item_ids': 'object'
 }]
 
 
@@ -48,6 +48,9 @@ Event_offerItemsTrade.validate = function(structure, agent) {
     return res;
   }
   if (!(res = server.models.Event.validate_agent_owns_items(agent, structure.item_ids)).status) {
+    return res;
+  }
+  if (!(res = server.models.Event.validate_items_not_in_transaction(res.items)).status) {
     return res;
   }
   var items = res.items;

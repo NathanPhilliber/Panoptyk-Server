@@ -110,6 +110,7 @@ Client.socket.on('trade-complete', function(data) {
 Client.socket.on('add-items-trade', function(data) {
   console.log('add-items-trade event');
 
+  Trade.get_trade_by_id(data.trade_id).add_items(data.items_data, Agent.my_agent.agent_id == data.agent_id);
 });
 
 Client.socket.on('remove-items-trade', function(data) {

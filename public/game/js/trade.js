@@ -1,7 +1,10 @@
+Trade.objects = [];
 
 function Trade(agent, id) {
   this.trade_id = id;
   this.agent = agent;
+
+  Trade.objects.push(this);
 
   this.draw();
 
@@ -34,6 +37,20 @@ Trade.prototype.draw = function() {
   header.appendChild(header2);
   table.appendChild(header);
 
+  var itemRow = document.createElement("tr");
+  var itemArea1 = document.createElement("td");
+  var itemArea2 = document.createElement("td");
+  itemRow.appendChild(itemArea1);
+  itemRow.appendChild(itemArea2);
+  table.appendChild(itemRow);
+
+  var myItemDiv = document.createElement("div");
+  var youItemDiv = document.createElement("div");
+  myItemDiv.id = "myItemArea_" + trade_id;
+  youItemDiv.id = "youItemArea_" + trade_id;
+  itemArea1.appendChild(myItemDiv);
+  itemArea2.appendChild(youItemDiv);
+
   var tradeRow = document.createElement("tr");
   var tradeArea1 = document.createElement("td");
   var tradeArea2 = document.createElement("td");
@@ -46,8 +63,13 @@ Trade.prototype.draw = function() {
   var itemSelect = document.createElement("select");
   var addItemButton = document.createElement("button");
   itemSelect.style.display = "inline-block";
+  itemSelect.id = "select_" + trade_id;
   addItemButton.style.display = "inline-block";
   addItemButton.innerHTML = "add";
+  addItemButton.addEventListener('click', function(){
+    var e = document.getElementById("select_" + trade_id);
+    Client.send.offerItemsTrade(trade_id, [parseInt(e.options[e.selectedIndex].value)])
+  });
   itemSelectDiv.appendChild(itemSelect);
   itemSelectDiv.appendChild(addItemButton);
 
@@ -77,6 +99,29 @@ Trade.get_available_options = function() {
 
 }
 
+Trade.prototype.add_items = function(items_data, is_mine) {
+  var container = is_mine ? document.getElementById("myItemArea_"+this.trade_id) : document.getElementById("youItemArea_"+this.trade_id);
+
+  for (let data of items_data) {
+    var tradeItemDiv = document.createElement("div");
+    tradeItemDiv.id = "tradeItem_" + this.trade_id + "_" + data.item_id;
+    var itemTitle = document.createElement("p");
+    itemTitle.innerHTML = data.item_name;
+    itemTitle.style.display = "inline-block";
+    var itemRemoveButton = document.createElement("button");
+    itemRemoveButton.innerHTML = "Remove";
+    tradeItemDiv.appendChild(itemTitle);
+    tradeItemDiv.appendChild(itemRemoveButton);
+    container.appendChild(tradeItemDiv);
+
+
+  }
+}
+
+Trade.prototype.remove_items = function(item_ids) {
+
+}
+
 Trade.prototype.destroy = function() {
   var node = document.getElementById("activeTrade_" + this.trade_id);
   node.parentNode.removeChild(node);
@@ -93,4 +138,13 @@ Trade.get_trade_with_agent = function(agent) {
 
   console.log("Could not find trade with agent " + agent.agent_id);
   return null;
+}
+
+Trade.get_trade_by_id = function(trade_id) {
+  for (let trade of Trade.objects) {
+    if (trade.trade_id == trade_id) {
+      return trade;
+    }
+  }
+  console.log("Could not find trade with id " + trade_id);
 }

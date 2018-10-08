@@ -132,13 +132,18 @@ Trade.prototype.set_status = function(stat) {
 
 Trade.prototype.add_items = function(items, owner) {
   if (owner == this.agent_ini) {
-    this.items_ini.push(items);
+    this.items_ini.push(...items);
   }
   else if (owner == this.agent_res) {
-    this.items_res.push(items);
+    this.items_res.push(...items);
   }
   else {
     server.log("Agent not in trade", 0, "trade.js");
+    return;
+  }
+
+  for (let item of items) {
+    item.in_transaction = true;
   }
 }
 
@@ -156,9 +161,29 @@ Trade.prototype.remove_items = function(items, owner) {
   }
   else {
     server.log("Agent not in trade", 0, "trade.js");
+    return;
+  }
+
+  for (let item of items) {
+    item.in_transaction = false;
   }
 }
 
+Trade.prototype.cleanup = function() {
+  var unlocked = '';
+
+  for (let item of this.items_ini) {
+    item.in_transaction = false;
+    unlocked += item.item_id + " ";
+  }
+
+  for (let item of this.items_res) {
+    item.in_transaction = false;
+    unlocked += item.item_id + " ";
+  }
+
+  server.log("Unlocked trade " + this.trade_id + " items [ " + unlocked + "]", 2);
+}
 
 /**
  * Find a trade by its id.

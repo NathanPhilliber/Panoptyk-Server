@@ -47,16 +47,16 @@ Client.send.cancelTrade = function(trade_id) {
   Client.socket.emit('cancel-trade', {trade_id:trade_id});
 }
 
-Client.send.offerItemsTrade = function(trade_id, items) {
-
+Client.send.offerItemsTrade = function(trade_id, item_ids) {
+  Client.socket.emit('offer-items-trade', {trade_id:trade_id, item_ids:item_ids});
 }
 
 Client.send.withdrawItemsTrade = function(trade_id, items) {
-
+  Client.socket.emit('widthdraw-items-trade', {trade_id:trade_id, item_ids:item_ids});
 }
 
 Client.send.readyTrade = function(trade_id, status) {
-
+  Client.socket.emit('ready-trade', {trade_id:trade_id, ready_status:status});
 }
 
 

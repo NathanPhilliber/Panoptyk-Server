@@ -14,6 +14,8 @@ function Item(name, type, room=null, agent=null, id=null) {
   this.room = room;
   this.agent = agent;
 
+  this.in_transaction = false;
+
   (Item.objects = Item.objects || []).push(this);
   this.item_id = id == null ? Item.objects.length - 1 : id;
 
