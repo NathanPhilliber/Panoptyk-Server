@@ -129,6 +129,37 @@ Trade.prototype.set_status = function(stat) {
   this.result_status = stat;
 }
 
+
+Trade.prototype.add_items = function(items, owner) {
+  if (owner == this.agent_ini) {
+    this.items_ini.push(items);
+  }
+  else if (owner == this.agent_res) {
+    this.items_res.push(items);
+  }
+  else {
+    server.log("Agent not in trade", 0, "trade.js");
+  }
+}
+
+
+Trade.prototype.remove_items = function(items, owner) {
+  if (owner == this.agent_ini) {
+    this.items_ini = this.items_ini.filter(function(x) {
+      return items.indexOf(x) < 0;
+    });
+  }
+  else if (owner == this.agent_res) {
+    this.items_res = this.items_res.filter(function(x) {
+      return items.indexOf(x) < 0;
+    });
+  }
+  else {
+    server.log("Agent not in trade", 0, "trade.js");
+  }
+}
+
+
 /**
  * Find a trade by its id.
  * @param {int} trade_id - trade id

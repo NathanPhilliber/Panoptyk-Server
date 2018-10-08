@@ -16,7 +16,7 @@ function Event_offerItemsTrade(socket, inputData) {
   this.items = res.items;
   this.trade = res.trade;
 
-  //control
+  server.control.add_items_to_trade(this.trade, this.items, this.agent);
 
   (server.models.Event.objects = server.models.Event.objects || []).push(this);
   server.log('Event offer-items-trade ' + this.trade.trade_id + ' registered.', 2);

@@ -159,12 +159,22 @@ server.send.agent_leave_cnode = function(agent, cnode) {
 }
 
 
-server.send.add_items_trade = function(socket, trade, items) {
+server.send.add_items_trade = function(socket, trade, items, owner) {
+  var item_data = [];
 
+  for (let item of items) {
+    item_data.push(item.get_data());
+  }
+
+  socket.emit('add-items-trade', {
+    'trade_id': trade.trade_id,
+    'agent_id': owner.agent_id,
+    'items_data': item_data
+  });
 }
 
 
-server.send.remove_items_trade = function(socket, trade, items) {
+server.send.remove_items_trade = function(socket, trade, items, owner) {
 
 }
 

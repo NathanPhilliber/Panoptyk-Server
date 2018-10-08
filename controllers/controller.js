@@ -275,5 +275,26 @@ Controller.perform_trade = function(trade) {
   server.log("Successfully completed trade " + trade.trade_id, 2);
 }
 
+Controller.add_items_to_trade = function(trade, items, owner_agent) {
+  server.log("Adding items to trade " + trade.trade_id  + "...", 2);
+
+  trade.add_items(items, owner_agent);
+
+  server.send.add_items_trade(trade.agent_ini.socket, trade, items, owner_agent);
+  server.send.add_items_trade(trade.agent_res.socket, trade, items, owner_agent);
+
+  server.log("Successfully added items to trade " + trade.trade_id, 2);
+}
+
+Controller.remove_items_from_trade = function(trade, items, owner_agent) {
+  server.log("Removing items from trade " + trade.trade_id  + "...", 2);
+
+  trade.remove_items(items, owner_agent);
+
+  server.send.remove_items_trade(trade.agent_ini.socket, trade, items, owner_agent);
+  server.send.remove_items_trade(trade.agent_res.socket, trade, items, owner_agent);
+
+  server.log("Successfully removed items from trade " + trade.trade_id, 2);
+}
 
 module.exports = Controller;
