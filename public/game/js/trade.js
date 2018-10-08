@@ -68,7 +68,7 @@ Trade.prototype.draw = function() {
   addItemButton.innerHTML = "add";
   addItemButton.addEventListener('click', function(){
     var e = document.getElementById("select_" + trade_id);
-    Client.send.offerItemsTrade(trade_id, [parseInt(e.options[e.selectedIndex].value)])
+    Client.send.offerItemsTrade(trade_id, [parseInt(e.options[e.selectedIndex].value)]);
   });
   itemSelectDiv.appendChild(itemSelect);
   itemSelectDiv.appendChild(addItemButton);
@@ -101,6 +101,7 @@ Trade.get_available_options = function() {
 
 Trade.prototype.add_items = function(items_data, is_mine) {
   var container = is_mine ? document.getElementById("myItemArea_"+this.trade_id) : document.getElementById("youItemArea_"+this.trade_id);
+  var trade_id = this.trade_id;
 
   for (let data of items_data) {
     var tradeItemDiv = document.createElement("div");
@@ -108,18 +109,27 @@ Trade.prototype.add_items = function(items_data, is_mine) {
     var itemTitle = document.createElement("p");
     itemTitle.innerHTML = data.item_name;
     itemTitle.style.display = "inline-block";
-    var itemRemoveButton = document.createElement("button");
-    itemRemoveButton.innerHTML = "Remove";
     tradeItemDiv.appendChild(itemTitle);
-    tradeItemDiv.appendChild(itemRemoveButton);
+
+    if (is_mine) {
+      var itemRemoveButton = document.createElement("button");
+      itemRemoveButton.innerHTML = "Remove";
+      itemRemoveButton.addEventListener('click', function(){
+        Client.send.withdrawItemsTrade(trade_id, [data.item_id]);
+      });
+      tradeItemDiv.appendChild(itemRemoveButton);
+    }
+
+
     container.appendChild(tradeItemDiv);
-
-
   }
 }
 
 Trade.prototype.remove_items = function(item_ids) {
-
+  for (let item_id of item_ids) {
+    var row = document.getElementById("tradeItem_" + this.trade_id + "_" + item_id);
+    row.parentNode.removeChild(row);
+  }
 }
 
 Trade.prototype.destroy = function() {

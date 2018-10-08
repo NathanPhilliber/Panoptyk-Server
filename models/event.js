@@ -136,6 +136,29 @@ server.models.Event.validate_items_not_in_transaction = function(items) {
 }
 
 
+server.models.Event.validate_items_in_trade = function(items, trade, owner) {
+  if (owner == trade.agent_ini) {
+    for (let item of items) {
+      if (trade.items_ini.indexOf(item) < 0) {
+        return {'status': false, 'message': 'Item not in trade'}
+      }
+    }
+  }
+  else if(owner == trade.agent_res) {
+    for (let item of items) {
+      if (trade.items_res.indexOf(item) < 0) {
+        return {'status': false, 'message': 'Item not in trade'}
+      }
+    }
+  }
+  else {
+    return {'status': false, 'message': 'Bad trade'}
+  }
+
+  return {status:true, message:'', trade:trade, items:items};
+}
+
+
 server.models.Event.validate_cnode_exists = function(room, cnode) {
   if (cnode == null) {
     return {'status': false, 'message': 'Cnode does not exist'};

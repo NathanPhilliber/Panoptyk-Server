@@ -116,6 +116,7 @@ Client.socket.on('add-items-trade', function(data) {
 Client.socket.on('remove-items-trade', function(data) {
   console.log('remove-items-trade');
 
+  Trade.get_trade_by_id(data.trade_id).remove_items(data.item_ids);
 });
 
 Client.socket.on('event-failed', function(data) {

@@ -51,8 +51,9 @@ Client.send.offerItemsTrade = function(trade_id, item_ids) {
   Client.socket.emit('offer-items-trade', {trade_id:trade_id, item_ids:item_ids});
 }
 
-Client.send.withdrawItemsTrade = function(trade_id, items) {
-  Client.socket.emit('widthdraw-items-trade', {trade_id:trade_id, item_ids:item_ids});
+Client.send.withdrawItemsTrade = function(trade_id, item_ids) {
+  console.log("Trying to withdraw items " + trade_id + " : " + item_ids);
+  Client.socket.emit('withdraw-items-trade', {trade_id:trade_id, item_ids:item_ids});
 }
 
 Client.send.readyTrade = function(trade_id, status) {
