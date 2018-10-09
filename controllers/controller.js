@@ -4,6 +4,8 @@ var Controller = {};
  * Add items to agent's inventory. Does validation.
  * @param {Object} agent - agent to give items to.
  * @param {[Object]} items - list of items to give to agent.
+ * @param {boolean} copy_nonphysical - if an item is given that is nonphysical and has an
+ *    owner, a copy will be made and added to inventory.
  */
 Controller.add_items_to_agent_inventory = function(agent, items, copy_nonphysical=false) {
 
@@ -45,6 +47,7 @@ Controller.add_items_to_agent_inventory = function(agent, items, copy_nonphysica
 /**
  * Remove items from agent's inventory. Does validation.
  * @params {[Object]} items - list of items to remove from agent.
+ * 2param {boolean} skip_nonphysical - if an item is nonphysical, do not remove it.
  */
 Controller.remove_items_from_agent_inventory = function(items, skip_nonphysical=false) {
   if (items === null || items.length == 0) {
@@ -252,12 +255,25 @@ Controller.remove_agent_from_cnode_if_in = function(agent) {
   }
 }
 
+
+/**
+ * Cancel all trades containing an agent.
+ * @param {Object} agent - agent object.
+ */
 Controller.end_all_trades_with_agent = function(agent) {
   for (let trade of server.models.Trade.get_active_trades_with_agent(agent)) {
     Controller.cancel_trade(trade);
   }
 }
 
+
+/**
+ * Create a trade and send request to appropriate agent.
+ * 2param {Object} cnode - cnode object containing both agents.
+ * @param {Object} from_agent - agent object making request.
+ * @param {Object} to_agent - agent object getting request.
+ * @returns {Object} new trade object.
+ */
 Controller.create_trade = function(cnode, from_agent, to_agent) {
   var trade = new server.models.Trade(from_agent, to_agent, cnode);
 
@@ -267,6 +283,11 @@ Controller.create_trade = function(cnode, from_agent, to_agent) {
 }
 
 
+/**
+ * Accept a trade and send updates to both agents.
+ * Trade is now ready to accept items.
+ * @param {Object} trade - trade object.
+ */
 Controller.accept_trade = function(trade) {
   server.send.trade_accepted(trade.agent_ini.socket, trade, trade.agent_res);
   server.send.trade_accepted(trade.agent_res.socket, trade, trade.agent_ini);
@@ -274,6 +295,10 @@ Controller.accept_trade = function(trade) {
 }
 
 
+/**
+ * Cancel a trade, send updates to agents, and close out trade.
+ * @param {Object} trade - trade object.
+ */
 Controller.cancel_trade = function(trade) {
   server.send.trade_declined(trade.agent_ini.socket, trade);
   server.send.trade_declined(trade.agent_res.socket, trade);
@@ -282,6 +307,11 @@ Controller.cancel_trade = function(trade) {
 }
 
 
+/**
+ * Do the trade. Send updates to agents, move items, close out trade, and give observation
+ *    info to all agents in room.
+ * @param {Object} trade - trade object.
+ */
 Controller.perform_trade = function(trade) {
   server.log("Ending trade " + trade.trade_id, 2);
 
@@ -303,6 +333,13 @@ Controller.perform_trade = function(trade) {
   server.log("Successfully completed trade " + trade.trade_id, 2);
 }
 
+
+/**
+ * Add items to a trade and send updates.
+ * @param {Object} trade - trade object.
+ * @param {[Object]} items - array of items to add.
+ * @param {Object} owner_agent - agent adding the items.
+ */
 Controller.add_items_to_trade = function(trade, items, owner_agent) {
   server.log("Adding items to trade " + trade.trade_id  + "...", 2);
 
@@ -316,6 +353,13 @@ Controller.add_items_to_trade = function(trade, items, owner_agent) {
   server.log("Successfully added items to trade " + trade.trade_id, 2);
 }
 
+
+/**
+ * Remove items from a trade and send updates.
+ * @param {Object} trade - trade object.
+ * @param {[Object]} items - array of items to remove.
+ * @param {Object} owner_agent - agent removing the items.
+ */
 Controller.remove_items_from_trade = function(trade, items, owner_agent) {
   server.log("Removing items from trade " + trade.trade_id  + "...", 2);
 
@@ -329,6 +373,13 @@ Controller.remove_items_from_trade = function(trade, items, owner_agent) {
   server.log("Successfully removed items from trade " + trade.trade_id, 2);
 }
 
+
+/**
+ * Update agent trade ready status. If both agents are ready, trade will commence and end.
+ * @param {Object} trade - trade object.
+ * @param {Object} agent - agent object.
+ * @param {boolean} rstatus - true if ready, false if not ready.
+ */
 Controller.set_trade_agent_status = function(trade, agent, rstatus) {
   var end_trade = trade.set_agent_ready(agent, rstatus);
 
@@ -341,6 +392,12 @@ Controller.set_trade_agent_status = function(trade, agent, rstatus) {
   }
 }
 
+
+/**
+ * Will turn an agent ready status to false if it is true.
+ * @param {Object} trade - trade object.
+ * @param {Object} agent - agent object.
+ */
 Controller.set_trade_unready_if_ready = function(trade, agent) {
   if (trade.agent_ini == agent && trade.status_ini) {
     Controller.set_trade_agent_status(trade, agent, false);
@@ -350,6 +407,12 @@ Controller.set_trade_unready_if_ready = function(trade, agent) {
   }
 }
 
+
+/**
+ * Give a piece of info to an array of agents.
+ * @param {[Object]} agents - agents to give info to.
+ * @param {string} info - info string.
+ */
 Controller.give_info_to_agents = function(agents, info) {
   for (let agent of agents) {
     var item = new server.models.Item(info, "observation", null, null, null, false);

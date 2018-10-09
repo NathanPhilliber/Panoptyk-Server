@@ -50,7 +50,8 @@ Agent.login = function(username, socket) {
   }
 
   if (sel_agent === null) {
-    sel_agent = new Agent(username, server.models.Room.get_room_by_id(server.settings.default_room_id));
+    sel_agent = new Agent(username,
+      server.models.Room.get_room_by_id(server.settings.default_room_id));
   }
 
   sel_agent.socket = socket;
@@ -105,11 +106,14 @@ Agent.load_all = function() {
   server.log("Loading agents...", 2);
 
   server.modules.fs.readdirSync(server.settings.data_dir + '/agents/').forEach(function(file) {
-    server.modules.fs.readFile(server.settings.data_dir + '/agents/' + file, function read(err, data) {
+    server.modules.fs.readFile(server.settings.data_dir +
+      '/agents/' + file, function read(err, data) {
+
       if (err) {
         server.log(err);
         return;
       }
+
       var json = JSON.parse(data);
       server.log("Loading agent " + json.name, 2);
       Agent.load(json);
@@ -244,7 +248,8 @@ Agent.prototype.logout = function() {
 
 
 /**
- *
+ * Add agent to cnode.
+ * @param {Object} cnode - cnode object.
  */
 Agent.prototype.join_cnode = function(cnode) {
   this.cnode = cnode;
@@ -252,7 +257,7 @@ Agent.prototype.join_cnode = function(cnode) {
 
 
 /**
- *
+ * Remove an agent from its' cnode.
  */
 Agent.prototype.leave_cnode = function() {
   this.cnode = null;

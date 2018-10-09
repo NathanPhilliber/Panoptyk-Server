@@ -7,6 +7,7 @@ Item.objects = [];
  * @param {Object} room - room object item is in. (Optional).
  * @param {Object} agent - agent that owns item. (Optional).
  * @param {int} id - id of item. If null, one will be assigned.
+ * @param {boolean} physical - true if item is a physical item, false if not.
  */
 function Item(name, type, room=null, agent=null, id=null, physical=true) {
   this.type = type;
@@ -74,7 +75,8 @@ Item.save_all = function() {
   for (let item of Item.objects) {
     server.log("Saving item " + item.name, 2);
 
-    server.modules.fs.writeFileSync(server.settings.data_dir + '/items/' + item.item_id + '_' + item.name + '.json',
+    server.modules.fs.writeFileSync(server.settings.data_dir +
+      '/items/' + item.item_id + '_' + item.name + '.json',
       JSON.stringify(item.serialize()), 'utf8');
   }
 
@@ -89,7 +91,9 @@ Item.load_all = function() {
   server.log("Loading items...", 2);
 
   server.modules.fs.readdirSync(server.settings.data_dir + '/items/').forEach(function(file) {
-    server.modules.fs.readFile(server.settings.data_dir + '/items/' + file, function read(err, data) {
+    server.modules.fs.readFile(server.settings.data_dir +
+      '/items/' + file, function read(err, data) {
+
       if (err) {
         server.log(err);
         return;
@@ -102,6 +106,11 @@ Item.load_all = function() {
   });
 }
 
+
+/**
+ * Create a deep copy of this item.
+ * @returns {Object}
+ */
 Item.prototype.deep_copy = function() {
   return new Item(this.name, this.type, this.room, this.agent, null, this.physical);
 }

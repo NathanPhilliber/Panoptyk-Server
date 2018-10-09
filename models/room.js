@@ -50,7 +50,8 @@ Room.save_all = function() {
   server.log("Saving rooms...", 2);
   for (let room of Room.objects) {
     server.log("Saving room " + room.name, 2);
-    server.modules.fs.writeFileSync(server.settings.data_dir + '/rooms/' + room.room_id + "_" + room.name + '.json',
+    server.modules.fs.writeFileSync(server.settings.data_dir +
+      '/rooms/' + room.room_id + "_" + room.name + '.json',
       JSON.stringify(room.serialize()), 'utf8');
 
     room_to_adjacents[room.room_id] = [];
@@ -76,7 +77,9 @@ Room.load_all = function() {
 
   server.modules.fs.readdirSync(server.settings.data_dir + '/rooms/').forEach(function(file) {
     if (file !== 'room_connections.json') {
-      var data = server.modules.fs.readFileSync(server.settings.data_dir + '/rooms/' + file, 'utf8');
+      var data = server.modules.fs.readFileSync(server.settings.data_dir +
+        '/rooms/' + file, 'utf8');
+
       data = JSON.parse(data);
       server.log("Loading room " + data.name, 2);
       Room.load(data);
@@ -85,7 +88,8 @@ Room.load_all = function() {
 
   server.log("Loading Room Connections", 2);
   try {
-    var connections = JSON.parse(server.modules.fs.readFileSync(server.settings.data_dir + '/rooms/room_connections.json'));
+    var connections = JSON.parse(server.modules.fs.readFileSync(server.settings.data_dir +
+      '/rooms/room_connections.json'));
 
     for (var room_id in connections) {
       var room = Room.get_room_by_id(room_id);
@@ -152,7 +156,9 @@ Room.prototype.add_item = function(item) {
  * @param {Object} item - item to remove.
  */
 Room.prototype.remove_item = function(item) {
-  server.log("Removing item " + item.name + " from room object " + this.name + ", index=" + this.items.indexOf(item), 2);
+  server.log("Removing item " + item.name + " from room object " +
+    this.name + ", index=" + this.items.indexOf(item), 2);
+
   this.items.splice(this.items.indexOf(item), 1);
 }
 
@@ -206,7 +212,7 @@ Room.prototype.get_data = function() {
 
 /**
  * Add a cnode to a room.
- * @param 
+ * @param {Object} cnode - cnode to add to room.
  */
 Room.prototype.add_cnode = function(cnode) {
   this.cnodes.push(cnode);
@@ -214,7 +220,8 @@ Room.prototype.add_cnode = function(cnode) {
 
 
 /**
- *
+ * Remove a cnode from this room.
+ * @param {Object} cnode - cnode object.
  */
 Room.prototype.remove_cnode = function(cnode) {
   var index = this.cnodes.indexOf(cnode);

@@ -7,6 +7,8 @@ Trade.actives = [];
  * @param {Object} agent_res - responding agent
  * @param {Object} cnode - cnode trade is happening in.
  * @param {int} id - id of trade. If null, one will be assigned.
+ * @param {int} result_status - result status of trade.
+ *              0=failed, 1=success, 2=in progress, 3=requested
  */
 function Trade(agent_ini, agent_res, cnode, id=null, result_status=3) {
   this.agent_ini = agent_ini;
@@ -87,7 +89,9 @@ Trade.load_all = function() {
   server.log("Loading trades...", 2);
 
   server.modules.fs.readdirSync(server.settings.data_dir + '/trades/').forEach(function(file) {
-    server.modules.fs.readFile(server.settings.data_dir + '/trades/' + file, function read(err, data) {
+    server.modules.fs.readFile(server.settings.data_dir +
+      '/trades/' + file, function read(err, data) {
+
       if (err) {
         server.log(err);
         return;
@@ -101,6 +105,11 @@ Trade.load_all = function() {
 }
 
 
+/**
+ * Get item data for an agent in the trade.
+ * @param {Object} agent - agent object.
+ * @returns [Object] list of item data dictionaries.
+ */
 Trade.prototype.get_agent_items_data = function(agent) {
   data = [];
 
@@ -134,10 +143,22 @@ Trade.prototype.get_data = function() {
   }
 }
 
+
+/**
+ * Set status of trade.
+ * 0=failed, 1=success, 2=in progress, 3=requested
+ * @param {int} stat - status to set.
+ */
 Trade.prototype.set_status = function(stat) {
   this.result_status = stat;
 }
 
+
+/**
+ * Set an agent's ready status.
+ * @param {Object} agent - agent to set status for.
+ * @param {boolean} rstatus - status. True = ready, false = not ready.
+ */
 Trade.prototype.set_agent_ready = function(agent, rstatus) {
   if (agent == this.agent_ini) {
     this.status_ini = rstatus;
@@ -149,6 +170,12 @@ Trade.prototype.set_agent_ready = function(agent, rstatus) {
   return this.status_ini && this.status_res;
 }
 
+
+/**
+ * Add items to one side of the trade.
+ * @param {[Object]} items - items to add to trade.
+ * @param {Object} owner - agent object of agent adding the items.
+ */
 Trade.prototype.add_items = function(items, owner) {
   if (owner == this.agent_ini) {
     this.items_ini.push(...items);
@@ -167,6 +194,11 @@ Trade.prototype.add_items = function(items, owner) {
 }
 
 
+/**
+ * Remove items from one side of the trade.
+ * @param {[Object]} items - items to remove from trade.
+ * @param {Object} owner - agent object of agent removing the items.
+ */
 Trade.prototype.remove_items = function(items, owner) {
   if (owner == this.agent_ini) {
     this.items_ini = this.items_ini.filter(function(x) {
@@ -210,6 +242,7 @@ Trade.prototype.cleanup = function() {
 
   server.log("Unlocked trade " + this.trade_id + " items [ " + unlocked + "]", 2);
 }
+
 
 /**
  * Find a trade by its id.

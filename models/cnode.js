@@ -48,8 +48,8 @@ Cnode.save_all = function() {
   server.log("Saving cnodes...", 2);
   for (let cnode of Cnode.objects) {
     server.log("Saving cnode " + cnode.cnode_id, 2);
-    server.modules.fs.writeFileSync(server.settings.data_dir + '/cnodes/' + cnode.cnode_id + '_cnode.json',
-      JSON.stringify(cnode.serialize()), 'utf8');
+    server.modules.fs.writeFileSync(server.settings.data_dir +
+      '/cnodes/' + cnode.cnode_id + '_cnode.json', JSON.stringify(cnode.serialize()), 'utf8');
   }
 
   server.log("Cnodes saved.", 2);
@@ -63,7 +63,9 @@ Cnode.load_all = function() {
   server.log("Loading cnodes...", 2);
 
   server.modules.fs.readdirSync(server.settings.data_dir + '/cnodes/').forEach(function(file) {
-    var data = server.modules.fs.readFileSync(server.settings.data_dir + '/cnodes/' + file, 'utf8');
+    var data = server.modules.fs.readFileSync(server.settings.data_dir +
+      '/cnodes/' + file, 'utf8');
+
     data = JSON.parse(data);
     server.log("Loading cnode " + data.cnode_id, 2);
     Cnode.load(data);

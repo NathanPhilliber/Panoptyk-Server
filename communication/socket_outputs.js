@@ -23,7 +23,8 @@ server.send.login_complete = function(agent) {
 
 
 /**
- * Notify all agents in a room that agent entered the room. Assumes agent's room object is new room.
+ * Notify all agents in a room that agent entered the room.
+ * Assumes agent's room object is new room.
  * @param {Object} agent - agent object
  * @param {Object} old_room - room object agent is coming from
  */
@@ -66,7 +67,10 @@ server.send.room_data = function(agent, room, old_room=null) {
   var old_room_id = old_room === null ? null : old_room.room_id;
 
   agent.socket.emit('room-data',
-    {'room_data': room.get_data(), 'old_room_id': old_room_id, 'agents': room.get_agents(agent), 'items': room.get_items()});
+    {'room_data': room.get_data(),
+      'old_room_id': old_room_id,
+      'agents': room.get_agents(agent),
+      'items': room.get_items()});
 }
 
 
@@ -116,7 +120,8 @@ server.send.add_items_room = function(items, room, by_agent=null) {
   var agent_id = by_agent === null ? null : by_agent.agent_id;
 
   server.log('Put items ' + JSON.stringify(dat) + ' to room ' + room.name + '.', 2);
-  server.modules.io.in(room.room_id).emit('add-items-room', {'items_data': dat, 'agent_id': agent_id});
+  server.modules.io.in(room.room_id).emit('add-items-room',
+    {'items_data': dat, 'agent_id': agent_id});
 }
 
 
@@ -134,7 +139,8 @@ server.send.remove_items_room = function(items, room, by_agent=null) {
   var agent_id = by_agent === null ? null : by_agent.agent_id;
 
   server.log('Remove items ' + JSON.stringify(dat) + ' from room ' + room.name + '.', 2);
-  server.modules.io.in(room.room_id).emit('remove-items-room', {'item_ids': dat, 'agent_id': agent_id});
+  server.modules.io.in(room.room_id).emit('remove-items-room',
+    {'item_ids': dat, 'agent_id': agent_id});
 }
 
 
@@ -144,7 +150,8 @@ server.send.remove_items_room = function(items, room, by_agent=null) {
  */
 server.send.agent_join_cnode = function(agent) {
   server.log('Agent ' + agent.name + ' entered cnode ' + agent.cnode.cnode_id + '.', 2);
-  server.modules.io.in(agent.room.room_id).emit('agent-join-cnode', {'cnode_id': agent.cnode.cnode_id, 'agent_id': agent.agent_id});
+  server.modules.io.in(agent.room.room_id).emit('agent-join-cnode',
+    {'cnode_id': agent.cnode.cnode_id, 'agent_id': agent.agent_id});
 }
 
 
@@ -155,10 +162,18 @@ server.send.agent_join_cnode = function(agent) {
  */
 server.send.agent_leave_cnode = function(agent, cnode) {
   server.log('Agent ' + agent.name + ' left cnode ' + cnode.cnode_id + '.', 2);
-  server.modules.io.in(agent.room.room_id).emit('agent-leave-cnode', {'cnode_id': cnode.cnode_id, 'agent_id': agent.agent_id});
+  server.modules.io.in(agent.room.room_id).emit('agent-leave-cnode',
+    {'cnode_id': cnode.cnode_id, 'agent_id': agent.agent_id});
 }
 
 
+/**
+ * Add items to a trade. Send to specified socket.
+ * @param {Object} socket - socket object to update.
+ * @param {Object} trade - trade object.
+ * @param [Object] items - array of items to add.
+ * @param {Object} owner - agent adding the items.
+ */
 server.send.add_items_trade = function(socket, trade, items, owner) {
   var item_data = [];
 
@@ -174,6 +189,13 @@ server.send.add_items_trade = function(socket, trade, items, owner) {
 }
 
 
+/**
+ * Remove items from a trade. Send to specified socket.
+ * @param {Object} socket - socket object to update.
+ * @param {Object} trade - trade object.
+ * @param [Object] items - array of items to remove.
+ * @param {Object} owner - agent removing the items.
+ */
 server.send.remove_items_trade = function(socket, trade, items, owner) {
   var ids = [];
   for (let item of items) {
@@ -188,37 +210,68 @@ server.send.remove_items_trade = function(socket, trade, items, owner) {
 }
 
 
-server.send.agent_ready_trade = function(socket, trade, agent, readyStatus) {
-  socket.emit("agent-ready-trade", {trade_id:trade.trade_id, agent_id:agent.agent_id, ready_status:readyStatus});
+/**
+ * Update socket of trade ready status.
+ * @param {Object} socket - socket object to update.
+ * @param {Object} trade - trade object.
+ * @param {Object} agent - agent with the ready status.
+ * @param {boolean} ready_status - true if trade is ready, false if trade is not ready.
+ */
+server.send.agent_ready_trade = function(socket, trade, agent, ready_status) {
+  socket.emit("agent-ready-trade",
+    {trade_id:trade.trade_id, agent_id:agent.agent_id, ready_status:ready_status});
 }
 
 
+/**
+ * Update socket with trade request.
+ * @param {Object} socket - socket object to update.
+ * @param {Object} trade - trade object.
+ */
 server.send.trade_requested = function(socket, trade) {
-  server.log("Trade "+ trade.trade_id + " requested (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
+  server.log("Trade "+ trade.trade_id +
+    " requested (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
 
   socket.emit("trade-requested", {trade_id:trade.trade_id, agent_id:trade.agent_ini.agent_id});
 }
 
 
+/**
+ * Update socket with trade accept (trade is ready to start).
+ * @param {Object} socket - socket object to update.
+ * @param {Object} trade - trade object.
+ * @param {Object} agent - agent object of other agent in trade.
+ */
 server.send.trade_accepted = function(socket, trade, other_agent) {
-  server.log("Trade "+ trade.trade_id + " accepted (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
+  server.log("Trade "+ trade.trade_id +
+    " accepted (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
 
   socket.emit("trade-accepted", {trade_id:trade.trade_id, agent_id:other_agent.agent_id});
 }
 
 
+/**
+ * Update socket with trade cancelation.
+ * @param {Object} socket - socket object to update.
+ * @param {Object} trade - trade object.
+ */
 server.send.trade_declined = function(socket, trade) {
-  server.log("Trade "+ trade.trade_id + " declined (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
+  server.log("Trade "+ trade.trade_id +
+    " declined (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
 
   socket.emit("trade-declined", {trade_id:trade.trade_id});
 }
 
 
+/**
+ * Update socket with trade cancelation.
+ * @param {Object} socket - socket object to update.
+ * @param {Object} trade - trade object.
+ */
 server.send.trade_complete = function(socket, trade) {
-  server.log("Trade "+ trade.trade_id + " completed (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
+  server.log("Trade "+ trade.trade_id +
+    " completed (" + trade.agent_ini.name + "/" + trade.agent_res.name + ").", 2);
 
   socket.emit("trade-complete", {trade_id:trade.trade_id});
 }
-
-
 

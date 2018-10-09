@@ -125,6 +125,11 @@ server.models.Event.validate_items_in_room = function(room, item_ids) {
 }
 
 
+/**
+ * Make sure an item is not locked.
+ * @param {[Object]} items - items to check.
+ * @returns {Object} {status: boolean, message: string, items: [Object]}
+ */
 server.models.Event.validate_items_not_in_transaction = function(items) {
   for (let item of items) {
     if (item.in_transaction) {
@@ -136,6 +141,13 @@ server.models.Event.validate_items_not_in_transaction = function(items) {
 }
 
 
+/**
+ * Make sure a list of items is in a trade.
+ * @param {[Object]} items - list of items to check.
+ * @param {Object} trade - trade object.
+ * @param {Object} owner - agent object.
+ * @returns {Object} {status: boolean, message: string, trade: [Object]}
+ */
 server.models.Event.validate_items_in_trade = function(items, trade, owner) {
   if (owner == trade.agent_ini) {
     for (let item of items) {
@@ -158,6 +170,14 @@ server.models.Event.validate_items_in_trade = function(items, trade, owner) {
   return {status:true, message:'', trade:trade, items:items};
 }
 
+
+/**
+ * Check if a trade has an agent ready status.
+ * @param {Object} trade - trade object.
+ * @param {Object} agent - agent object.
+ * @param {boolean} rstatus - ready status.
+ * @returns {Object} {status: boolean, message: string, trade: Object}
+ */
 server.models.Event.validate_ready_status = function(trade, agent, rstatus) {
   if (agent == trade.agent_ini) {
     if (trade.status_ini != rstatus) {
@@ -176,6 +196,13 @@ server.models.Event.validate_ready_status = function(trade, agent, rstatus) {
   return {status:true, message:'', trade:trade};
 }
 
+
+/**
+ * Check if a cnode is in given room.
+ * @param {Object} room - room to see if cnode is in.
+ * @param {Object} cnode - cnode object.
+ * @returns {Object} {status: boolean, message: string, cnode: Object}
+ */
 server.models.Event.validate_cnode_exists = function(room, cnode) {
   if (cnode == null) {
     return {'status': false, 'message': 'Cnode does not exist'};
@@ -188,6 +215,11 @@ server.models.Event.validate_cnode_exists = function(room, cnode) {
 }
 
 
+/**
+ * Check if a cnode has space for another agent.
+ * @param {Object} cnode - cnode object.
+ * @returns {Object} {status: boolean, message: string, cnode: Object}
+ */
 server.models.Event.validate_cnode_has_space = function(cnode) {
   if (cnode.agents.length >= cnode.max_agents) {
     return {status: false, message: 'Cnode is full', cnode:cnode}
@@ -197,6 +229,12 @@ server.models.Event.validate_cnode_has_space = function(cnode) {
 }
 
 
+/**
+ * Check if an agent is in a cnode.
+ * @param {Object} cnode - cnode object.
+ * @param {Object} agent - agent object.
+ * @returns {Object} {status: boolean, message: string, cnode: Object}
+ */
 server.models.Event.validate_cnode_has_agent = function(cnode, agent) {
   if (cnode.get_agent_by_id(agent.agent_id) == null) {
     return {status: false, message: 'Agent does not belong to cnode', cnode:cnode}
@@ -205,6 +243,13 @@ server.models.Event.validate_cnode_has_agent = function(cnode, agent) {
   return {status: true, message: '', cnode: cnode};
 }
 
+
+/**
+ * Check if two agents are in the same cnode.
+ * @param {Object} agent1 - agent object.
+ * @param {Object} agent2 - agent object.
+ * @returns {Object} {status: boolean, message: string, cnode: Object, to_agent: Object}
+ */
 server.models.Event.validate_agents_share_cnode = function(agent1, agent2) {
   if (agent1.cnode != agent2.cnode || !agent1.cnode) {
     return {status:false, message: 'Agents not in same cnode'}
@@ -213,10 +258,23 @@ server.models.Event.validate_agents_share_cnode = function(agent1, agent2) {
   return {status: true, message:'', cnode:agent1.cnode, to_agent:agent2};
 }
 
+
+/**
+ * Check if two agents are already engaged in a trade together.
+ * @param {Object} agent1 - agent object.
+ * @param {Object} agent2 - agent object.
+ * @returns {Object} {}
+ */
 server.models.Event.validate_agents_not_already_trading = function(agent1, agent2) {
 
 }
 
+
+/**
+ * Check if a trade exists.
+ * @param {int} trade_id - id of trade.
+ * @returns {Object} {status: boolean, message: string, trade: Object}
+ */
 server.models.Event.validate_trade_exists = function(trade_id) {
   var trade = server.models.Trade.get_trade_by_id(trade_id);
 
@@ -227,6 +285,13 @@ server.models.Event.validate_trade_exists = function(trade_id) {
   return {status: true, message: '', trade:trade};
 }
 
+
+/**
+ * Check if a trade has a given status.
+ * @param {Object} trade - trade object.
+ * @param {[int]} status_options - array of possible statuses.
+ * @returns {Object} {status: boolean, message: string, trade: Object}
+ */
 server.models.Event.validate_trade_status = function(trade, status_options) {
   if (!trade || status_options.indexOf(trade.result_status) == -1) {
     return {status: false, message: 'Trade not in correct state', trade:trade}
@@ -235,6 +300,12 @@ server.models.Event.validate_trade_status = function(trade, status_options) {
   return {status: true, message:'', trade:trade}
 }
 
+
+/**
+ * Check that all items are physical.
+ * @param {[Object]} items - array of items.
+ * @returns {Object} {status: boolean, message: string, items: [Object]}
+ */
 server.models.Event.validate_items_are_physical = function(items) {
   for (let item of items) {
     if (!item.physical) {
@@ -244,3 +315,4 @@ server.models.Event.validate_items_are_physical = function(items) {
 
   return {status:true, message:'', items:items};
 }
+

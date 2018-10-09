@@ -1,3 +1,8 @@
+/**
+ * These are client -> server messages.
+ * This file should not need to be modified. To add new events, create new
+ * event files in models/events
+ */
 server.modules.io.on('connection', function(socket) {
   server.log('Client Connected', 2);
 
@@ -18,5 +23,4 @@ server.modules.io.on('connection', function(socket) {
       agent.logout();
     }
   });
-
 });
