@@ -10,3 +10,4 @@ To Do:
 - Authenticate users
 - Serialize event objects
 - Viewer client support
+- Implement error codes for error response messages
