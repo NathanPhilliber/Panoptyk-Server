@@ -50,6 +50,9 @@ Event_dropItems.validate = function(structure, agent) {
   if (!(res = server.models.Event.validate_items_not_in_transaction(res.items)).status) {
     return res;
   }
+  if (!(res = server.models.Event.validate_items_are_physical(res.items)).status) {
+    return res;
+  }
   return res;
 };
 

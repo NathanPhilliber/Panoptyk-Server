@@ -5,7 +5,7 @@ var Controller = {};
  * @param {Object} agent - agent to give items to.
  * @param {[Object]} items - list of items to give to agent.
  */
-Controller.add_items_to_agent_inventory = function(agent, items) {
+Controller.add_items_to_agent_inventory = function(agent, items, copy_nonphysical=false) {
 
   if (agent === null) {
     server.log("Cannot give items to null agent", 0);
@@ -18,18 +18,27 @@ Controller.add_items_to_agent_inventory = function(agent, items) {
   }
 
   for (let item of items) {
-    if (item.room !== null || item.agent !== null) {
+    if (item.room !== null || (item.agent !== null && (item.physical || !copy_nonphysical))) {
       server.log("Cannot give item to agent, item not available " + item.name, 0);
       return;
     }
   }
 
+  var added_items = [];
+
   for (let item of items) {
-    agent.add_item_inventory(item);
-    item.give_to_agent(agent);
+    if (!item.physical && item.agent !== null && copy_nonphysical) {
+      added_items.push(item.deep_copy());
+    }
+    else {
+      added_items.push(item);
+    }
+
+    agent.add_item_inventory(added_items[added_items.length-1]);
+    added_items[added_items.length-1].give_to_agent(agent);
   }
 
-  server.send.add_items_inventory(agent, items);
+  server.send.add_items_inventory(agent, added_items);
 }
 
 
@@ -37,9 +46,9 @@ Controller.add_items_to_agent_inventory = function(agent, items) {
  * Remove items from agent's inventory. Does validation.
  * @params {[Object]} items - list of items to remove from agent.
  */
-Controller.remove_items_from_agent_inventory = function(items) {
+Controller.remove_items_from_agent_inventory = function(items, skip_nonphysical=false) {
   if (items === null || items.length == 0) {
-    server.log("Cannot remove no items from agent", 0);
+    server.log("Cannot remove no items from agent", 1);
     return;
   }
 
@@ -52,12 +61,17 @@ Controller.remove_items_from_agent_inventory = function(items) {
     }
   }
 
+  var removed_items = [];
+
   for (let item of items) {
-    item.agent.remove_item_inventory(item);
-    item.take_from_agent();
+    if (item.physical || !skip_nonphysical) {
+      item.agent.remove_item_inventory(item);
+      item.take_from_agent();
+      removed_items.push(item);
+    }
   }
 
-  server.send.remove_items_inventory(agent, items);
+  server.send.remove_items_inventory(agent, removed_items);
 }
 
 
@@ -92,7 +106,8 @@ Controller.move_agent_to_room = function(agent, new_room) {
  */
 Controller.add_agent_to_room = function(agent, new_room, old_room=null) {
   if (new_room === null || agent === null) {
-    server.log("Cannot add agent to room", 0);
+    server.log("Cannot add agent to room", 0, "controller.js");
+    return;
   }
 
   agent.put_in_room(new_room);
@@ -273,14 +288,17 @@ Controller.perform_trade = function(trade) {
   server.send.trade_complete(trade.agent_ini.socket, trade);
   server.send.trade_complete(trade.agent_res.socket, trade);
 
-  Controller.remove_items_from_agent_inventory(trade.items_ini);
-  Controller.remove_items_from_agent_inventory(trade.items_res);
+  Controller.remove_items_from_agent_inventory(trade.items_ini, true);
+  Controller.remove_items_from_agent_inventory(trade.items_res, true);
 
-  Controller.add_items_to_agent_inventory(trade.agent_ini, trade.items_res);
-  Controller.add_items_to_agent_inventory(trade.agent_res, trade.items_ini);
+  Controller.add_items_to_agent_inventory(trade.agent_ini, trade.items_res, true);
+  Controller.add_items_to_agent_inventory(trade.agent_res, trade.items_ini, true);
 
   trade.set_status(1);
   trade.cleanup();
+
+  Controller.give_info_to_agents(trade.cnode.room.occupants,
+    (trade.agent_ini.name + " traded with " + trade.agent_res.name));
 
   server.log("Successfully completed trade " + trade.trade_id, 2);
 }
@@ -329,6 +347,13 @@ Controller.set_trade_unready_if_ready = function(trade, agent) {
   }
   else if (trade.agent_res == agent && trade.status_res) {
     Controller.set_trade_agent_status(trade, agent, false);
+  }
+}
+
+Controller.give_info_to_agents = function(agents, info) {
+  for (let agent of agents) {
+    var item = new server.models.Item(info, "observation", null, null, null, false);
+    Controller.add_items_to_agent_inventory(agent, [item]);
   }
 }
 

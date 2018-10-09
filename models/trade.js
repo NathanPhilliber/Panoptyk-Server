@@ -188,6 +188,11 @@ Trade.prototype.remove_items = function(items, owner) {
   }
 }
 
+
+/**
+ * Call when trade is over, nomatter if it was successful or not.
+ * Unlocks all the items in the trade and removes it from the active trade list.
+ */
 Trade.prototype.cleanup = function() {
   var unlocked = '';
 
@@ -222,6 +227,12 @@ Trade.get_trade_by_id = function(trade_id) {
   return null;
 }
 
+
+/**
+ * Get all the trade objects with this agent.
+ * @param {Object} agent - agent to find trades for.
+ * @return [trade]
+ */
 Trade.get_active_trades_with_agent = function(agent) {
   trades = [];
 

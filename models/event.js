@@ -235,4 +235,12 @@ server.models.Event.validate_trade_status = function(trade, status_options) {
   return {status: true, message:'', trade:trade}
 }
 
+server.models.Event.validate_items_are_physical = function(items) {
+  for (let item of items) {
+    if (!item.physical) {
+      return {status: false, message: 'Item is not physiacl', items:items};
+    }
+  }
 
+  return {status:true, message:'', items:items};
+}

@@ -8,12 +8,13 @@ Item.objects = [];
  * @param {Object} agent - agent that owns item. (Optional).
  * @param {int} id - id of item. If null, one will be assigned.
  */
-function Item(name, type, room=null, agent=null, id=null) {
+function Item(name, type, room=null, agent=null, id=null, physical=true) {
   this.type = type;
   this.name = name;
   this.room = room;
   this.agent = agent;
 
+  this.physical = physical;
   this.in_transaction = false;
 
   (Item.objects = Item.objects || []).push(this);
@@ -36,8 +37,13 @@ function Item(name, type, room=null, agent=null, id=null) {
  * @param {JSON} data - serialized item object.
  */
 Item.load = function(data) {
-  new Item(data.name, data.type, server.models.Room.get_room_by_id(data.room_id),
-    server.models.Agent.get_agent_by_id(data.agent_id), data.item_id);
+  new Item(
+    data.name,
+    data.type,
+    server.models.Room.get_room_by_id(data.room_id),
+    server.models.Agent.get_agent_by_id(data.agent_id),
+    data.item_id,
+    data.physical);
 }
 
 
@@ -51,7 +57,8 @@ Item.prototype.serialize = function() {
     type: this.type,
     room_id: this.room == null ? null : this.room.room_id,
     agent_id: this.agent == null ? null : this.agent.agent_id,
-    item_id: this.item_id
+    item_id: this.item_id,
+    physical: this.physical
   }
 
   return data;
@@ -93,6 +100,10 @@ Item.load_all = function() {
       Item.load(json);
     });
   });
+}
+
+Item.prototype.deep_copy = function() {
+  return new Item(this.name, this.type, this.room, this.agent, null, this.physical);
 }
 
 
