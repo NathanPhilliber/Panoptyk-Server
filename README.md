@@ -1,7 +1,7 @@
 # Panoptyk
 
 ## For API Users:
-[If you are connecting to the Panoptyk server, you will want to check out the wiki.](https://github.com/NathanPhilliber/Panoptyk-Server/wiki)
+[If you are connecting to the Panoptyk server, you will want to check out the wiki.](https://github.com/NathanPhilliber/Panoptyk-Server/wiki/Socket-API)
 
 
 ## For Server Developers:
