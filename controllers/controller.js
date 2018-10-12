@@ -343,7 +343,8 @@ Controller.perform_trade = function(trade) {
 Controller.add_items_to_trade = function(trade, items, owner_agent) {
   server.log("Adding items to trade " + trade.trade_id  + "...", 2);
 
-  Controller.set_trade_unready_if_ready(trade, owner_agent);
+  Controller.set_trade_unready_if_ready(trade, trade.agent_ini);
+  Controller.set_trade_unready_if_ready(trade, trade.agent_res);
 
   trade.add_items(items, owner_agent);
 
@@ -363,7 +364,8 @@ Controller.add_items_to_trade = function(trade, items, owner_agent) {
 Controller.remove_items_from_trade = function(trade, items, owner_agent) {
   server.log("Removing items from trade " + trade.trade_id  + "...", 2);
 
-  Controller.set_trade_unready_if_ready(trade, owner_agent);
+  Controller.set_trade_unready_if_ready(trade, trade.agent_ini);
+  Controller.set_trade_unready_if_ready(trade, trade.agent_res);
 
   trade.remove_items(items, owner_agent);
 
