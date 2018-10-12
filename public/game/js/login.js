@@ -41,8 +41,8 @@ function updateInventoryAddItem(item) {
 
   var itemText = document.createElement('p');
   itemText.style.display = "inline-block";
-  itemText.innerHTML = "Name: " + item.item_name + ", ID: " +
-    item.item_id + ", Type: " + item.item_type;
+  itemText.innerHTML = "<b>Name: </b>" + item.item_name + ", <b>ID: </b><u>" +
+    item.item_id + "</u>, <b>Type: </b>" + item.item_type;
 
   node.appendChild(dropButton);
   node.appendChild(itemText);

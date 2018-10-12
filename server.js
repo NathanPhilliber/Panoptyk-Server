@@ -11,6 +11,7 @@ server.settings = require(__dirname + '/panoptyk-settings.json');
 
 require(__dirname + '/utilities/logger.js');
 require(__dirname + '/utilities/directory.js');
+require(__dirname + '/utilities/time.js');
 require(__dirname + '/communication/socket_inputs.js');
 require(__dirname + '/communication/socket_outputs.js');
 

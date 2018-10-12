@@ -113,6 +113,10 @@ Controller.add_agent_to_room = function(agent, new_room, old_room=null) {
     return;
   }
 
+  Controller.give_info_to_agents(new_room.occupants,
+    (agent.name + " entered room " + new_room.name));
+
+
   agent.put_in_room(new_room);
   new_room.add_agent(agent);
 
@@ -152,6 +156,9 @@ Controller.remove_agent_from_room = function(agent, new_room=null, update_agent_
   }
 
   old_room.remove_agent(agent);
+
+  Controller.give_info_to_agents(old_room.occupants,
+    (agent.name + " left room " + old_room.name));
 }
 
 
@@ -327,8 +334,20 @@ Controller.perform_trade = function(trade) {
   trade.set_status(1);
   trade.cleanup();
 
+  // Info object prep
+  var items_ini_str = [];
+  var items_res_str = [];
+
+  for (let item of trade.items_ini) {
+    items_ini_str.push(item.name);
+  }
+  for (let item of trade.items_res) {
+    items_res_str.push(item.name);
+  }
+
   Controller.give_info_to_agents(trade.cnode.room.occupants,
-    (trade.agent_ini.name + " traded with " + trade.agent_res.name));
+    (trade.agent_ini.name + " (" + items_ini_str.join(", ") + ") traded with " +
+     trade.agent_res.name + " (" + items_res_str.join(", ") + ")"));
 
   server.log("Successfully completed trade " + trade.trade_id, 2);
 }
@@ -416,8 +435,11 @@ Controller.set_trade_unready_if_ready = function(trade, agent) {
  * @param {string} info - info string.
  */
 Controller.give_info_to_agents = function(agents, info) {
+
+  var time_append = " [" + server.clock.get_datetime() + "]";
+
   for (let agent of agents) {
-    var item = new server.models.Item(info, "observation", null, null, null, false);
+    var item = new server.models.Item(info + time_append, "observation", null, null, null, false);
     Controller.add_items_to_agent_inventory(agent, [item]);
   }
 }

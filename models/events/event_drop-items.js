@@ -19,6 +19,13 @@ function Event_dropItems(socket, inputData) {
   server.control.remove_items_from_agent_inventory(this.items);
   server.control.add_items_to_room(this.room, this.items, this.agent);
 
+  var item_names = [];
+  for (let item of this.items){
+    item_names.push(item.name);
+  }
+  server.control.give_info_to_agents(this.room.occupants, (this.agent.name + " dropped " +
+    item_names.join(", ") + " in room " + this.room.name));
+
   (server.models.Event.objects = server.models.Event.objects || []).push(this);
   server.log('Event drop-items (' + JSON.stringify(inputData.item_ids) + ') for agent '
       + this.agent.name + ' registered.', 2);

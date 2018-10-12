@@ -14,10 +14,23 @@ function Event_takeItems(socket, inputData) {
   }
 
   this.items = res.items;
+  this.room = this.agent.room;
 
   server.control.remove_agent_from_cnode_if_in(this.agent);
   server.control.remove_items_from_room(this.items, this.agent);
   server.control.add_items_to_agent_inventory(this.agent, this.items);
+
+  var item_names = [];
+  for (let item of this.items){
+    item_names.push(item.name);
+  }
+  server.control.give_info_to_agents(this.room.occupants, (this.agent.name + " picked up " +
+    item_names.join(", ") + " in room " + this.room.name));
+
+  (server.models.Event.objects = server.models.Event.objects || []).push(this);
+  server.log('Event take-items (' + JSON.stringify(inputData.item_ids) + ') for agent '
+      + this.agent.name + ' registered.', 2);
+
 }
 
 Event_takeItems.event_name = "take-items";
