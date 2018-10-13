@@ -9,5 +9,6 @@
 To Do:
 - Authenticate users
 - Serialize event objects
-- Viewer client support
+- Viewer "ghost" client support (client that lets you view any agent but interect)
 - Implement error codes for error response messages
+- Proper id generation
