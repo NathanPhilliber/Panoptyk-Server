@@ -204,9 +204,7 @@ Room.prototype.get_data = function() {
     }
   }
 
-  server.log(JSON.stringify(data))
-
-  return data;;
+  return data;
 }
 
 
