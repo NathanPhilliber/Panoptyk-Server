@@ -12,7 +12,7 @@ class Room {
     this.items = [];
     this.cnodes = [];
 
-    this.room_id = id == null ? Room.nextId++ : id;
+    this.room_id = room_id == null ? Room.nextId++ : room_id;
     Room.objects[this.room_id] = this;
     server.log('Room ' + this.name + ' Initialized with id ' + this.room_id + '.', 2);
   }
@@ -48,7 +48,8 @@ class Room {
     var room_to_adjacents = {};
 
     server.log("Saving rooms...", 2);
-    for (var room in Room.objects) {
+    for (var id in Room.objects) {
+      var room = Room.objects[id];
       server.log("Saving room " + room.name, 2);
       server.modules.fs.writeFileSync(server.settings.data_dir +
         '/rooms/' + room.room_id + "_" + room.name + '.json',
@@ -268,12 +269,10 @@ class Room {
    * @param room_id {int} - id of room.
    * @returns {Object/null}
    */
-  get_room_by_id(room_id) {
+  static get_room_by_id(room_id) {
 
-    for (var room in Room.objects) {
-      if (room.room_id == room_id) {
-        return room;
-      }
+    if (Room.objects[room_id] != undefined){
+      return Room.objects[room_id];
     }
 
     server.log('Could not find room with id ' + room_id + '.', 1);

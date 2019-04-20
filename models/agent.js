@@ -43,7 +43,8 @@ class Agent {
 
     var sel_agent = null;
 
-    for (var agent in Agent.objects) {
+    for (var id in Agent.objects) {
+      var agent = Agent.objects[id];
       if (agent.name == username) {
         sel_agent = agent;
         break;
@@ -87,8 +88,8 @@ class Agent {
    */
   static save_all() {
     server.log("Saving agents...", 2);
-    for (var agent in Agent.objects) {
-
+    for (var id in Agent.objects) {
+      var agent = Agent.objects[id];
       server.log("Saving agent: " + agent.name, 2);
 
       server.modules.fs.writeFileSync(server.settings.data_dir + '/agents/' +
@@ -145,7 +146,8 @@ class Agent {
    * @returns {Object/null}
    */
   static get_agent_by_socket(socket) {
-    for (var agent in Agent.objects) {
+    for (var id in Agent.objects) {
+      var agent = Agent.objects[id];
       if (agent.socket == socket) {
         return agent;
       }
