@@ -1,283 +1,287 @@
-Room.objects = [];
+'use strict'
+class Room {
+  /**
+   * Room model.
+   * @param {string} name - name of room
+   * @param {int} room_id - Room id, if null one will be assigned.
+   */
+  constructor(name, room_id=null) {
+    this.name = name;
+    this.adjacents = [];
+    this.occupants = [];
+    this.items = [];
+    this.cnodes = [];
 
-/**
- * Room model.
- * @param {string} name - name of room
- * @param {int} room_id - Room id, if null one will be assigned.
- */
-function Room(name, room_id=null) {
-  this.name = name;
-  this.adjacents = [];
-  this.occupants = [];
-  this.items = [];
-  this.cnodes = [];
-
-  (Room.objects = Room.objects || []).push(this);
-  this.room_id = room_id == null ? Room.objects.length - 1 : room_id;
-  server.log('Room ' + this.name + ' Initialized with id ' + this.room_id + '.', 2);
-}
-
-
-/**
- * Load a JSON object into memory.
- * @param {JSON} data - serialized room JSON.
- */
-Room.load = function(data) {
-  new Room(data.name, data.room_id);
-}
-
-
-/**
- * Serialize this room into JSON object.
- * @return {JSON}
- */
-Room.prototype.serialize = function() {
-  var data = {
-    name: this.name,
-    room_id: this.room_id
+    this.room_id = id == null ? Room.nextId++ : id;
+    Room.objects[this.room_id] = this;
+    server.log('Room ' + this.name + ' Initialized with id ' + this.room_id + '.', 2);
   }
 
-  return data;
-}
 
-
-/**
- * Serialize and write all rooms to file.
- */
-Room.save_all = function() {
-  var room_to_adjacents = {};
-
-  server.log("Saving rooms...", 2);
-  for (let room of Room.objects) {
-    server.log("Saving room " + room.name, 2);
-    server.modules.fs.writeFileSync(server.settings.data_dir +
-      '/rooms/' + room.room_id + "_" + room.name + '.json',
-      JSON.stringify(room.serialize()), 'utf8');
-
-    room_to_adjacents[room.room_id] = [];
-    for (let adj of room.adjacents) {
-      room_to_adjacents[room.room_id].push(adj.room_id);
-    }
+  /**
+   * Load a JSON object into memory.
+   * @param {JSON} data - serialized room JSON.
+   */
+  static load(data) {
+    new Room(data.name, data.room_id);
   }
 
-  server.log("Saving Room Connections", 2);
 
-  server.modules.fs.writeFileSync(server.settings.data_dir + '/rooms/room_connections.json',
-    JSON.stringify(room_to_adjacents), 'utf8');
-
-  server.log("Rooms saved.", 2);
-}
-
-
-/**
- * Load all room from file to memory.
- */
-Room.load_all = function() {
-  server.log("Loading rooms...", 2);
-
-  server.modules.fs.readdirSync(server.settings.data_dir + '/rooms/').forEach(function(file) {
-    if (file !== 'room_connections.json') {
-      var data = server.modules.fs.readFileSync(server.settings.data_dir +
-        '/rooms/' + file, 'utf8');
-
-      data = JSON.parse(data);
-      server.log("Loading room " + data.name, 2);
-      Room.load(data);
+  /**
+   * Serialize this room into JSON object.
+   * @return {JSON}
+   */
+  serialize() {
+    var data = {
+      name: this.name,
+      room_id: this.room_id
     }
-  });
 
-  server.log("Loading Room Connections", 2);
-  try {
-    var connections = JSON.parse(server.modules.fs.readFileSync(server.settings.data_dir +
-      '/rooms/room_connections.json'));
+    return data;
+  }
 
-    for (var room_id in connections) {
-      var room = Room.get_room_by_id(room_id);
-      for (let adj_id of connections[room_id]) {
-        var adj = Room.get_room_by_id(adj_id);
-        room.connect_room(adj, false);
+
+  /**
+   * Serialize and write all rooms to file.
+   */
+  static save_all() {
+    var room_to_adjacents = {};
+
+    server.log("Saving rooms...", 2);
+    for (var room in Room.objects) {
+      server.log("Saving room " + room.name, 2);
+      server.modules.fs.writeFileSync(server.settings.data_dir +
+        '/rooms/' + room.room_id + "_" + room.name + '.json',
+        JSON.stringify(room.serialize()), 'utf8');
+
+      room_to_adjacents[room.room_id] = [];
+      for (let adj of room.adjacents) {
+        room_to_adjacents[room.room_id].push(adj.room_id);
       }
     }
-  }
-  catch(err) {
-    server.log(err, 1);
-  }
 
-  server.log("Rooms loaded.", 2);
-}
+    server.log("Saving Room Connections", 2);
 
+    server.modules.fs.writeFileSync(server.settings.data_dir + '/rooms/room_connections.json',
+      JSON.stringify(room_to_adjacents), 'utf8');
 
-/**
- * Allow movement from this room to another room.
- * @param {Object} other_room - room object to connect
- * @param {boolean} two_way - allow movement from other room to this room, default true
- */
-Room.prototype.connect_room = function(other_room, two_way=true) {
-  this.adjacents.push(other_room);
-  if (two_way) {
-    other_room.connect_room(this, false);
+    server.log("Rooms saved.", 2);
   }
 
-  server.log('Conected room ' + this.name + ' to room ' + other_room.name + '.', 2);
-}
 
+  /**
+   * Load all room from file to memory.
+   */
+  static load_all() {
+    server.log("Loading rooms...", 2);
 
-/**
- * Check if it's possible to move from this room to target room.
- * @param {Object} room2 - target room
- * @return {boolean}
- */
-Room.prototype.is_connected_to = function(room2) {
-  return this.adjacents.indexOf(room2) !== -1;
-}
+    server.modules.fs.readdirSync(server.settings.data_dir + '/rooms/').forEach(function(file) {
+      if (file !== 'room_connections.json') {
+        var data = server.modules.fs.readFileSync(server.settings.data_dir +
+          '/rooms/' + file, 'utf8');
 
+        data = JSON.parse(data);
+        server.log("Loading room " + data.name, 2);
+        Room.load(data);
+      }
+    });
 
-/**
- * Add an agent to this room.
- * @param {Object} agent - agent object to put in this room.
- */
-Room.prototype.add_agent = function(agent, old_room=null) {
-  this.occupants.push(agent);
-}
+    server.log("Loading Room Connections", 2);
+    try {
+      var connections = JSON.parse(server.modules.fs.readFileSync(server.settings.data_dir +
+        '/rooms/room_connections.json'));
 
-
-/**
- * Add an item to this room.
- * @param {Object} item - item to put in room.
- */
-Room.prototype.add_item = function(item) {
-  server.log("Adding item " + item.name + " to room " + this.name, 2);
-  this.items.push(item);
-}
-
-
-/**
- * Remove an item from this room.
- * @param {Object} item - item to remove.
- */
-Room.prototype.remove_item = function(item) {
-  server.log("Removing item " + item.name + " from room object " +
-    this.name + ", index=" + this.items.indexOf(item), 2);
-
-  this.items.splice(this.items.indexOf(item), 1);
-}
-
-
-/**
- * Removes an agent from this room.
- * @param {Object} agent - agent to remove
- * @param {Object} new_room - room agent is heading to.
- */
-Room.prototype.remove_agent = function(agent, new_room) {
-  var index = this.occupants.indexOf(agent);
-
-  if (index == -1) {
-    server.log('Agent ' + agent.name + ' not in room ' + this.name + '.', 0);
-    return false;
-  }
-
-  this.occupants.splice(index, 1);
-}
-
-
-/**
- * Get data to send to client.
- * @returns {Object}
- */
-Room.prototype.get_data = function() {
-  var adj_ids = [];
-  for (let room of this.adjacents) {
-    adj_ids.push({'room_id':room.room_id, 'room_name':room.name});
-  }
-
-  var cnode_datas = [];
-  for (let cnode of this.cnodes) {
-    cnode_datas.push(cnode.get_data());
-  }
-
-  var data = {
-    'room_id': this.room_id,
-    'room_name': this.name,
-    'adjacent_rooms': adj_ids,
-    'layout': {
-      'cnodes': cnode_datas
+      for (var room_id in connections) {
+        var room = Room.get_room_by_id(room_id);
+        for (let adj_id of connections[room_id]) {
+          var adj = Room.get_room_by_id(adj_id);
+          room.connect_room(adj, false);
+        }
+      }
     }
-  }
-
-  return data;
-}
-
-
-/**
- * Add a cnode to a room.
- * @param {Object} cnode - cnode to add to room.
- */
-Room.prototype.add_cnode = function(cnode) {
-  this.cnodes.push(cnode);
-}
-
-
-/**
- * Remove a cnode from this room.
- * @param {Object} cnode - cnode object.
- */
-Room.prototype.remove_cnode = function(cnode) {
-  var index = this.cnodes.indexOf(cnode);
-
-  if (index == -1) {
-    server.log("Could not remove cnode " + cnode.cnode_id, 0);
-    return;
-  }
-
-  this.cnodes.splice(index, 1);
-}
-
-
-/**
- * Get the data for agents in this room.
- * @returns {Object}
- */
-Room.prototype.get_agents = function(cur_agent=null) {
-  var agents = [];
-  for (let agent of this.occupants) {
-    if (agent !== cur_agent) {
-      agents.push(agent.get_public_data());
+    catch(err) {
+      server.log(err, 1);
     }
+
+    server.log("Rooms loaded.", 2);
   }
 
-  return agents;
-}
 
-
-/**
- * Get the data for items in this room.
- * @returns {Object}
- */
-Room.prototype.get_items = function() {
-  var items_data = [];
-
-  for (let item of this.items) {
-    items_data.push(item.get_data());
-  }
-  return items_data;
-}
-
-
-/**
- * Static function. Get a room by id.
- * @param room_id {int} - id of room.
- * @returns {Object/null}
- */
-Room.get_room_by_id = function(room_id) {
-
-  for (let room of Room.objects) {
-    if (room.room_id == room_id) {
-      return room;
+  /**
+   * Allow movement from this room to another room.
+   * @param {Object} other_room - room object to connect
+   * @param {boolean} two_way - allow movement from other room to this room, default true
+   */
+  connect_room(other_room, two_way=true) {
+    this.adjacents.push(other_room);
+    if (two_way) {
+      other_room.connect_room(this, false);
     }
+
+    server.log('Conected room ' + this.name + ' to room ' + other_room.name + '.', 2);
   }
 
-  server.log('Could not find room with id ' + room_id + '.', 1);
-  return null;
+
+  /**
+   * Check if it's possible to move from this room to target room.
+   * @param {Object} room2 - target room
+   * @return {boolean}
+   */
+  is_connected_to(room2) {
+    return this.adjacents.indexOf(room2) !== -1;
+  }
+
+
+  /**
+   * Add an agent to this room.
+   * @param {Object} agent - agent object to put in this room.
+   */
+  add_agent(agent, old_room=null) {
+    this.occupants.push(agent);
+  }
+
+
+  /**
+   * Add an item to this room.
+   * @param {Object} item - item to put in room.
+   */
+  add_item(item) {
+    server.log("Adding item " + item.name + " to room " + this.name, 2);
+    this.items.push(item);
+  }
+
+
+  /**
+   * Remove an item from this room.
+   * @param {Object} item - item to remove.
+   */
+  remove_item(item) {
+    server.log("Removing item " + item.name + " from room object " +
+      this.name + ", index=" + this.items.indexOf(item), 2);
+
+    this.items.splice(this.items.indexOf(item), 1);
+  }
+
+
+  /**
+   * Removes an agent from this room.
+   * @param {Object} agent - agent to remove
+   * @param {Object} new_room - room agent is heading to.
+   */
+  remove_agent(agent, new_room) {
+    var index = this.occupants.indexOf(agent);
+
+    if (index == -1) {
+      server.log('Agent ' + agent.name + ' not in room ' + this.name + '.', 0);
+      return false;
+    }
+
+    this.occupants.splice(index, 1);
+  }
+
+
+  /**
+   * Get data to send to client.
+   * @returns {Object}
+   */
+  get_data() {
+    var adj_ids = [];
+    for (let room of this.adjacents) {
+      adj_ids.push({'room_id':room.room_id, 'room_name':room.name});
+    }
+
+    var cnode_datas = [];
+    for (let cnode of this.cnodes) {
+      cnode_datas.push(cnode.get_data());
+    }
+
+    var data = {
+      'room_id': this.room_id,
+      'room_name': this.name,
+      'adjacent_rooms': adj_ids,
+      'layout': {
+        'cnodes': cnode_datas
+      }
+    }
+
+    return data;
+  }
+
+
+  /**
+   * Add a cnode to a room.
+   * @param {Object} cnode - cnode to add to room.
+   */
+  add_cnode(cnode) {
+    this.cnodes.push(cnode);
+  }
+
+
+  /**
+   * Remove a cnode from this room.
+   * @param {Object} cnode - cnode object.
+   */
+  remove_cnode(cnode) {
+    var index = this.cnodes.indexOf(cnode);
+
+    if (index == -1) {
+      server.log("Could not remove cnode " + cnode.cnode_id, 0);
+      return;
+    }
+
+    this.cnodes.splice(index, 1);
+  }
+
+
+  /**
+   * Get the data for agents in this room.
+   * @returns {Object}
+   */
+  get_agents(cur_agent=null) {
+    var agents = [];
+    for (let agent of this.occupants) {
+      if (agent !== cur_agent) {
+        agents.push(agent.get_public_data());
+      }
+    }
+
+    return agents;
+  }
+
+
+  /**
+   * Get the data for items in this room.
+   * @returns {Object}
+   */
+  get_items() {
+    var items_data = [];
+
+    for (let item of this.items) {
+      items_data.push(item.get_data());
+    }
+    return items_data;
+  }
+
+
+  /**
+   * Static function. Get a room by id.
+   * @param room_id {int} - id of room.
+   * @returns {Object/null}
+   */
+  get_room_by_id(room_id) {
+
+    for (var room in Room.objects) {
+      if (room.room_id == room_id) {
+        return room;
+      }
+    }
+
+    server.log('Could not find room with id ' + room_id + '.', 1);
+    return null;
+  }
 }
+
+Room.objects = {};
+Room.nextId = 1;
 
 module.exports = Room;
