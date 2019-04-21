@@ -1,4 +1,4 @@
-server.models.Event = {};
+Validate = {};
 
 success_msg = {'status': true, 'message': ''};
 
@@ -8,7 +8,7 @@ success_msg = {'status': true, 'message': ''};
  * @param {Object} inputFormat - dictionary being inspected.
  * @return {Object} {status: boolean, message: string}
  */
-server.models.Event.validate_key_format = function(goodFormats, inputFormat) {
+Validate.validate_key_format = function(goodFormats, inputFormat) {
 
   formatLoop:
   for (let format of goodFormats) {
@@ -41,7 +41,7 @@ server.models.Event.validate_key_format = function(goodFormats, inputFormat) {
  * @param {Object} new_room - target room.
  * @return {Object} {status: boolean, message: string}
  */
-server.models.Event.validate_room_adjacent = function(old_room, new_room) {
+Validate.validate_room_adjacent = function(old_room, new_room) {
   if (old_room.adjacents.indexOf(new_room) !== -1) {
     return success_msg;
   }
@@ -56,7 +56,7 @@ server.models.Event.validate_room_adjacent = function(old_room, new_room) {
  * @param {string} atype - type
  * @return {Object} {status: boolean, message: string}
  */
-server.models.Event.validate_array_types = function(arr, atype) {
+Validate.validate_array_types = function(arr, atype) {
   for (let item of arr) {
     if (typeof item !== atype) {
       return {'status': false, 'message': 'Invalid type in array (' + typeof item + ')'};
@@ -73,7 +73,7 @@ server.models.Event.validate_array_types = function(arr, atype) {
  * @param {[int]} item_ids - ids of items agent is supposed to own.
  * @return {Object} {status: boolean, message: string, items:[Object]}
  */
-server.models.Event.validate_agent_owns_items = function(agent, item_ids) {
+Validate.validate_agent_owns_items = function(agent, item_ids) {
   var items = server.models.Item.get_items_by_ids(item_ids);
   if (items === null) {
     return {'status': false, 'message': 'No item for id ' + JSON.stringify(item_ids)};
@@ -94,7 +94,7 @@ server.models.Event.validate_agent_owns_items = function(agent, item_ids) {
  * @param {Object} agent - agent object.
  * @return {Object} {status: boolean, message: string}
  */
-server.models.Event.validate_agent_logged_in = function(agent) {
+Validate.validate_agent_logged_in = function(agent) {
   if (agent !== null) {
     return success_msg;
   }
@@ -109,7 +109,7 @@ server.models.Event.validate_agent_logged_in = function(agent) {
  * @param {[int]} item_ids - ids of items room is supposed to have.
  * @return {Object} {status: boolean, message: string, items:[Object]}
  */
-server.models.Event.validate_items_in_room = function(room, item_ids) {
+Validate.validate_items_in_room = function(room, item_ids) {
   var items = server.models.Item.get_items_by_ids(item_ids);
   if (items === null) {
     return {'status': false, 'message': 'No item for id ' + JSON.stringify(item_ids)};
@@ -130,7 +130,7 @@ server.models.Event.validate_items_in_room = function(room, item_ids) {
  * @param {[Object]} items - items to check.
  * @returns {Object} {status: boolean, message: string, items: [Object]}
  */
-server.models.Event.validate_items_not_in_transaction = function(items) {
+Validate.validate_items_not_in_transaction = function(items) {
   for (let item of items) {
     if (item.in_transaction) {
       return {'status': false, 'message': 'Item is currently in transaction'}
@@ -148,7 +148,7 @@ server.models.Event.validate_items_not_in_transaction = function(items) {
  * @param {Object} owner - agent object.
  * @returns {Object} {status: boolean, message: string, trade: [Object]}
  */
-server.models.Event.validate_items_in_trade = function(items, trade, owner) {
+Validate.validate_items_in_trade = function(items, trade, owner) {
   if (owner == trade.agent_ini) {
     for (let item of items) {
       if (trade.items_ini.indexOf(item) < 0) {
@@ -178,7 +178,7 @@ server.models.Event.validate_items_in_trade = function(items, trade, owner) {
  * @param {boolean} rstatus - ready status.
  * @returns {Object} {status: boolean, message: string, trade: Object}
  */
-server.models.Event.validate_ready_status = function(trade, agent, rstatus) {
+Validate.validate_ready_status = function(trade, agent, rstatus) {
   if (agent == trade.agent_ini) {
     if (trade.status_ini != rstatus) {
       return {status:false, message:'Trade ready status already set'}
@@ -203,7 +203,7 @@ server.models.Event.validate_ready_status = function(trade, agent, rstatus) {
  * @param {Object} cnode - cnode object.
  * @returns {Object} {status: boolean, message: string, cnode: Object}
  */
-server.models.Event.validate_cnode_exists = function(room, cnode) {
+Validate.validate_cnode_exists = function(room, cnode) {
   if (cnode == null) {
     return {'status': false, 'message': 'Cnode does not exist'};
   }
@@ -220,7 +220,7 @@ server.models.Event.validate_cnode_exists = function(room, cnode) {
  * @param {Object} cnode - cnode object.
  * @returns {Object} {status: boolean, message: string, cnode: Object}
  */
-server.models.Event.validate_cnode_has_space = function(cnode) {
+Validate.validate_cnode_has_space = function(cnode) {
   if (cnode.agents.length >= cnode.max_agents) {
     return {status: false, message: 'Cnode is full', cnode:cnode}
   }
@@ -235,7 +235,7 @@ server.models.Event.validate_cnode_has_space = function(cnode) {
  * @param {Object} agent - agent object.
  * @returns {Object} {status: boolean, message: string, cnode: Object}
  */
-server.models.Event.validate_cnode_has_agent = function(cnode, agent) {
+Validate.validate_cnode_has_agent = function(cnode, agent) {
   if (cnode.get_agent_by_id(agent.agent_id) == null) {
     return {status: false, message: 'Agent does not belong to cnode', cnode:cnode}
   }
@@ -250,7 +250,7 @@ server.models.Event.validate_cnode_has_agent = function(cnode, agent) {
  * @param {Object} agent2 - agent object.
  * @returns {Object} {status: boolean, message: string, cnode: Object, to_agent: Object}
  */
-server.models.Event.validate_agents_share_cnode = function(agent1, agent2) {
+Validate.validate_agents_share_cnode = function(agent1, agent2) {
   if (agent1.cnode != agent2.cnode || !agent1.cnode) {
     return {status:false, message: 'Agents not in same cnode'}
   }
@@ -265,7 +265,7 @@ server.models.Event.validate_agents_share_cnode = function(agent1, agent2) {
  * @param {Object} agent2 - agent object.
  * @returns {Object} {}
  */
-server.models.Event.validate_agents_not_already_trading = function(agent1, agent2) {
+Validate.validate_agents_not_already_trading = function(agent1, agent2) {
 
 }
 
@@ -275,7 +275,7 @@ server.models.Event.validate_agents_not_already_trading = function(agent1, agent
  * @param {int} trade_id - id of trade.
  * @returns {Object} {status: boolean, message: string, trade: Object}
  */
-server.models.Event.validate_trade_exists = function(trade_id) {
+Validate.validate_trade_exists = function(trade_id) {
   var trade = server.models.Trade.get_trade_by_id(trade_id);
 
   if (!trade) {
@@ -292,7 +292,7 @@ server.models.Event.validate_trade_exists = function(trade_id) {
  * @param {[int]} status_options - array of possible statuses.
  * @returns {Object} {status: boolean, message: string, trade: Object}
  */
-server.models.Event.validate_trade_status = function(trade, status_options) {
+Validate.validate_trade_status = function(trade, status_options) {
   if (!trade || status_options.indexOf(trade.result_status) == -1) {
     return {status: false, message: 'Trade not in correct state', trade:trade}
   }
@@ -306,7 +306,7 @@ server.models.Event.validate_trade_status = function(trade, status_options) {
  * @param {[Object]} items - array of items.
  * @returns {Object} {status: boolean, message: string, items: [Object]}
  */
-server.models.Event.validate_items_are_physical = function(items) {
+Validate.validate_items_are_physical = function(items) {
   for (let item of items) {
     if (!item.physical) {
       return {status: false, message: 'Item is not physiacl', items:items};
@@ -316,3 +316,4 @@ server.models.Event.validate_items_are_physical = function(items) {
   return {status:true, message:'', items:items};
 }
 
+module.exports = Validate;

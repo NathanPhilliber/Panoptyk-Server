@@ -26,7 +26,7 @@ function Event_dropItems(socket, inputData) {
   server.control.give_info_to_agents(this.room.occupants, (this.agent.name + " dropped " +
     item_names.join(", ") + " in room " + this.room.name));
 
-  (server.models.Event.objects = server.models.Event.objects || []).push(this);
+  (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
   server.log('Event drop-items (' + JSON.stringify(inputData.item_ids) + ') for agent '
       + this.agent.name + ' registered.', 2);
 }
@@ -45,19 +45,19 @@ Event_dropItems.formats = [{
  * @return {Object}
  */
 Event_dropItems.validate = function(structure, agent) {
-  if (!(res = server.models.Event.validate_key_format(server.models.Event_dropItems.formats, structure)).status) {
+  if (!(res = server.models.Validate.validate_key_format(server.models.Event_dropItems.formats, structure)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_array_types(structure.item_ids, 'number')).status) {
+  if (!(res = server.models.Validate.validate_array_types(structure.item_ids, 'number')).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_agent_owns_items(agent, structure.item_ids)).status) {
+  if (!(res = server.models.Validate.validate_agent_owns_items(agent, structure.item_ids)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_items_not_in_transaction(res.items)).status) {
+  if (!(res = server.models.Validate.validate_items_not_in_transaction(res.items)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_items_are_physical(res.items)).status) {
+  if (!(res = server.models.Validate.validate_items_are_physical(res.items)).status) {
     return res;
   }
   return res;

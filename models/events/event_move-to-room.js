@@ -18,7 +18,7 @@ function Event_moveToRoom(socket, inputData) {
 
   server.control.move_agent_to_room(this.agent, this.new_room);
 
-  (server.models.Event.objects = server.models.Event.objects || []).push(this);
+  (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
   server.log('Event move-to-room (' + this.old_room.name + '->'
       + this.new_room.name  + ') for agent ' + this.agent.name + ' registered.', 2);
 }
@@ -39,13 +39,13 @@ Event_moveToRoom.formats = [{
  */
 Event_moveToRoom.validate = function(structure, agent) {
 
-  if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(agent)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_key_format(server.models.Event_moveToRoom.formats, structure)).status) {
+  if (!(res = server.models.Validate.validate_key_format(server.models.Event_moveToRoom.formats, structure)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_room_adjacent(agent.room, server.models.Room.get_room_by_id(structure.room_id))).status) {
+  if (!(res = server.models.Validate.validate_room_adjacent(agent.room, server.models.Room.get_room_by_id(structure.room_id))).status) {
     return res;
   }
   return res;

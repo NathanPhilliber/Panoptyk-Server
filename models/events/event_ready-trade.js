@@ -18,7 +18,7 @@ function Event_readyTrade(socket, inputData) {
 
   server.control.set_trade_agent_status(this.trade, this.agent, this.ready_status);
 
-  (server.models.Event.objects = server.models.Event.objects || []).push(this);
+  (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
   server.log('Event ready-trade ' + this.trade.trade_id + ' registered.', 2);
 }
 
@@ -38,23 +38,23 @@ Event_readyTrade.formats = [{
  */
 Event_readyTrade.validate = function(structure, agent) {
 
-  if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(agent)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_key_format(server.models.Event_readyTrade.formats, structure)).status) {
+  if (!(res = server.models.Validate.validate_key_format(server.models.Event_readyTrade.formats, structure)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_trade_exists(structure.trade_id)).status) {
+  if (!(res = server.models.Validate.validate_trade_exists(structure.trade_id)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_trade_status(res.trade, [2])).status) {
+  if (!(res = server.models.Validate.validate_trade_status(res.trade, [2])).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_ready_status(res.trade, agent, !structure.ready_status)).status) {
+  if (!(res = server.models.Validate.validate_ready_status(res.trade, agent, !structure.ready_status)).status) {
     return res;
   }
   var res2 = res;
-  if (!(res = server.models.Event.validate_agent_logged_in(res.trade.agent_ini)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(res.trade.agent_ini)).status) {
     return res;
   }
 

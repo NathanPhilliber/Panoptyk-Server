@@ -18,7 +18,7 @@ function Event_withdrawItemsTrade(socket, inputData) {
 
   server.control.remove_items_from_trade(this.trade, this.items, this.agent);
 
-  (server.models.Event.objects = server.models.Event.objects || []).push(this);
+  (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
   server.log('Event withdraw-items-trade ' + this.trade.trade_id + ' registered.', 2);
 }
 
@@ -38,30 +38,30 @@ Event_withdrawItemsTrade.formats = [{
  */
 Event_withdrawItemsTrade.validate = function(structure, agent) {
 
-  if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(agent)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_key_format(server.models.Event_withdrawItemsTrade.formats, structure)).status) {
+  if (!(res = server.models.Validate.validate_key_format(server.models.Event_withdrawItemsTrade.formats, structure)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_array_types(structure.item_ids, 'number')).status) {
+  if (!(res = server.models.Validate.validate_array_types(structure.item_ids, 'number')).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_agent_owns_items(agent, structure.item_ids)).status) {
+  if (!(res = server.models.Validate.validate_agent_owns_items(agent, structure.item_ids)).status) {
     return res;
   }
   var items = res.items;
-  if (!(res = server.models.Event.validate_trade_exists(structure.trade_id)).status) {
+  if (!(res = server.models.Validate.validate_trade_exists(structure.trade_id)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_trade_status(res.trade, [2])).status) {
+  if (!(res = server.models.Validate.validate_trade_status(res.trade, [2])).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_items_in_trade(items, res.trade, agent)).status) {
+  if (!(res = server.models.Validate.validate_items_in_trade(items, res.trade, agent)).status) {
     return res;
   }
   var res2 = res;
-  if (!(res = server.models.Event.validate_agent_logged_in(res.trade.agent_ini)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(res.trade.agent_ini)).status) {
     return res;
   }
 

@@ -18,7 +18,7 @@ function Event_requestTrade(socket, inputData) {
 
   this.trade = server.control.create_trade(this.cnode, this.agent, this.to_agent);
 
-  (server.models.Event.objects = server.models.Event.objects || []).push(this);
+  (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
   server.log('Event request-trade (' + this.cnode.cnode_id + ') for agent ' + this.agent.name + ' registered.', 2);
 }
 
@@ -37,17 +37,17 @@ Event_requestTrade.formats = [{
  */
 Event_requestTrade.validate = function(structure, agent) {
 
-  if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(agent)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_key_format(server.models.Event_requestTrade.formats, structure)).status) {
+  if (!(res = server.models.Validate.validate_key_format(server.models.Event_requestTrade.formats, structure)).status) {
     return res;
   }
   var to_agent = server.models.Agent.get_agent_by_id(structure.agent_id);
-  if (!(res = server.models.Event.validate_agent_logged_in(to_agent)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(to_agent)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_agents_share_cnode(agent, to_agent)).status) {
+  if (!(res = server.models.Validate.validate_agents_share_cnode(agent, to_agent)).status) {
     return res;
   }
   return res;

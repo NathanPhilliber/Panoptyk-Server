@@ -14,7 +14,7 @@ function Event_login(socket, inputData) {
 
   this.agent = server.models.Agent.login(inputData.username, socket);
 
-  (server.models.Event.objects = server.models.Event.objects || []).push(this);
+  (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
   server.log('Event login for agent ' + this.agent.name + ' registered.', 2);
 }
 
@@ -36,7 +36,7 @@ Event_login.formats = [{
  * @return {Object}
  */
 Event_login.validate = function(structure) {
-  if (!(res = server.models.Event.validate_key_format(server.models.Event_login.formats, structure)).status) {
+  if (!(res = server.models.Validate.validate_key_format(server.models.Event_login.formats, structure)).status) {
     return res;
   }
   return res;

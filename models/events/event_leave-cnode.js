@@ -17,7 +17,7 @@ function Event_leaveCnode(socket, inputData) {
 
   server.control.remove_agent_from_cnode(this.cnode, this.agent);
 
-  (server.models.Event.objects = server.models.Event.objects || []).push(this);
+  (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
   server.log('Event leave-cnode (' + this.cnode.cnode_id + ') for agent ' + this.agent.name + ' registered.', 2);
 }
 
@@ -36,16 +36,16 @@ Event_leaveCnode.formats = [{
  */
 Event_leaveCnode.validate = function(structure, agent) {
 
-  if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(agent)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_key_format(server.models.Event_leaveCnode.formats, structure)).status) {
+  if (!(res = server.models.Validate.validate_key_format(server.models.Event_leaveCnode.formats, structure)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_cnode_exists(agent.room, server.models.Cnode.get_cnode_by_id(structure.cnode_id))).status) {
+  if (!(res = server.models.Validate.validate_cnode_exists(agent.room, server.models.Cnode.get_cnode_by_id(structure.cnode_id))).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_cnode_has_agent(res.cnode, agent)).status) {
+  if (!(res = server.models.Validate.validate_cnode_has_agent(res.cnode, agent)).status) {
     return res;
   }
   return res;

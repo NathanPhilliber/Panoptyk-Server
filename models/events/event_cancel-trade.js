@@ -17,7 +17,7 @@ function Event_cancelTrade(socket, inputData) {
 
   server.control.cancel_trade(this.trade);
 
-  (server.models.Event.objects = server.models.Event.objects || []).push(this);
+  (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
   server.log('Event cancel-trade (' + this.trade.trade_id + ') for agent ' + this.trade.agent_ini.name + '/' + this.trade.agent_res.name + ' registered.', 2);
 }
 
@@ -36,20 +36,20 @@ Event_cancelTrade.formats = [{
  */
 Event_cancelTrade.validate = function(structure, agent) {
 
-  if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(agent)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_key_format(server.models.Event_cancelTrade.formats, structure)).status) {
+  if (!(res = server.models.Validate.validate_key_format(server.models.Event_cancelTrade.formats, structure)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_trade_exists(structure.trade_id)).status) {
+  if (!(res = server.models.Validate.validate_trade_exists(structure.trade_id)).status) {
     return res;
   }
-  if (!(res = server.models.Event.validate_trade_status(res.trade, [2, 3])).status) {
+  if (!(res = server.models.Validate.validate_trade_status(res.trade, [2, 3])).status) {
     return res;
   }
   var res2 = res;
-  if (!(res = server.models.Event.validate_agent_logged_in(res.trade.agent_ini)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(res.trade.agent_ini)).status) {
     return res;
   }
 

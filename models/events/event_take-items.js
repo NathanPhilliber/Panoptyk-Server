@@ -27,7 +27,7 @@ function Event_takeItems(socket, inputData) {
   server.control.give_info_to_agents(this.room.occupants, (this.agent.name + " picked up " +
     item_names.join(", ") + " in room " + this.room.name));
 
-  (server.models.Event.objects = server.models.Event.objects || []).push(this);
+  (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
   server.log('Event take-items (' + JSON.stringify(inputData.item_ids) + ') for agent '
       + this.agent.name + ' registered.', 2);
 
@@ -47,16 +47,16 @@ Event_takeItems.formats = [{
  * @return {Object}
  */
 Event_takeItems.validate = function(structure, agent) {
-  if (!(res = server.models.Event.validate_agent_logged_in(agent)).status) {
+  if (!(res = server.models.Validate.validate_agent_logged_in(agent)).status) {
     return res;
   }
 
-  if (!(res = server.models.Event.validate_key_format(server.models.Event_takeItems.formats, structure)).status) {
+  if (!(res = server.models.Validate.validate_key_format(server.models.Event_takeItems.formats, structure)).status) {
     return res;
   }
 
   // check if item in room
-  if (!(res = server.models.Event.validate_items_in_room(agent.room, structure.item_ids)).status) {
+  if (!(res = server.models.Validate.validate_items_in_room(agent.room, structure.item_ids)).status) {
     return res;
   }
 

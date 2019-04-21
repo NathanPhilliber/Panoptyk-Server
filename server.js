@@ -25,7 +25,7 @@ server.models.Trade = require(__dirname + '/models/trade.js');
 
 server.control = require(__dirname + '/controllers/controller.js');
 
-require(__dirname + '/models/event.js');
+server.models.Validate = require(__dirname + '/models/validate.js');
 server.modules.fs.readdirSync(__dirname + '/models/events/').forEach(function(file) {
   require(__dirname + '/models/events/' + file);
 });
@@ -69,4 +69,3 @@ server.models.Agent.load_all();
 server.models.Item.load_all();
 server.models.Cnode.load_all();
 server.models.Trade.load_all();
-
