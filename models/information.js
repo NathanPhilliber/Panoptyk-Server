@@ -8,7 +8,7 @@ class Info {
    * @param {int} action - action occured as int code
    * @param {String} predicate - predicate contents see Info.PREDICATE Enum
    * @param {int} owner - Agent who owns this info
-   * @param {long} time - Time information/event happened (possible predicate)
+   * @param {int} time - Time information/event happened (possible predicate)
    * @param {bool} query - is this info just a query? 
    * @param {int} location - possible predicate of location event occured at
    * @param {int} agent - possible predicate about agent
@@ -16,6 +16,7 @@ class Info {
    * @param {int} item - possible predicate of a tangible item type
    * @param {int} quantity - possible predicate about quantity of tangible item
    * @param {int} faction - possible predicate about faction group
+   * @param {bool} reference - whether this is just a copy of info owned by another agent
    * @param {int} infoID - possible predicate pointing to other info needed 
    */
   constructor (id, owner, time, infoID) {
@@ -32,15 +33,46 @@ class Info {
     this.item = null;
     this.quantity = null;
     this.faction = null;
+    this.reference = false;
     this.infoID = infoID;    
 
     Info.objects[this.id] = this;
 
-    //server.log('Information ' + Info.ACTION[this.action].name + ': ID#' + this.id + ' Initialized.', 2);
+    //server.log('Information ' + 'ID#' + this.id + ' Initialized.', 2);
   }
 
-  testMethod() {
-    console.log("I am test!");
+  /**
+   * Creates a new copy that references old info for recieving Agent to own
+   * @param {int} owner - Agent who owns this info
+   * @param {int} time - Time information copied
+   */
+  make_copy(owner, time) {
+    var i = new Info(null, owner, time, this.reference ? this.infoID : this.id);
+    i.reference = true;
+    return i;
+  }
+
+  
+
+  /**
+   * Pass JSON parsed object to be loaded in as info
+   * @param {Object} info
+   */
+  static load(info) {
+    var i = new Info(info.id, null, null, null);
+    for (var key in info) {
+      console.log(key);
+      i[key] = info[key];
+    }
+    return i;
+  }
+
+  /**
+   * Retrieve Info object by id
+   * @param {int} info_id - Info object's id
+   */
+  static get_info_by_id(info_id) {
+    return Info.objects[info_id];
   }
 
 }
@@ -94,7 +126,7 @@ Info.PREDICATE = {
     create: function(owner, v) {
       var i = new Info(null, owner, v[0], null);
       i.predicate = Info.PREDICATE.TAA.name;
-
+      
       i.agent = v[1];
       i.agent2 = v[2];
       return i;
@@ -381,13 +413,16 @@ Info.ACTION = {
  * Retrieves action object by its code stored in Info.action
  * @param {int} code - action code
  */
-Info.getACTION = function(code) {
+Info.get_ACTION = function(code) {
   return Info.ACTION[Object.keys(Info.ACTION)[code]];
 };
 
 var i = Info.ACTION.ENTER.create(7, {0: 12345, 1: 6, 2: 3});
 
 var i2 = Info.ACTION.DEPART.create(7, {0: 12765, 1: 6, 2: 3});
-console.log(Info.objects);
+console.log(i);
+i.id = 3;
+console.log(Info.load(JSON.parse(JSON.stringify(i))));
+console.log(Info.objects[3]);
 
-module.exports = Info
+module.exports = Info;
