@@ -265,7 +265,7 @@ class Trade {
    * @return [trade]
    */
   static get_active_trades_with_agent(agent) {
-    trades = [];
+    var trades = [];
 
     for (let trade of Trade.actives) {
       if (trade.agent_ini == agent || trade.agent_res == agent) {

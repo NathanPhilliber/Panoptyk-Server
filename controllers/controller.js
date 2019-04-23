@@ -36,6 +36,42 @@ Controller.add_items_to_agent_inventory = function(agent, items) {
   server.send.add_items_inventory(agent, added_items);
 }
 
+/**
+ * Add info to agent's knowledge. Does validation.
+ * @param {Object} agent - agent to give items to.
+ * @param {[Object]} info - list of info to give to agent.
+ */
+Controller.add_info_to_agent_inventory = function(agent, info) {
+
+  if (agent === null) {
+    server.log("Cannot give info to null agent", 0);
+    return;
+  }
+
+  if (info === null || info.length == 0) {
+    server.log("Cannot give no info to agent", 0);
+    return;
+  }
+
+  for (let i of info) {
+    if ((i.owner !== null)) {
+      server.log("Cannot give info to agent, info not available " + i.id, 0);
+      return;
+    }
+  }
+
+  var added_info = [];
+
+  for (let i of info) {
+    //added_info.push(i);
+
+    //agent.add_item_inventory(added_items[added_items.length-1]);
+    //added_items[added_items.length-1].give_to_agent(agent);
+  }
+
+  //server.send.add_items_inventory(agent, added_items);
+}
+
 
 /**
  * Remove items from agent's inventory. Does validation.
@@ -143,12 +179,14 @@ Controller.remove_agent_from_room = function(agent, new_room=null, update_agent_
 
   if (update_agent_model) {
     agent.remove_from_room();
-  }
+  }  
+
+  var time = server.clock.get_datetime();
+  var info = new server.models.Info.ACTION.DEPART.create(agent, {0: time, 1: agent.agent_id, 2: old_room.room_id});
+
+  Controller.give_info_to_agents(old_room.occupants, info);
 
   old_room.remove_agent(agent);
-
-  Controller.give_info_to_agents(old_room.occupants,
-    (agent.name + " left room " + old_room.name));
 }
 
 
@@ -426,11 +464,11 @@ Controller.set_trade_unready_if_ready = function(trade, agent) {
  */
 Controller.give_info_to_agents = function(agents, info) {
 
-  var time_append = " [" + server.clock.get_datetime() + "]";
+  var time = server.clock.get_datetime();
 
   for (let agent of agents) {
-    var item = new server.models.Item(info + time_append, "observation", null, null, null);
-    Controller.add_items_to_agent_inventory(agent, [item]);
+    var cpy = info.make_copy(agent, time);
+    Controller.add_info_to_agent_inventory(agent, [cpy]);
   }
 }
 

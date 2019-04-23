@@ -1,5 +1,4 @@
 "use strict";
-
 class Info {
   /**
    * Info model.
@@ -23,7 +22,7 @@ class Info {
 
     this.action = null;
     this.predicate = null;
-    this.owner = owner;
+    this.owner = owner.agent_id;
     this.time = time;
     this.query = false;
     this.location = null;
@@ -87,7 +86,7 @@ class Info {
 
     server.modules.fs.writeFileSync(
       server.settings.data_dir + "/info/" + "all_info" + ".json",
-      JSON.stringify({ objects: Info.objects, nextID: Info.nextID }, "utf8")
+      JSON.stringify({ objects: Info.objects, nextID: Info.nextID })
     );
 
     server.log("Information saved.", 2);
@@ -114,7 +113,7 @@ class Info {
             for (var info in json.objects) {
               Info.load(json[info]);
             }
-            Info.nextID = json.nextID;
+            Info.nextID = json.nextID !== null ? json.nextID : 1;
             //server.log("Loading info " + json.id, 2);
           }
         );
@@ -133,7 +132,7 @@ class Info {
    * Retrieves action object by its code stored in Info.action
    * @param {int} code - action code
    */
-  static get_ACTION = function(code) {
+  static get_ACTION(code) {
     return Info.ACTION[Object.keys(Info.ACTION)[code]];
   };
 }
