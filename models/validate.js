@@ -301,19 +301,4 @@ Validate.validate_trade_status = function(trade, status_options) {
 }
 
 
-/**
- * Check that all items are physical.
- * @param {[Object]} items - array of items.
- * @returns {Object} {status: boolean, message: string, items: [Object]}
- */
-Validate.validate_items_are_physical = function(items) {
-  for (let item of items) {
-    if (!item.physical) {
-      return {status: false, message: 'Item is not physiacl', items:items};
-    }
-  }
-
-  return {status:true, message:'', items:items};
-}
-
 module.exports = Validate;

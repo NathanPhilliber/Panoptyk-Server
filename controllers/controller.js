@@ -4,10 +4,8 @@ var Controller = {};
  * Add items to agent's inventory. Does validation.
  * @param {Object} agent - agent to give items to.
  * @param {[Object]} items - list of items to give to agent.
- * @param {boolean} copy_nonphysical - if an item is given that is nonphysical and has an
- *    owner, a copy will be made and added to inventory.
  */
-Controller.add_items_to_agent_inventory = function(agent, items, copy_nonphysical=false) {
+Controller.add_items_to_agent_inventory = function(agent, items) {
 
   if (agent === null) {
     server.log("Cannot give items to null agent", 0);
@@ -20,7 +18,7 @@ Controller.add_items_to_agent_inventory = function(agent, items, copy_nonphysica
   }
 
   for (let item of items) {
-    if (item.room !== null || (item.agent !== null && (item.physical || !copy_nonphysical))) {
+    if (item.room !== null || (item.agent !== null)) {
       server.log("Cannot give item to agent, item not available " + item.name, 0);
       return;
     }
@@ -29,12 +27,7 @@ Controller.add_items_to_agent_inventory = function(agent, items, copy_nonphysica
   var added_items = [];
 
   for (let item of items) {
-    if (!item.physical && item.agent !== null && copy_nonphysical) {
-      added_items.push(item.deep_copy());
-    }
-    else {
-      added_items.push(item);
-    }
+    added_items.push(item);
 
     agent.add_item_inventory(added_items[added_items.length-1]);
     added_items[added_items.length-1].give_to_agent(agent);
@@ -47,9 +40,8 @@ Controller.add_items_to_agent_inventory = function(agent, items, copy_nonphysica
 /**
  * Remove items from agent's inventory. Does validation.
  * @params {[Object]} items - list of items to remove from agent.
- * 2param {boolean} skip_nonphysical - if an item is nonphysical, do not remove it.
  */
-Controller.remove_items_from_agent_inventory = function(items, skip_nonphysical=false) {
+Controller.remove_items_from_agent_inventory = function(items) {
   if (items === null || items.length == 0) {
     server.log("Cannot remove no items from agent", 1);
     return;
@@ -67,11 +59,9 @@ Controller.remove_items_from_agent_inventory = function(items, skip_nonphysical=
   var removed_items = [];
 
   for (let item of items) {
-    if (item.physical || !skip_nonphysical) {
-      item.agent.remove_item_inventory(item);
-      item.take_from_agent();
-      removed_items.push(item);
-    }
+    item.agent.remove_item_inventory(item);
+    item.take_from_agent();
+    removed_items.push(item);
   }
 
   server.send.remove_items_inventory(agent, removed_items);
@@ -439,7 +429,7 @@ Controller.give_info_to_agents = function(agents, info) {
   var time_append = " [" + server.clock.get_datetime() + "]";
 
   for (let agent of agents) {
-    var item = new server.models.Item(info + time_append, "observation", null, null, null, false);
+    var item = new server.models.Item(info + time_append, "observation", null, null, null);
     Controller.add_items_to_agent_inventory(agent, [item]);
   }
 }

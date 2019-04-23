@@ -5,13 +5,15 @@ class Agent {
    * @param {string} username - username of agent
    * @param {Object} room - room of agent. Does not put agent in room, simply saves it.
    * @param {[Object]} inventory - list of items that agent owns.
+   * @param {[Object]} knowledge - list of items that agent owns.
    * @param {int} id - id of agent. If null, one will be assigned.
    */
-  constructor(username, room=null, inventory=[], id=null) {
+  constructor(username, room=null, inventory=[], knowledge=[], id=null) {
     this.name = username;
     this.room = room;
     this.socket = null;
     this.inventory = inventory;
+    this.knowledge = knowledge;
     this.cnode = null;
 
     this.agent_id = id == null ? Agent.nextId++ : id;
@@ -27,10 +29,10 @@ class Agent {
    */
   static load(data) {
     var inventory = [];
-
+    var knowledge = [];
     // load items (handled by items)
 
-    new Agent(data.name, server.models.Room.get_room_by_id(data.room_id), inventory, data.agent_id);
+    new Agent(data.name, server.models.Room.get_room_by_id(data.room_id), inventory, knowledge, data.agent_id);
   }
 
 

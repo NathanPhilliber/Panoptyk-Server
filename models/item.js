@@ -7,15 +7,13 @@ class Item {
    * @param {Object} room - room object item is in. (Optional).
    * @param {Object} agent - agent that owns item. (Optional).
    * @param {int} id - id of item. If null, one will be assigned.
-   * @param {boolean} physical - true if item is a physical item, false if not.
    */
-  constructor(name, type, room=null, agent=null, id=null, physical=true) {
+  constructor(name, type, room=null, agent=null, id=null) {
     this.type = type;
     this.name = name;
     this.room = room;
     this.agent = agent;
 
-    this.physical = physical;
     this.in_transaction = false;
 
     this.item_id = id == null ? Item.nextId++ : id;
@@ -43,8 +41,7 @@ class Item {
       data.type,
       server.models.Room.get_room_by_id(data.room_id),
       server.models.Agent.get_agent_by_id(data.agent_id),
-      data.item_id,
-      data.physical);
+      data.item_id);
   }
 
 
@@ -58,8 +55,7 @@ class Item {
       type: this.type,
       room_id: this.room == null ? null : this.room.room_id,
       agent_id: this.agent == null ? null : this.agent.agent_id,
-      item_id: this.item_id,
-      physical: this.physical
+      item_id: this.item_id
     }
 
     return data;
@@ -105,15 +101,6 @@ class Item {
         Item.load(json);
       });
     });
-  }
-
-
-  /**
-   * Create a deep copy of this item.
-   * @returns {Object}
-   */
-  deep_copy() {
-    return new Item(this.name, this.type, this.room, this.agent, null, this.physical);
   }
 
 
