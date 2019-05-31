@@ -16,10 +16,9 @@ class Agent {
     this.knowledge = knowledge;
     this.cnode = null;
 
-    this.agent_id = id == null ? Agent.nextId++ : id;
+    this.agent_id = (id == null ? Agent.nextId++ : id);
     Agent.objects[this.agent_id] = this;
     server.log('Agent ' + this.name + ' initialized.', 2);
-
   }
 
 
@@ -134,7 +133,7 @@ class Agent {
    * @returns {Object/null}
    */
   static get_agent_by_id(agent_id) {
-    if (Agent.objects[agent_id] != undefined){
+    if (Agent.objects[agent_id]){
       return Agent.objects[agent_id];
     }
     server.log('Could not find agent with id ' + agent_id + '.', 1);
@@ -143,6 +142,7 @@ class Agent {
 
 
   /**
+   * TODO: Look at this function
    * Static function. Find agent associated with a socket.
    * @param {Object} socket - Socket.io object
    * @returns {Object/null}
@@ -150,7 +150,7 @@ class Agent {
   static get_agent_by_socket(socket) {
     for (var id in Agent.objects) {
       var agent = Agent.objects[id];
-      if (agent.socket == socket) {
+      if (agent.socket === socket) {
         return agent;
       }
     }
@@ -165,7 +165,7 @@ class Agent {
    * @param {Object} item - item object
    */
   add_item_inventory(item) {
-    this.inventory.push(item);
+    this.inventory.push(item.id);
   }
 
 
@@ -174,7 +174,7 @@ class Agent {
    * @param {Object} item - item object
    */
   remove_item_inventory(item) {
-    var index = this.inventory.indexOf(item);
+    var index = this.inventory.indexOf(item.id);
 
     if (index == -1) {
       server.log('Tried to remove invalid item '+item.name+' from agent '+this.name+'.', 0);
@@ -182,6 +182,32 @@ class Agent {
     }
 
     this.inventory.splice(index, 1);
+    return true;
+  }
+
+   /**
+   * Add an info to agent's knowledge.
+   * @param {Info} info - information on event
+   */
+  add_info_knowledge(info) {
+    this.inventory.push(info.id);
+  }
+
+
+  /**
+   * Remove an item from agent inventory.
+   * @param {Info} info - item object
+   */
+  remove_info_knowledge(info) {
+    var index = this.inventory.indexOf(info.id);
+
+    if (index == -1) {
+      server.log('Tried to remove invalid information '+info.id+' from agent '+this.name+'.', 0);
+      return false;
+    }
+
+    this.inventory.splice(index, 1);
+    return true;
   }
 
 
@@ -190,7 +216,7 @@ class Agent {
    * @param {Object} new_room - room to move to
    */
   put_in_room(new_room) {
-    this.room = new_room;
+    this.room = new_room.room_id;
   }
 
 

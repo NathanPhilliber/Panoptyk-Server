@@ -55,7 +55,7 @@ class Info {
    * @param {Object} owner - agent object to give info to.
    */
   give_to_agent(owner) {
-    this.owner = owner;
+    this.owner = owner.agent_id;
   }
 
   /**

@@ -12,7 +12,7 @@ class Room {
     this.items = [];
     this.cnodes = [];
 
-    this.room_id = room_id == null ? Room.nextId++ : room_id;
+    this.room_id = (room_id == null ? Room.nextId++ : room_id);
     Room.objects[this.room_id] = this;
     server.log('Room ' + this.name + ' Initialized with id ' + this.room_id + '.', 2);
   }

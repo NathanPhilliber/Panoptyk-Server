@@ -33,7 +33,7 @@ Controller.add_items_to_agent_inventory = function(agent, items) {
     added_items[added_items.length-1].give_to_agent(agent);
   }
 
-  server.send.add_items_inventory(agent, added_items);
+  //server.send.add_items_inventory(agent, added_items);
 }
 
 /**
@@ -63,13 +63,13 @@ Controller.add_info_to_agent_inventory = function(agent, info) {
   var added_info = [];
 
   for (let i of info) {
-    //added_info.push(i);
+    added_info.push(i);
 
-    //agent.add_item_inventory(added_items[added_items.length-1]);
-    //added_items[added_items.length-1].give_to_agent(agent);
+    agent.add_info_knowledge(added_info[added_info.length-1]);
+    added_info[added_info.length-1].give_to_agent(agent);
   }
 
-  //server.send.add_items_inventory(agent, added_items);
+  //server.send.add_info_inventory(agent, added_info);
 }
 
 
