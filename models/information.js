@@ -71,6 +71,9 @@ class Info {
    */
   static load(info) {
     var i = new Info(info.id, info.owner, info.time, info.infoId);
+    for (var key in info) {
+      i[key] = info[key];
+    }
     return i;
   }
 
