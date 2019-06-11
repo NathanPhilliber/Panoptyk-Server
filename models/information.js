@@ -22,7 +22,7 @@ class Info {
 
     this.action = null;
     this.predicate = null;
-    this.owner = owner.agent_id;
+    this.owner = owner != null ? owner.agent_id : null;
     this.time = time;
     this.query = false;
     this.location = null;
@@ -70,11 +70,7 @@ class Info {
    * @param {Object} info
    */
   static load(info) {
-    var i = new Info(info.id, null, null, null);
-    for (var key in info) {
-      console.log(key);
-      i[key] = info[key];
-    }
+    var i = new Info(info.id, info.owner, info.time, info.infoId);
     return i;
   }
 
@@ -111,7 +107,7 @@ class Info {
 
             var json = JSON.parse(data);
             for (var info in json.objects) {
-              Info.load(json[info]);
+              Info.load(json.objects[info]);
             }
             Info.nextID = json.nextID !== null ? json.nextID : 1;
             //server.log("Loading info " + json.id, 2);

@@ -8,7 +8,7 @@ class Conversation{
    */
   constructor(room, max_agents=4, id=null) {
     this.conversation_id = id === null ? Conversation.objects.length : id;
-    Conversation.objects.push(this);
+    Conversation.objects[this.id] = this;
 
     this.max_agents = max_agents;
     this.agents = [];
@@ -138,7 +138,7 @@ class Conversation{
    */
   static get_conversation_by_id(conversation_id) {
     if (Conversation.objects[conversation_id] != undefined) {
-      return Trade.objects[conversation_id];
+      return Conversation.objects[conversation_id];
     }
 
     server.log("Could not find conversation with id " + conversation_id, 1);
