@@ -16,7 +16,7 @@ function Event_takeItems(socket, inputData) {
   this.items = res.items;
   this.room = this.agent.room;
 
-  server.control.remove_agent_from_cnode_if_in(this.agent);
+  server.control.remove_agent_from_conversation_if_in(this.agent);
   server.control.remove_items_from_room(this.items, this.agent);
   server.control.add_items_to_agent_inventory(this.agent, this.items);
 

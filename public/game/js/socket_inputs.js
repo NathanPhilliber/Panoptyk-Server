@@ -32,9 +32,9 @@ Client.socket.on('room-data', function(data) {
   console.log(data);
   new Room(data.room_data.room_id, data.room_data.room_name, data.room_data.adjacent_rooms, data.room_data.layout, data.agents, data.items, data.old_room_id);
 
-  for (let cnode_data of data.room_data.layout.cnodes) {
-    var cnode = new Cnode(cnode_data.cnode_id, cnode_data.max_agents, cnode_data.agent_ids);
-    current_room.cnodes.push(cnode);
+  for (let conversation_data of data.room_data.layout.conversations) {
+    var conversation = new Conversation(conversation_data.conversation_id, conversation_data.max_agents, conversation_data.agent_ids);
+    current_room.conversations.push(conversation);
   }
 
 });
@@ -66,20 +66,20 @@ Client.socket.on('remove-items-room', function(data) {
   }
 });
 
-Client.socket.on('cnode-data', function(data) {
-  console.log("cnode-data event: " + data);
+Client.socket.on('conversation-data', function(data) {
+  console.log("conversation-data event: " + data);
 });
 
-Client.socket.on('agent-join-cnode', function(data) {
-  console.log("agent-join-cnode event: " + data);
+Client.socket.on('agent-join-conversation', function(data) {
+  console.log("agent-join-conversation event: " + data);
   console.log(data);
-  current_room.get_cnode(data.cnode_id).add_agent(current_room.get_agent(data.agent_id));
+  current_room.get_conversation(data.conversation_id).add_agent(current_room.get_agent(data.agent_id));
 });
 
-Client.socket.on('agent-leave-cnode', function(data) {
-  console.log("agent-leave-cnode event: " + JSON.stringify(data));
+Client.socket.on('agent-leave-conversation', function(data) {
+  console.log("agent-leave-conversation event: " + JSON.stringify(data));
 
-  current_room.get_cnode(data.cnode_id).remove_agent(current_room.get_agent(data.agent_id));
+  current_room.get_conversation(data.conversation_id).remove_agent(current_room.get_agent(data.agent_id));
 });
 
 Client.socket.on('trade-requested', function(data) {

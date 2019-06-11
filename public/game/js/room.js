@@ -12,7 +12,7 @@ function Room(room_id, room_name, adjacents, layout, agents, items, old_room_id)
   this.room_id = room_id;
   this.name = room_name;
   this.layout = layout;
-  this.cnodes = [];
+  this.conversations = [];
 
   this.adjacents = [];
   for (let room_data of adjacents) {
@@ -57,8 +57,8 @@ Room.prototype.destroy = function() {
     exit.destroy();
   }
 
-  for (let cnode of this.cnodes) {
-    cnode.destroy();
+  for (let conversation of this.conversations) {
+    conversation.destroy();
   }
 }
 
@@ -142,14 +142,14 @@ Room.prototype.get_agent = function(agent_id) {
   return null;
 }
 
-Room.prototype.get_cnode = function(cnode_id) {
-  for (let cnode of this.cnodes) {
-    if (cnode.cnode_id == cnode_id) {
-      return cnode;
+Room.prototype.get_conversation = function(conversation_id) {
+  for (let conversation of this.conversations) {
+    if (conversation.conversation_id == conversation_id) {
+      return conversation;
     }
   }
 
-  console.log("Could not find cnode with id " + cnode_id);
+  console.log("Could not find conversation with id " + conversation_id);
   return null;
 }
 

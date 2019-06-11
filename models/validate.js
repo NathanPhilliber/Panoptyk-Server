@@ -207,64 +207,64 @@ Validate.validate_ready_status = function(trade, agent, rstatus) {
 
 
 /**
- * Check if a cnode is in given room.
- * @param {Object} room - room to see if cnode is in.
- * @param {Object} cnode - cnode object.
- * @returns {Object} {status: boolean, message: string, cnode: Object}
+ * Check if a conversation is in given room.
+ * @param {Object} room - room to see if conversation is in.
+ * @param {Object} conversation - conversation object.
+ * @returns {Object} {status: boolean, message: string, conversation: Object}
  */
-Validate.validate_cnode_exists = function(room, cnode) {
-  if (cnode == null) {
-    return {'status': false, 'message': 'Cnode does not exist'};
+Validate.validate_conversation_exists = function(room, conversation) {
+  if (conversation == null) {
+    return {'status': false, 'message': 'Conversation does not exist'};
   }
-  if (cnode.room !== room) {
-    return {'status': false, 'message': 'Cnode not in agents room'};
+  if (conversation.room !== room) {
+    return {'status': false, 'message': 'Conversation not in agents room'};
   }
 
-  return {status:true, message:'', cnode:cnode}
+  return {status:true, message:'', conversation:conversation}
 }
 
 
 /**
- * Check if a cnode has space for another agent.
- * @param {Object} cnode - cnode object.
- * @returns {Object} {status: boolean, message: string, cnode: Object}
+ * Check if a conversation has space for another agent.
+ * @param {Object} conversation - conversation object.
+ * @returns {Object} {status: boolean, message: string, conversation: Object}
  */
-Validate.validate_cnode_has_space = function(cnode) {
-  if (cnode.agents.length >= cnode.max_agents) {
-    return {status: false, message: 'Cnode is full', cnode:cnode}
+Validate.validate_conversation_has_space = function(conversation) {
+  if (conversation.agents.length >= conversation.max_agents) {
+    return {status: false, message: 'Conversation is full', conversation:conversation}
   }
 
-  return {status: true, message:'', cnode:cnode};
+  return {status: true, message:'', conversation:conversation};
 }
 
 
 /**
- * Check if an agent is in a cnode.
- * @param {Object} cnode - cnode object.
+ * Check if an agent is in a conversation.
+ * @param {Object} conversation - conversation object.
  * @param {Object} agent - agent object.
- * @returns {Object} {status: boolean, message: string, cnode: Object}
+ * @returns {Object} {status: boolean, message: string, conversation: Object}
  */
-Validate.validate_cnode_has_agent = function(cnode, agent) {
-  if (cnode.get_agent_by_id(agent.agent_id) == null) {
-    return {status: false, message: 'Agent does not belong to cnode', cnode:cnode}
+Validate.validate_conversation_has_agent = function(conversation, agent) {
+  if (conversation.get_agent_by_id(agent.agent_id) == null) {
+    return {status: false, message: 'Agent does not belong to conversation', conversation:conversation}
   }
 
-  return {status: true, message: '', cnode: cnode};
+  return {status: true, message: '', conversation: conversation};
 }
 
 
 /**
- * Check if two agents are in the same cnode.
+ * Check if two agents are in the same conversation.
  * @param {Object} agent1 - agent object.
  * @param {Object} agent2 - agent object.
- * @returns {Object} {status: boolean, message: string, cnode: Object, to_agent: Object}
+ * @returns {Object} {status: boolean, message: string, conversation: Object, to_agent: Object}
  */
-Validate.validate_agents_share_cnode = function(agent1, agent2) {
-  if (agent1.cnode != agent2.cnode || !agent1.cnode) {
-    return {status:false, message: 'Agents not in same cnode'}
+Validate.validate_agents_share_conversation = function(agent1, agent2) {
+  if (agent1.conversation != agent2.conversation || !agent1.conversation) {
+    return {status:false, message: 'Agents not in same conversation'}
   }
 
-  return {status: true, message:'', cnode:agent1.cnode, to_agent:agent2};
+  return {status: true, message:'', conversation:agent1.conversation, to_agent:agent2};
 }
 
 

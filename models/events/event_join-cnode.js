@@ -3,28 +3,28 @@
  * @param {Object} socket - socket.io client socket object.
  * @param {Object} inputData - raw input recieved.
  */
-function Event_joinCnode(socket, inputData) {
+function Event_joinConversation(socket, inputData) {
   this.time = new Date();
   this.agent = server.models.Agent.get_agent_by_socket(socket);
 
-  if (!(res = server.models.Event_joinCnode.validate(inputData, this.agent)).status) {
-    server.log('Bad event joinCnode data ('+JSON.stringify(inputData) + ').', 1);
-    server.send.event_failed(socket, server.models.Event_joinCnode.event_name, res.message);
+  if (!(res = server.models.Event_joinConversation.validate(inputData, this.agent)).status) {
+    server.log('Bad event joinConversation data ('+JSON.stringify(inputData) + ').', 1);
+    server.send.event_failed(socket, server.models.Event_joinConversation.event_name, res.message);
     return false;
   }
 
-  this.cnode = res.cnode;
+  this.conversation = res.conversation;
 
-  server.control.add_agent_to_cnode(this.cnode, this.agent);
+  server.control.add_agent_to_conversation(this.conversation, this.agent);
 
   (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
-  server.log('Event join-cnode (' + this.cnode.cnode_id + ') for agent ' + this.agent.name + ' registered.', 2);
+  server.log('Event join-conversation (' + this.conversation.conversation_id + ') for agent ' + this.agent.name + ' registered.', 2);
 }
 
-Event_joinCnode.event_name = 'join-cnode';
+Event_joinConversation.event_name = 'join-conversation';
 
-Event_joinCnode.formats = [{
-  'cnode_id': 'number'
+Event_joinConversation.formats = [{
+  'conversation_id': 'number'
 }]
 
 
@@ -34,21 +34,21 @@ Event_joinCnode.formats = [{
  * @param {Object} agent - agent associated with this event.
  * @return {Object}
  */
-Event_joinCnode.validate = function(structure, agent) {
+Event_joinConversation.validate = function(structure, agent) {
 
   if (!(res = server.models.Validate.validate_agent_logged_in(agent)).status) {
     return res;
   }
-  if (!(res = server.models.Validate.validate_key_format(server.models.Event_joinCnode.formats, structure)).status) {
+  if (!(res = server.models.Validate.validate_key_format(server.models.Event_joinConversation.formats, structure)).status) {
     return res;
   }
-  if (!(res = server.models.Validate.validate_cnode_exists(agent.room, server.models.Cnode.get_cnode_by_id(structure.cnode_id))).status) {
+  if (!(res = server.models.Validate.validate_conversation_exists(agent.room, server.models.Conversation.get_conversation_by_id(structure.conversation_id))).status) {
     return res;
   }
-  if (!(res = server.models.Validate.validate_cnode_has_space(res.cnode)).status) {
+  if (!(res = server.models.Validate.validate_conversation_has_space(res.conversation)).status) {
     return res;
   }
   return res;
 };
 
-server.models.Event_joinCnode = Event_joinCnode;
+server.models.Event_joinConversation = Event_joinConversation;

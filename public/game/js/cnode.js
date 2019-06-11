@@ -1,18 +1,18 @@
-current_cnode = -1;
+current_conversation = -1;
 
-function Cnode(cnode_id, max_agents, agent_ids) {
-  this.cnode_id = cnode_id;
+function Conversation(conversation_id, max_agents, agent_ids) {
+  this.conversation_id = conversation_id;
   this.max_agents = max_agents;
 
-  this.sprite = graphics.add.sprite(Math.random()*(game.canvas.width-200)+100, Math.random()*(game.canvas.height-200)+100, 'cnode');
+  this.sprite = graphics.add.sprite(Math.random()*(game.canvas.width-200)+100, Math.random()*(game.canvas.height-200)+100, 'conversation');
   this.sprite.setOrigin(0.5, 0.5);
   this.sprite.setInteractive();
 
-  var cnode = this;
+  var conversation = this;
 
   this.sprite.on('pointerdown', function(ev) {
-    console.log('entering cnode ' + cnode_id);
-    Client.send.joinCnode(cnode);
+    console.log('entering conversation ' + conversation_id);
+    Client.send.joinConversation(conversation);
   });
 
   this.agents = [];
@@ -21,32 +21,32 @@ function Cnode(cnode_id, max_agents, agent_ids) {
     this.add_agent(current_room.get_agent(agent_id));
   }
 
-  console.log("Cnode " + this.cnode_id + " initialized.");
+  console.log("Conversation " + this.conversation_id + " initialized.");
 }
 
-Cnode.prototype.destroy = function() {
+Conversation.prototype.destroy = function() {
   this.sprite.destroy();
 }
 
-Cnode.prototype.add_agent = function(agent) {
+Conversation.prototype.add_agent = function(agent) {
   this.agents.push(agent);
   var pos = this.get_spot();
   agent.move(pos.x, pos.y);
 
   if (agent == Agent.my_agent) {
-    agent.cnode = this;
+    agent.conversation = this;
     loadTradeMeetingSpot("Meeting Location", this.agents);
   }
-  else if(Agent.my_agent.cnode == this){
+  else if(Agent.my_agent.conversation == this){
     document.getElementById("i_div_meetingSpotAgents").appendChild(getAgentMeetingRow(agent));
   }
 }
 
-Cnode.prototype.remove_agent = function(agent) {
+Conversation.prototype.remove_agent = function(agent) {
   var index = this.agents.indexOf(agent);
 
   if (index == -1) {
-    console.log("could not remove agent, agent not in cnode " + this.cnode_id);
+    console.log("could not remove agent, agent not in conversation " + this.conversation_id);
     return;
   }
 
@@ -56,13 +56,13 @@ Cnode.prototype.remove_agent = function(agent) {
   if (agent == Agent.my_agent) {
     clearTradeMeetingSpot();
   }
-  else if(Agent.my_agent.cnode == this) {
+  else if(Agent.my_agent.conversation == this) {
     removeAgentMeetingRow(agent.agent_id);
   }
 }
 
 
-Cnode.prototype.get_spot = function() {
+Conversation.prototype.get_spot = function() {
   return {
     x: Math.random()*this.sprite.width + this.sprite.x - this.sprite.width/2,
     y: Math.random()*this.sprite.height + this.sprite.y - this.sprite.height/2

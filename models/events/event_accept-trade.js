@@ -13,7 +13,7 @@ function Event_acceptTrade(socket, inputData) {
     return false;
   }
 
-  this.cnode = res.cnode;
+  this.conversation = res.conversation;
   this.to_agent = res.trade.agent_ini;
   this.trade = res.trade;
 

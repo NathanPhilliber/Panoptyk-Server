@@ -14,7 +14,7 @@ class Agent {
     this.socket = null;
     this.inventory = inventory;
     this.knowledge = knowledge;
-    this.cnode = null;
+    this.conversation = null;
 
     this.agent_id = (id == null ? Agent.nextId++ : id);
     Agent.objects[this.agent_id] = this;
@@ -276,19 +276,19 @@ class Agent {
 
 
   /**
-   * Add agent to cnode.
-   * @param {Object} cnode - cnode object.
+   * Add agent to conversation.
+   * @param {Object} conversation - conversation object.
    */
-  join_cnode(cnode) {
-    this.cnode = cnode;
+  join_conversation(conversation) {
+    this.conversation = conversation;
   }
 
 
   /**
-   * Remove an agent from its' cnode.
+   * Remove an agent from its' conversation.
    */
-  leave_cnode() {
-    this.cnode = null;
+  leave_conversation() {
+    this.conversation = null;
   }
 }
 

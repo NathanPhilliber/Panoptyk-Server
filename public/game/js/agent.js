@@ -7,7 +7,7 @@ function Agent(id, username, my_agent=false) {
   this.x = Math.random() * (game.canvas.width-150) + 75;
   this.y = Math.random() * (game.canvas.height-150) + 75;
   this.graphics = graphics.add.graphics(0,0);
-  this.cnode = null;
+  this.conversation = null;
   this.trades = {};
 
   console.log("Agent Initialized (" + id + ", " + username + ")");

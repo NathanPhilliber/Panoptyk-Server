@@ -10,7 +10,7 @@ class Room {
     this.adjacents = [];
     this.occupants = [];
     this.items = [];
-    this.cnodes = [];
+    this.conversations = [];
     this.max_occupants = max_occupants;
 
     this.room_id = (room_id == null ? Room.nextId++ : room_id);
@@ -193,9 +193,9 @@ class Room {
       adj_ids.push({'room_id':room.room_id, 'room_name':room.name});
     }
 
-    var cnode_datas = [];
-    for (let cnode of this.cnodes) {
-      cnode_datas.push(cnode.get_data());
+    var conversation_datas = [];
+    for (let conversation of this.conversations) {
+      conversation_datas.push(conversation.get_data());
     }
 
     var data = {
@@ -203,7 +203,7 @@ class Room {
       'room_name': this.name,
       'adjacent_rooms': adj_ids,
       'layout': {
-        'cnodes': cnode_datas
+        'conversations': conversation_datas
       }
     }
 
@@ -212,27 +212,27 @@ class Room {
 
 
   /**
-   * Add a cnode to a room.
-   * @param {Object} cnode - cnode to add to room.
+   * Add a conversation to a room.
+   * @param {Object} conversation - conversation to add to room.
    */
-  add_cnode(cnode) {
-    this.cnodes.push(cnode);
+  add_conversation(conversation) {
+    this.conversations.push(conversation);
   }
 
 
   /**
-   * Remove a cnode from this room.
-   * @param {Object} cnode - cnode object.
+   * Remove a conversation from this room.
+   * @param {Object} conversation - conversation object.
    */
-  remove_cnode(cnode) {
-    var index = this.cnodes.indexOf(cnode);
+  remove_conversation(conversation) {
+    var index = this.conversations.indexOf(conversation);
 
     if (index == -1) {
-      server.log("Could not remove cnode " + cnode.cnode_id, 0);
+      server.log("Could not remove conversation " + conversation.conversation_id, 0);
       return;
     }
 
-    this.cnodes.splice(index, 1);
+    this.conversations.splice(index, 1);
   }
 
 

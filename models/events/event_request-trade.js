@@ -13,13 +13,13 @@ function Event_requestTrade(socket, inputData) {
     return false;
   }
 
-  this.cnode = res.cnode;
+  this.conversation = res.conversation;
   this.to_agent = res.to_agent;
 
-  this.trade = server.control.create_trade(this.cnode, this.agent, this.to_agent);
+  this.trade = server.control.create_trade(this.conversation, this.agent, this.to_agent);
 
   (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
-  server.log('Event request-trade (' + this.cnode.cnode_id + ') for agent ' + this.agent.name + ' registered.', 2);
+  server.log('Event request-trade (' + this.conversation.conversation_id + ') for agent ' + this.agent.name + ' registered.', 2);
 }
 
 Event_requestTrade.event_name = 'request-trade';
@@ -47,7 +47,7 @@ Event_requestTrade.validate = function(structure, agent) {
   if (!(res = server.models.Validate.validate_agent_logged_in(to_agent)).status) {
     return res;
   }
-  if (!(res = server.models.Validate.validate_agents_share_cnode(agent, to_agent)).status) {
+  if (!(res = server.models.Validate.validate_agents_share_conversation(agent, to_agent)).status) {
     return res;
   }
   return res;

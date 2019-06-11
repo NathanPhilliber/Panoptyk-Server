@@ -171,7 +171,7 @@ Controller.remove_agent_from_room = function(agent, new_room=null, update_agent_
     return;
   }
 
-  Controller.remove_agent_from_cnode_if_in(agent);
+  Controller.remove_agent_from_conversation_if_in(agent);
 
   agent.socket.leave(old_room.room_id);
 
@@ -248,45 +248,45 @@ Controller.remove_items_from_room = function(items, by_agent=null) {
 
 
 /**
- * Add an agent to a cnode. Does validation.
- * @param {Object} cnode - cnode agent wants to join.
+ * Add an agent to a conversation. Does validation.
+ * @param {Object} conversation - conversation agent wants to join.
  * @param {Object} agent - agent object
  */
-Controller.add_agent_to_cnode = function(cnode, agent) {
-  Controller.remove_agent_from_cnode_if_in(agent);
+Controller.add_agent_to_conversation = function(conversation, agent) {
+  Controller.remove_agent_from_conversation_if_in(agent);
 
-  server.log("Adding agent " + agent.name + " to cnode " + cnode.cnode_id, 2);
-  agent.join_cnode(cnode);
-  cnode.add_agent(agent);
+  server.log("Adding agent " + agent.name + " to conversation " + conversation.conversation_id, 2);
+  agent.join_conversation(conversation);
+  conversation.add_agent(agent);
 
-  server.send.agent_join_cnode(agent);
+  server.send.agent_join_conversation(agent);
 }
 
 
 /**
- * Remove an agent from a cnode. Does validation.
- * @param {Object} cnode - cnode agent wants to leave.
+ * Remove an agent from a conversation. Does validation.
+ * @param {Object} conversation - conversation agent wants to leave.
  * @param {Object} agent - agent object
  */
-Controller.remove_agent_from_cnode = function(cnode, agent) {
-  server.log("Removing agent " + agent.name + " from cnode " + cnode.cnode_id, 2);
+Controller.remove_agent_from_conversation = function(conversation, agent) {
+  server.log("Removing agent " + agent.name + " from conversation " + conversation.conversation_id, 2);
 
   Controller.end_all_trades_with_agent(agent);
 
-  agent.leave_cnode();
-  cnode.remove_agent(agent);
+  agent.leave_conversation();
+  conversation.remove_agent(agent);
 
-  server.send.agent_leave_cnode(agent, cnode);
+  server.send.agent_leave_conversation(agent, conversation);
 }
 
 
 /**
- * Remove agent from their cnode if they are in one. Otherwise do nothing.
+ * Remove agent from their conversation if they are in one. Otherwise do nothing.
  * @param {Object} agent - agent object
  */
-Controller.remove_agent_from_cnode_if_in = function(agent) {
-  if (agent.cnode !== null) {
-    Controller.remove_agent_from_cnode(agent.cnode, agent);
+Controller.remove_agent_from_conversation_if_in = function(agent) {
+  if (agent.conversation !== null) {
+    Controller.remove_agent_from_conversation(agent.conversation, agent);
   }
 }
 
@@ -304,13 +304,13 @@ Controller.end_all_trades_with_agent = function(agent) {
 
 /**
  * Create a trade and send request to appropriate agent.
- * 2param {Object} cnode - cnode object containing both agents.
+ * 2param {Object} conversation - conversation object containing both agents.
  * @param {Object} from_agent - agent object making request.
  * @param {Object} to_agent - agent object getting request.
  * @returns {Object} new trade object.
  */
-Controller.create_trade = function(cnode, from_agent, to_agent) {
-  var trade = new server.models.Trade(from_agent, to_agent, cnode);
+Controller.create_trade = function(conversation, from_agent, to_agent) {
+  var trade = new server.models.Trade(from_agent, to_agent, conversation);
 
   server.send.trade_requested(to_agent.socket, trade);
 
@@ -373,7 +373,7 @@ Controller.perform_trade = function(trade) {
     items_res_str.push(item.name);
   }
 
-  Controller.give_info_to_agents(trade.cnode.room.occupants,
+  Controller.give_info_to_agents(trade.conversation.room.occupants,
     (trade.agent_ini.name + " (" + items_ini_str.join(", ") + ") traded with " +
      trade.agent_res.name + " (" + items_res_str.join(", ") + ")"));
 

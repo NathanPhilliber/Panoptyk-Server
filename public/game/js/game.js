@@ -18,7 +18,7 @@ function preload() {
   this.load.image('agent_other', 'public/game/assets/agent_other_sprite.png');
   this.load.image('item', 'public/game/assets/item_sprite.png');
   this.load.image('exit', 'public/game/assets/exit_sprite.png');
-  this.load.image('cnode', 'public/game/assets/cnode.png');
+  this.load.image('conversation', 'public/game/assets/conversation.png');
 }
 
 function create() {

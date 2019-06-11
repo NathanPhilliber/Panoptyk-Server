@@ -4,15 +4,15 @@ class Trade {
    * Trade model.
    * @param {Object} agent_ini - initiating agent
    * @param {Object} agent_res - responding agent
-   * @param {Object} cnode - cnode trade is happening in.
+   * @param {Object} conversation - conversation trade is happening in.
    * @param {int} id - id of trade. If null, one will be assigned.
    * @param {int} result_status - result status of trade.
    *              0=failed, 1=success, 2=in progress, 3=requested
    */
-  constructor(agent_ini, agent_res, cnode, id=null, result_status=3) {
+  constructor(agent_ini, agent_res, conversation, id=null, result_status=3) {
     this.agent_ini = agent_ini;
     this.agent_res = agent_res;
-    this.cnode = cnode;
+    this.conversation = conversation;
     this.result_status = result_status;
 
     this.items_ini = [];
@@ -39,7 +39,7 @@ class Trade {
   static load(data) {
     new Trade(server.models.Agent.get_agent_by_id(data.agent_ini_id),
               server.models.Agent.get_agent_by_id(data.agent_res_id),
-              server.models.Cnode.get_cnode_by_id(data.cnode_id),
+              server.models.Conversation.get_conversation_by_id(data.conversation_id),
               data.trade_id,
               data.result_status);
 
@@ -55,7 +55,7 @@ class Trade {
       trade_id: this.trade_id,
       agent_ini_id: this.agent_ini.agent_id,
       agent_res_id: this.agent_res.agent_id,
-      cnode_id: this.cnode.cnode_id,
+      conversation_id: this.conversation.conversation_id,
       result_status: this.result_status
     }
 
@@ -138,7 +138,7 @@ class Trade {
       'items_ini': this.get_agent_ini_items_data(),
       'items_res': this.get_agent_res_items_data(),
       'room_id': this.room.room_id,
-      'cnode_id': this.cnode.cnode_id,
+      'conversation_id': this.conversation.conversation_id,
       'result_status': this.result_status
     }
   }

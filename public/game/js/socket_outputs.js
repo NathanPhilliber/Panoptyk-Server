@@ -26,12 +26,12 @@ Client.send.dropItems = function(items) {
   Client.socket.emit('drop-items', {item_ids:id_list});
 }
 
-Client.send.joinCnode = function(cnode) {
-  Client.socket.emit('join-cnode', {cnode_id: cnode.cnode_id});
+Client.send.joinConversation = function(conversation) {
+  Client.socket.emit('join-conversation', {conversation_id: conversation.conversation_id});
 }
 
-Client.send.leaveCnode = function(cnode) {
-  Client.socket.emit('leave-cnode', {cnode_id: cnode.cnode_id});
+Client.send.leaveConversation = function(conversation) {
+  Client.socket.emit('leave-conversation', {conversation_id: conversation.conversation_id});
 }
 
 Client.send.requestTrade = function(agent_id) {
