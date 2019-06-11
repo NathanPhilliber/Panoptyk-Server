@@ -125,6 +125,15 @@ Validate.validate_items_in_room = function(room, item_ids) {
 }
 
 
+Validate.validate_room_has_space = function(room) {
+  if (room.occupants.length >= room.max_occupants) {
+    return {status: false, message: 'Room is full', room:room}
+  }
+
+  return {status: true, message:'', room:room};
+}
+
+
 /**
  * Make sure an item is not locked.
  * @param {[Object]} items - items to check.

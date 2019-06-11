@@ -5,12 +5,13 @@ class Room {
    * @param {string} name - name of room
    * @param {int} room_id - Room id, if null one will be assigned.
    */
-  constructor(name, room_id=null) {
+  constructor(name, max_occupants, room_id=null) {
     this.name = name;
     this.adjacents = [];
     this.occupants = [];
     this.items = [];
     this.cnodes = [];
+    this.max_occupants = max_occupants;
 
     this.room_id = (room_id == null ? Room.nextId++ : room_id);
     Room.objects[this.room_id] = this;
@@ -23,7 +24,7 @@ class Room {
    * @param {JSON} data - serialized room JSON.
    */
   static load(data) {
-    new Room(data.name, data.room_id);
+    new Room(data.name, data.max_occupants, data.room_id);
   }
 
 
@@ -34,6 +35,7 @@ class Room {
   serialize() {
     var data = {
       name: this.name,
+      max_occupants: this.max_occupants,
       room_id: this.room_id
     }
 

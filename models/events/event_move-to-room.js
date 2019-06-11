@@ -48,6 +48,10 @@ Event_moveToRoom.validate = function(structure, agent) {
   if (!(res = server.models.Validate.validate_room_adjacent(agent.room, server.models.Room.get_room_by_id(structure.room_id))).status) {
     return res;
   }
+  if(!(res = server.models.Validate.validate_room_has_space(server.models.Room.get_room_by_id(structure.room_id))).status) {
+    return res;
+  }
+
   return res;
 };
 
