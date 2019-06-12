@@ -275,3 +275,9 @@ server.send.trade_complete = function(socket, trade) {
   socket.emit("trade-complete", {trade_id:trade.trade_id});
 }
 
+
+server.send.conversation_requested = function(agent, to_agent) {
+  server.log("Conversation request from " + agent.name + " to " + to_agent.name);
+
+  to_agent.socket.emit("conversation-requested", {agent_id:agent.agent_id});
+}

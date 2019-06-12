@@ -15,6 +15,7 @@ class Agent {
     this.inventory = inventory;
     this.knowledge = knowledge;
     this.conversation = null;
+    this.conversation_requests = {};
 
     this.agent_id = (id == null ? Agent.nextId++ : id);
     Agent.objects[this.agent_id] = this;
@@ -225,6 +226,7 @@ class Agent {
    */
   remove_from_room() {
     this.room = null;
+    this.conversation_requests = {};
   }
 
 
@@ -280,6 +282,7 @@ class Agent {
    * @param {Object} conversation - conversation object.
    */
   join_conversation(conversation) {
+    this.conversation_requests = {};
     this.conversation = conversation;
   }
 

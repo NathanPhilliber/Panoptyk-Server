@@ -277,6 +277,10 @@ Controller.remove_agent_from_conversation = function(conversation, agent) {
   conversation.remove_agent(agent);
 
   server.send.agent_leave_conversation(agent, conversation);
+
+  if(conversation.agents.length == 0){
+    conversation.room.remove_conversation(conversation);
+  }
 }
 
 
@@ -470,6 +474,23 @@ Controller.give_info_to_agents = function(agents, info) {
     var cpy = info.make_copy(agent, time);
     Controller.add_info_to_agent_inventory(agent, [cpy]);
   }
+}
+
+
+Controller.request_conversation = function(agent, to_agent) {
+  to_agent.conversation_requests[agent.agent_id] = agent.agent_id;
+  server.send.conversation_requested(agent, to_agent);
+}
+
+
+Controller.create_conversation = function(room, agent, to_agent) {
+  var conversation = new server.models.Conversation(room);
+  conversation.add_agent(agent);
+  conversation.add_agent(to_agent);
+
+  Controller.add_agent_to_conversation(conversation, agent);
+  Controller.add_agent_to_conversation(conversation, to_agent);
+  return conversation;
 }
 
 module.exports = Controller;
