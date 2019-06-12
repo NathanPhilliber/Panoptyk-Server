@@ -29,12 +29,13 @@ server.send.login_complete = function(agent) {
  * @param {Object} old_room - room object agent is coming from
  */
 server.send.agent_enter_room = function(agent, old_room=null) {
+  let room = server.models.Room.objects[agent.room];
   if (old_room == null) {
-    old_room = agent.room.adjacents[Math.floor(Math.random() * agent.room.adjacents.length)];
+    old_room = room.adjacents[Math.floor(Math.random() * room.adjacents.length)];
   }
 
-  server.log('Agent ' + agent.name + ' entered room ' + agent.room.name + '.', 2);
-  agent.socket.to(agent.room.room_id).emit('agent-enter-room',
+  server.log('Agent ' + agent.name + ' entered room ' + room.name + '.', 2);
+  agent.socket.to(room.room_id).emit('agent-enter-room',
     {'agent_data': agent.get_public_data(), 'room_id': old_room.room_id});
 }
 
@@ -46,13 +47,13 @@ server.send.agent_enter_room = function(agent, old_room=null) {
  * @param {Object} new_room - room object that agent is exiting to.
  */
 server.send.agent_exit_room = function(agent, new_room=null) {
-
+  let room = server.models.Room.objects[agent.room];
   if (new_room == null) {
-    new_room = agent.room.adjacents[Math.floor(Math.random() * agent.room.adjacents.length)];
+    new_room = room.adjacents[Math.floor(Math.random() * room.adjacents.length)];
   }
 
-  server.log('Agent ' + agent.name + ' left room ' + agent.room.name + '.', 2);
-  agent.socket.to(agent.room.room_id).emit('agent-exit-room',
+  server.log('Agent ' + agent.name + ' left room ' + room.name + '.', 2);
+  agent.socket.to(room.room_id).emit('agent-exit-room',
     {'agent_id': agent.agent_id, 'room_id': new_room.room_id});
 }
 
