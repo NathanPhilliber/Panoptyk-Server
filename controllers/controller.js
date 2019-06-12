@@ -53,13 +53,6 @@ Controller.add_info_to_agent_inventory = function(agent, info) {
     return;
   }
 
-  for (let i of info) {
-    if ((i.owner !== null)) {
-      server.log("Cannot give info to agent, info not available " + i.id, 0);
-      return;
-    }
-  }
-
   var added_info = [];
 
   for (let i of info) {
@@ -69,7 +62,7 @@ Controller.add_info_to_agent_inventory = function(agent, info) {
     added_info[added_info.length-1].give_to_agent(agent);
   }
 
-  //server.send.add_info_inventory(agent, added_info);
+  server.send.add_info_inventory(agent, added_info);
 }
 
 
@@ -115,7 +108,7 @@ Controller.move_agent_to_room = function(agent, new_room) {
     return;
   }
 
-  var old_room = agent.room;
+  var old_room = server.models.Room.objects[agent.room];
 
   if (!old_room.is_connected_to(new_room)) {
     server.log("Cannot move agent. " + old_room.name + " not adjacent to " + new_room.name, 0);
@@ -164,7 +157,7 @@ Controller.remove_agent_from_room = function(agent, new_room=null, update_agent_
     return;
   }
 
-  var old_room = agent.room;
+  var old_room = server.models.Room.objects[agent.room];
 
   if (old_room === null) {
     server.log("Cannot remove agent " + agent.name + " from room, agent is not in room.", 0);

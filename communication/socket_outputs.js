@@ -29,12 +29,13 @@ server.send.login_complete = function(agent) {
  * @param {Object} old_room - room object agent is coming from
  */
 server.send.agent_enter_room = function(agent, old_room=null) {
+  let room = server.models.Room.objects[agent.room];
   if (old_room == null) {
-    old_room = agent.room.adjacents[Math.floor(Math.random() * agent.room.adjacents.length)];
+    old_room = room.adjacents[Math.floor(Math.random() * room.adjacents.length)];
   }
 
-  server.log('Agent ' + agent.name + ' entered room ' + agent.room.name + '.', 2);
-  agent.socket.to(agent.room.room_id).emit('agent-enter-room',
+  server.log('Agent ' + agent.name + ' entered room ' + room.name + '.', 2);
+  agent.socket.to(room.room_id).emit('agent-enter-room',
     {'agent_data': agent.get_public_data(), 'room_id': old_room.room_id});
 }
 
@@ -46,13 +47,13 @@ server.send.agent_enter_room = function(agent, old_room=null) {
  * @param {Object} new_room - room object that agent is exiting to.
  */
 server.send.agent_exit_room = function(agent, new_room=null) {
-
+  let room = server.models.Room.objects[agent.room];
   if (new_room == null) {
-    new_room = agent.room.adjacents[Math.floor(Math.random() * agent.room.adjacents.length)];
+    new_room = room.adjacents[Math.floor(Math.random() * room.adjacents.length)];
   }
 
-  server.log('Agent ' + agent.name + ' left room ' + agent.room.name + '.', 2);
-  agent.socket.to(agent.room.room_id).emit('agent-exit-room',
+  server.log('Agent ' + agent.name + ' left room ' + room.name + '.', 2);
+  agent.socket.to(room.room_id).emit('agent-exit-room',
     {'agent_id': agent.agent_id, 'room_id': new_room.room_id});
 }
 
@@ -89,6 +90,26 @@ server.send.add_items_inventory = function(agent, items) {
   agent.socket.emit('add-items-inventory', {'items_data': dat});
 }
 
+/**
+ * Add a list of items to an agent's inventory.
+ * @param {Object} agent - agent object
+ * @param {Object} info - array of items to add to inventory
+ */
+server.send.add_info_inventory = function(agent, info) {
+  var dat = [];
+  for (let inf of info) {
+    dat.push(inf);
+  }
+  // GROSS PATCHWORK PLS DELETE
+  info = info[0];
+  if (info.reference) {
+    info = server.models.Info.objects[info.infoID];
+  }
+  let msg = server.models.Info.get_ACTION(info.action).name + '(' + info.time + ', ' + server.models.Agent.objects[info.agent].name + ', ' + info.location + ')';
+
+  server.log('Gave info ' + JSON.stringify(dat) + ' to agent ' + agent.name + '.', 2);
+  agent.socket.emit('add-info-inventory', {'info_data': dat, 'message': [msg]});
+}
 
 /**
  * Remove a list of items from an agent's inventory. Assumes valid data.

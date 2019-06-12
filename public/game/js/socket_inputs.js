@@ -44,6 +44,11 @@ Client.socket.on('add-items-inventory', function(data) {
   updateInventoryAdd(data.items_data);
 });
 
+Client.socket.on('add-info-inventory', function(data) {
+  console.log("Add Info Inventory");
+  updateKnowledgeAdd(data.message);
+});
+
 Client.socket.on('add-items-room', function(data) {
   console.log("Add Items Room");
 

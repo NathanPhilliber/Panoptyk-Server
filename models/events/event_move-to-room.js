@@ -45,7 +45,7 @@ Event_moveToRoom.validate = function(structure, agent) {
   if (!(res = server.models.Validate.validate_key_format(server.models.Event_moveToRoom.formats, structure)).status) {
     return res;
   }
-  if (!(res = server.models.Validate.validate_room_adjacent(agent.room, server.models.Room.get_room_by_id(structure.room_id))).status) {
+  if (!(res = server.models.Validate.validate_room_adjacent(server.models.Room.objects[agent.room], server.models.Room.get_room_by_id(structure.room_id))).status) {
     return res;
   }
   if(!(res = server.models.Validate.validate_room_has_space(server.models.Room.get_room_by_id(structure.room_id))).status) {

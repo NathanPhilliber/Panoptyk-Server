@@ -21,6 +21,12 @@ function updateInventoryAdd(items) {
   }
 }
 
+function updateKnowledgeAdd(items) {
+  for (let item of items) {
+    updateKBAddItem(item);
+  }
+}
+
 function updateInventoryRemove(item_ids) {
   for (let item_id of item_ids) {
     updateInventoryRemoveItem(item_id);
@@ -43,6 +49,28 @@ function updateInventoryAddItem(item) {
   itemText.style.display = "inline-block";
   itemText.innerHTML = "<b>Name: </b>" + item.item_name + ", <b>ID: </b><u>" +
     item.item_id + "</u>, <b>Type: </b>" + item.item_type;
+
+  node.appendChild(dropButton);
+  node.appendChild(itemText);
+
+  document.getElementById('i_div_inventory').appendChild(node);
+}
+
+kb = {};
+function updateKBAddItem(info) {
+  kb[info.id] = info;
+  var node = document.createElement('div');
+  node.id = 'info_' + info.id;
+  node.style.outline = '1px solid black';
+
+  var dropButton = document.createElement('button');
+  dropButton.innerHTML = "Drop";
+
+  //dropButton.addEventListener("click", function(){ Client.send.dropItems([info]) });
+
+  var itemText = document.createElement('p');
+  itemText.style.display = "inline-block";
+  itemText.innerHTML = "<b>Info: </b>" + info;
 
   node.appendChild(dropButton);
   node.appendChild(itemText);
