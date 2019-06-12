@@ -70,7 +70,7 @@ function updateKBAddItem(info) {
 
   var itemText = document.createElement('p');
   itemText.style.display = "inline-block";
-  itemText.innerHTML = "<b>Info: </b>" + JSON.stringify(info);
+  itemText.innerHTML = "<b>Info: </b>" + info;
 
   node.appendChild(dropButton);
   node.appendChild(itemText);

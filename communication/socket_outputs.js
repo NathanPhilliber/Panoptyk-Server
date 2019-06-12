@@ -100,9 +100,15 @@ server.send.add_info_inventory = function(agent, info) {
   for (let inf of info) {
     dat.push(inf);
   }
+  // GROSS PATCHWORK PLS DELETE
+  info = info[0];
+  if (info.reference) {
+    info = server.models.Info.objects[info.infoID];
+  }
+  let msg = server.models.Info.get_ACTION(info.action).name + '(' + info.time + ', ' + server.models.Agent.objects[info.agent].name + ', ' + info.location + ')';
 
   server.log('Gave info ' + JSON.stringify(dat) + ' to agent ' + agent.name + '.', 2);
-  agent.socket.emit('add-info-inventory', {'info_data': dat});
+  agent.socket.emit('add-info-inventory', {'info_data': dat, 'message': [msg]});
 }
 
 /**
