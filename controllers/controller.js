@@ -53,13 +53,6 @@ Controller.add_info_to_agent_inventory = function(agent, info) {
     return;
   }
 
-  for (let i of info) {
-    if ((i.owner !== null)) {
-      server.log("Cannot give info to agent, info not available " + i.id, 0);
-      return;
-    }
-  }
-
   var added_info = [];
 
   for (let i of info) {
@@ -69,7 +62,7 @@ Controller.add_info_to_agent_inventory = function(agent, info) {
     added_info[added_info.length-1].give_to_agent(agent);
   }
 
-  //server.send.add_info_inventory(agent, added_info);
+  server.send.add_info_inventory(agent, added_info);
 }
 
 

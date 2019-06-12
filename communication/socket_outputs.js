@@ -90,6 +90,20 @@ server.send.add_items_inventory = function(agent, items) {
   agent.socket.emit('add-items-inventory', {'items_data': dat});
 }
 
+/**
+ * Add a list of items to an agent's inventory.
+ * @param {Object} agent - agent object
+ * @param {Object} info - array of items to add to inventory
+ */
+server.send.add_info_inventory = function(agent, info) {
+  var dat = [];
+  for (let inf of info) {
+    dat.push(inf);
+  }
+
+  server.log('Gave info ' + JSON.stringify(dat) + ' to agent ' + agent.name + '.', 2);
+  agent.socket.emit('add-info-inventory', {'info_data': dat});
+}
 
 /**
  * Remove a list of items from an agent's inventory. Assumes valid data.
