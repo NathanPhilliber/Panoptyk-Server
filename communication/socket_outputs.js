@@ -105,7 +105,7 @@ server.send.add_info_inventory = function(agent, info) {
   if (info.reference) {
     info = server.models.Info.objects[info.infoID];
   }
-  let msg = server.models.Info.get_ACTION(info.action).name + '(' + info.time + ', ' + server.models.Agent.objects[info.agent].name + ', ' + info.location + ')';
+  let msg = server.models.Info.get_ACTION(info.action).name + '(' + info.time + ', ' + server.models.Agent.objects[info.agent].name + ', ' + server.models.Room.objects[info.location].name + ')';
 
   server.log('Gave info ' + JSON.stringify(dat) + ' to agent ' + agent.name + '.', 2);
   agent.socket.emit('add-info-inventory', {'info_data': dat, 'message': [msg]});

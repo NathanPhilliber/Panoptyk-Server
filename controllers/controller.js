@@ -132,10 +132,6 @@ Controller.add_agent_to_room = function(agent, new_room, old_room=null) {
     return;
   }
 
-  Controller.give_info_to_agents(new_room.occupants,
-    (agent.name + " entered room " + new_room.name));
-
-
   agent.put_in_room(new_room);
   new_room.add_agent(agent);
 
@@ -143,6 +139,11 @@ Controller.add_agent_to_room = function(agent, new_room, old_room=null) {
 
   server.send.agent_enter_room(agent, old_room);
   server.send.room_data(agent, new_room, old_room);
+
+  var time = server.clock.get_datetime();
+  var info = new server.models.Info.ACTION.ENTER.create(agent, {0: time, 1: agent.agent_id, 2: new_room.room_id});
+
+  Controller.give_info_to_agents(new_room.occupants, info);  
 }
 
 
@@ -370,9 +371,10 @@ Controller.perform_trade = function(trade) {
     items_res_str.push(item.name);
   }
 
-  Controller.give_info_to_agents(trade.conversation.room.occupants,
-    (trade.agent_ini.name + " (" + items_ini_str.join(", ") + ") traded with " +
-     trade.agent_res.name + " (" + items_res_str.join(", ") + ")"));
+  var time = server.clock.get_datetime();
+  var info = new server.models.Info.ACTION.CONVERSE.create(agent, {0: time, 1: trade.agent_ini.agent_id, 2: trade.agent_ini.agent_id, 3: trade.conversation.room.room_id});
+
+  Controller.give_info_to_agents(trade.conversation.room.occupants, info);
 
   server.log("Successfully completed trade " + trade.trade_id, 2);
 }
