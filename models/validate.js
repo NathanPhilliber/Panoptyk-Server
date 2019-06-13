@@ -260,9 +260,9 @@ Validate.validate_conversation_has_agent = function(conversation, agent) {
  * @returns {Object} {status: boolean, message: string, conversation: Object, to_agent: Object}
  */
 Validate.validate_agents_share_conversation = function(agent1, agent2) {
-  if (agent1.conversation != agent2.conversation || !agent1.conversation) {
-    return {status:false, message: 'Agents not in same conversation'}
-  }
+  // if (agent1.conversation != agent2.conversation || !agent1.conversation) {
+  //   return {status:false, message: 'Agents not in same conversation'}
+  // }
 
   return {status: true, message:'', conversation:agent1.conversation, to_agent:agent2};
 }

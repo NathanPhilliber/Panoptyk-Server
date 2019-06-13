@@ -37,6 +37,8 @@ function Room(room_id, room_name, adjacents, layout, agents, items, old_room_id)
 
   this.title = graphics.add.text(10, 10, this.name, { fill: '#fff', font:'32px Arial' });
 
+  loadTradeMeetingSpot("Meeting Location", this.agents);
+
   current_room = this;
 }
 
