@@ -13,9 +13,8 @@ function Event_acceptConversation(socket, inputData) {
     return false;
   }
 
-  this.conversation = res.conversation;
-  this.to_agent = res.conversation.agent_ini;
-  this.room = from_agent.room;  //TODO: change this when room validation is added
+  this.to_agent = server.models.Agent.get_agent_by_id(inputData.agent_id);
+  this.room = server.models.Room.objects[from_agent.room];  //TODO: change this when room validation is added
   this.conversation = server.control.create_conversation(this.room, this.from_agent, this.to_agent);
 
   (server.models.Validate.objects = server.models.Validate.objects || []).push(this);
