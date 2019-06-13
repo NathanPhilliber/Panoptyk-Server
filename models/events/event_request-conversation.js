@@ -6,14 +6,13 @@
 function Event_requestConversation(socket, inputData) {
   this.time = new Date();
   this.agent = server.models.Agent.get_agent_by_socket(socket);
-
   if (!(res = server.models.Event_requestConversation.validate(inputData, this.agent)).status) {
     server.log('Bad event requestConversation data ('+JSON.stringify(inputData) + ').', 1);
     server.send.event_failed(socket, server.models.Event_requestConversation.event_name, res.message);
     return false;
   }
 
-  this.to_agent = res.to_agent;
+  this.to_agent = server.models.Agent.get_agent_by_id(inputData.agent_id);
 
   server.control.request_conversation(this.agent, this.to_agent);
 

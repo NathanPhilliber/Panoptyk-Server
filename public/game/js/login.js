@@ -149,6 +149,10 @@ function updateTradeRequest(trade_id, agent_id, show=true){
   document.getElementById("tradeConfirm_" + agent_id).style.display = show ? "inline-block" : "none";
 }
 
+function updateConversationRequest(agent_id, show=true){
+  //TODO: annohying ui shit
+}
+
 function changeTab(evt, tabID) {
     // Declare all variables
     var i, tabcontent, tablinks;

@@ -10,21 +10,33 @@ function Agent(id, username, my_agent=false) {
   this.conversation = null;
   this.trades = {};
 
+  this.sprite = graphics.add.sprite(this.x, this.y, my_agent ? 'agent' : 'agent_other');
+  this.sprite.setOrigin(0.5, 0);
+  this.sprite.setInteractive();
+
+  this.title = graphics.add.text(this.x, this.y, this.name, {fill:'#fff', font:'16px Arial' });
+  this.title.setOrigin(0.5, 1);
+
+  this.sprite.on('pointerdown', function(ev) {
+    console.log('requesting conversation ' + id);
+    Client.send.requestConversation(id);
+  });
+
   console.log("Agent Initialized (" + id + ", " + username + ")");
 
-  this.draw(my_agent);
+  //this.draw(my_agent);
   if (my_agent) {
     Agent.my_agent = this;
   }
 }
 
-Agent.prototype.draw = function(my_agent) {
-  this.sprite = graphics.add.sprite(this.x, this.y, my_agent ? 'agent' : 'agent_other');
-  this.sprite.setOrigin(0.5, 0);
+// Agent.prototype.draw = function(my_agent) {
+//   this.sprite = graphics.add.sprite(this.x, this.y, my_agent ? 'agent' : 'agent_other');
+//   this.sprite.setOrigin(0.5, 0);
 
-  this.title = graphics.add.text(this.x, this.y, this.name, {fill:'#fff', font:'16px Arial' });
-  this.title.setOrigin(0.5, 1);
-}
+//   this.title = graphics.add.text(this.x, this.y, this.name, {fill:'#fff', font:'16px Arial' });
+//   this.title.setOrigin(0.5, 1);
+// }
 
 Agent.prototype.move = function(x, y, on_complete=function(){}, param0=null, duration=-1) {
   if (duration < 0) {

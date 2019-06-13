@@ -128,3 +128,9 @@ Client.socket.on('remove-items-trade', function(data) {
 Client.socket.on('event-failed', function(data) {
   console.log("ERROR: " + data.error_message);
 });
+
+Client.socket.on('conversation-requested', function(data) {
+  console.log("conversation-requested event: " + JSON.stringify(data));
+
+  updateConversationRequest(data.agent_id);
+});

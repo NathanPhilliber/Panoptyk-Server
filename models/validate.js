@@ -208,7 +208,7 @@ Validate.validate_ready_status = function(trade, agent, rstatus) {
 
 /**
  * Check if a conversation is in given room.
- * @param {Object} room - room to see if conversation is in.
+ * @param {int} room - room id to see if conversation is in.
  * @param {Object} conversation - conversation object.
  * @returns {Object} {status: boolean, message: string, conversation: Object}
  */
@@ -216,7 +216,7 @@ Validate.validate_conversation_exists = function(room, conversation) {
   if (conversation == null) {
     return {'status': false, 'message': 'Conversation does not exist'};
   }
-  if (conversation.room !== room) {
+  if (conversation.room.room_id !== room) {
     return {'status': false, 'message': 'Conversation not in agents room'};
   }
 

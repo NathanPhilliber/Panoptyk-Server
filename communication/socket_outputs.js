@@ -171,7 +171,7 @@ server.send.remove_items_room = function(items, room, by_agent=null) {
  */
 server.send.agent_join_conversation = function(agent) {
   server.log('Agent ' + agent.name + ' entered conversation ' + agent.conversation.conversation_id + '.', 2);
-  server.modules.io.in(agent.room.room_id).emit('agent-join-conversation',
+  server.modules.io.in(agent.room).emit('agent-join-conversation',
     {'conversation_id': agent.conversation.conversation_id, 'agent_id': agent.agent_id});
 }
 

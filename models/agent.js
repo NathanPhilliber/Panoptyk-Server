@@ -3,7 +3,7 @@ class Agent {
   /**
    * Agent model.
    * @param {string} username - username of agent
-   * @param {Object} room - room of agent. Does not put agent in room, simply saves it.
+   * @param {int} room - room id of agent. Does not put agent in room, simply saves it.
    * @param {[Object]} inventory - list of items that agent owns.
    * @param {[Object]} knowledge - list of items that agent owns.
    * @param {int} id - id of agent. If null, one will be assigned.
@@ -55,12 +55,12 @@ class Agent {
 
     if (sel_agent === null) {
       sel_agent = new Agent(username,
-        server.models.Room.get_room_by_id(server.settings.default_room_id));
+        server.settings.default_room_id);
     }
 
     sel_agent.socket = socket;
     server.send.login_complete(sel_agent);
-    server.control.add_agent_to_room(sel_agent, sel_agent.room);
+    server.control.add_agent_to_room(sel_agent, server.models.Room.objects[sel_agent.room]);
 
     return sel_agent;
   }
@@ -251,7 +251,7 @@ class Agent {
     return {
       'agent_id': this.agent_id,
       'agent_name': this.name,
-      'room_id': this.room.room_id
+      'room_id': this.room
     }
   }
 

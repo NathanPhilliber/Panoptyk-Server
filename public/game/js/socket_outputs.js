@@ -60,5 +60,13 @@ Client.send.readyTrade = function(trade_id, status) {
   Client.socket.emit('ready-trade', {trade_id:trade_id, ready_status:status});
 }
 
+Client.send.requestConversation = function(agent_id) {
+  console.log("Requesting trade with agent " + agent_id);
+  Client.socket.emit('request-conversation', {agent_id: agent_id});
+}
 
+Client.send.acceptConversation = function(agent_id) {
+  console.log("Accepting trade with agent " + agent_id);
+  Client.socket.emit('accept-conversation', {agent_id: agent_id});
+}
 

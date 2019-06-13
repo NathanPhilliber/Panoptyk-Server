@@ -8,7 +8,7 @@ class Conversation{
    */
   constructor(room, max_agents=4, id=null) {
     this.conversation_id = id === null ? Conversation.objects.length : id;
-    Conversation.objects[this.id] = this;
+    Conversation.objects[this.conversation_id] = this;
 
     this.max_agents = max_agents;
     this.agents = [];
@@ -137,7 +137,7 @@ class Conversation{
    * @return {Object/null}
    */
   static get_conversation_by_id(conversation_id) {
-    if (Conversation.objects[conversation_id] != undefined) {
+    if (Conversation.objects[conversation_id]) {
       return Conversation.objects[conversation_id];
     }
 
